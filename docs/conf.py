@@ -1,4 +1,5 @@
-# This file is execfile()d with the current directory set to its containing dir.
+# This file is execfile()d with the current directory set to its
+# containing dir.
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
@@ -21,7 +22,8 @@ __location__ = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(__location__, "../src"))
 
 # -- Run sphinx-apidoc -------------------------------------------------------
-# This hack is necessary since RTD does not issue `sphinx-apidoc` before running
+# This hack is necessary since RTD does not issue `sphinx-apidoc`
+# before running
 # `sphinx-build -b html . _build/html`. See Issue:
 # https://github.com/readthedocs/readthedocs.org/issues/1139
 # DON'T FORGET: Check the box "Install your project inside a virtualenv using
@@ -43,7 +45,8 @@ except FileNotFoundError:
 try:
     import sphinx
 
-    cmd_line = f"sphinx-apidoc --implicit-namespaces -f -o {output_dir} {module_dir}"
+    cmd_line = \
+        f"sphinx-apidoc --implicit-namespaces -f -o {output_dir} {module_dir}"
 
     args = cmd_line.split(" ")
     if tuple(sphinx.__version__.split(".")) >= ("1", "7"):
@@ -59,8 +62,8 @@ except Exception as e:
 # If your documentation needs a minimal Sphinx version, state it here.
 # needs_sphinx = '1.0'
 
-# Add any Sphinx extension module names here, as strings. They can be extensions
-# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
@@ -88,7 +91,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "PayloadComputerDroneProjekt"
-copyright = "2025, Skeletmaster"
+copyright = "2025, KonstantinDege"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -104,7 +107,8 @@ except ImportError:
     version = ""
 
 if not version or version.lower() == "unknown":
-    version = os.getenv("READTHEDOCS_VERSION", "unknown")  # automatically set by RTD
+    # automatically set by RTD
+    version = os.getenv("READTHEDOCS_VERSION", "unknown")
 
 release = version
 
@@ -122,8 +126,8 @@ release = version
 # directories to ignore when looking for source files.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".venv"]
 
-# The reST default role (used for this markup: `text`) to use for all documents.
-# default_role = None
+# The reST default role (used for this markup: `text`) to use for all
+# documents. default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 # add_function_parentheses = True
@@ -145,7 +149,8 @@ pygments_style = "sphinx"
 # If true, keep warnings as "system message" paragraphs in the built documents.
 # keep_warnings = False
 
-# If this is True, todo emits a warning for each TODO entries. The default is False.
+# If this is True, todo emits a warning for each TODO entries.
+# The default is False.
 todo_emit_warnings = True
 
 
@@ -244,9 +249,11 @@ latex_elements = {
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto/manual]).
+# (source start file, target name, title, author,
+# documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "PayloadComputerDroneProjekt Documentation", "Skeletmaster", "manual")
+    ("index", "user_guide.tex",
+     "PayloadComputerDroneProjekt Documentation", "KonstantinDege", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

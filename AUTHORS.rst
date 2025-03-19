@@ -2,4 +2,4 @@
 Contributors
 ============
 
-* Skeletmaster <150815971+KonstantinDege@users.noreply.github.com>
+* KonstantinDege <150815971+KonstantinDege@users.noreply.github.com>
