@@ -27,7 +27,8 @@ Setup
 =====
 
 1. install wsl https://docs.px4.io/main/en/dev_setup/dev_env_windows_wsl.html
-2. run following
+   only go until ``Install PX4 Toolchain``
+2. run following inside of the wsl terminal
 
 .. code-block:: bash
 
