@@ -20,3 +20,31 @@ PayloadComputerDroneProjekt
 
 
 A longer description of your project goes here...
+
+
+=====
+Setup
+=====
+
+1. install wsl https://docs.px4.io/main/en/dev_setup/dev_env_windows_wsl.html
+2. run following
+
+.. code-block:: bash
+
+    cd ~
+    git clone --recursive https://github.com/KonstantinDege/PayloadComputerDroneProjekt.git
+    cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
+    ./install_px4_gz_ros2_for_ubuntu.sh 
+
+3. move models to simulation
+
+.. code-block:: bash
+
+    cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
+    cp -r ./PX4-Autopilot_PATCH/* ~/PX4-Autopilot/
+
+4. run simulation
+
+.. code-block:: bash 
+
+    cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam
