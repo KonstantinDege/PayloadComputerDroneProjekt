@@ -1,10 +1,10 @@
 import unittest
-from main_sitl import MainSITL
+from tests.drone_sitl import DroneSITL
 
 
 class TestMain(unittest.TestCase):
     def test_ex1(self):
-        program = MainSITL()
+        program = DroneSITL()
         program.setup()
 
 

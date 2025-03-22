@@ -2,8 +2,9 @@ from mavsdk import System
 
 
 # connect to drone system
-class Main:
+class Drone:
     def __init__(self):
+        self.connection_mavlink = None
         self.connection = None
         self.camera = None
 
@@ -17,6 +18,9 @@ class Main:
     def init_camera(self):
         self.camera
 
+    def get_current_frame(self):
+        return None
+
 
 if __name__ == "__main__":
-    programm = Main()
+    programm = Drone()
