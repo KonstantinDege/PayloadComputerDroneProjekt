@@ -47,4 +47,6 @@ Setup
 
     * clone repo to folder x
     * start wsl in the folder
-    * ``pip install .`` 
+    * python3 -m venv myenv
+    * source myenv/bin/activate
+    * ``pip install -e .`` 
