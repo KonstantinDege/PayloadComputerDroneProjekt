@@ -4,7 +4,7 @@
 
 
 from payloadcomputerdroneprojekt.drone import Drone
-from cam_v2 import Video
+from payloadcomputerdroneprojekt.cam_v2 import Video
 from pymavlink import mavutil
 from mavsdk import System
 import asyncio
@@ -30,7 +30,11 @@ class DroneSITL(Drone):
         print("Camera started")
 
     def get_current_frame(self):
-        return self.camera.frame()
+        while True:
+            # Wait for the next frame
+            if not self.camera.frame_available():
+                continue
+            return self.camera.frame()
 
 
 if __name__ == "__main__":
