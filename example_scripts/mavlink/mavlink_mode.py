@@ -25,20 +25,10 @@ sub_mode_mapping_px4 = {
 
 def change_mode(master, mode, autopilot='px4', sub_mode='NONE'):
 
-    if autopilot == 'ardupilot':
-        # Check if mode is available
-        if mode not in master.mode_mapping():
-            print(f'Unknown mode : {mode}')
-            print(f"available modes: {list(master.mode_mapping().keys())}")
-            raise Exception('Unknown mode')
 
-        # Get mode ID
-        mode_id = master.mode_mapping()[mode]
-        sub_mode = 0
-    elif autopilot == 'px4':
-        # Get mode ID
-        mode_id = main_mode_mapping_px4[mode]
-        sub_mode = sub_mode_mapping_px4[sub_mode]
+    # Get mode ID
+    mode_id = main_mode_mapping_px4[mode]
+    sub_mode = sub_mode_mapping_px4[sub_mode]
 
     master.mav.command_long_send(
         master.target_system, master.target_component,

@@ -50,3 +50,5 @@ Setup
     * python3 -m venv myenv
     * source myenv/bin/activate
     * ``pip install -e .`` 
+
+5. https://www.geeksforgeeks.org/using-github-with-ssh-secure-shell/
