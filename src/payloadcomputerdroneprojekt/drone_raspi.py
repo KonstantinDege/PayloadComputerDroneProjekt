@@ -4,7 +4,7 @@
 
 
 import drone
-from payloadcomputerdroneprojekt.cam_v2 import Video
+from pycamera2 import Pycamera2
 from mavsdk import System
 import asyncio
 
@@ -15,7 +15,7 @@ class Drone(drone.Drone):
 
     def init_control(self):
         self.connection = System()
-        asyncio.run(self.connection.connect(system_address="udp://:14540"))
+        asyncio.run(self.connection.connect(system_address="serial:///dev/ttyAMA0:57600"))
         print("MavSDK established")
 
     def init_camera(self):

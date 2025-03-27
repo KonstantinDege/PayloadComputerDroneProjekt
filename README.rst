@@ -40,7 +40,7 @@ Setup
 
 .. code-block:: bash 
 
-    cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam
+    cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
 
 
 4. clone this repo and install this package inside of your wsl instance
