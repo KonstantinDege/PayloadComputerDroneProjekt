@@ -2,8 +2,11 @@ import os
 import numpy as np
 from pyulog import ULog
 
+# You need to set the path to the directory containing the flight logs.
 path = r"C:\Users\User\Desktop\05_FlightTests\Blaue_Gruppe_Blauer_Copter"
 
+# This script calculates the maximum altitude of each flight log in a given directory.
+# It assumes that the flight logs are in ULog format and contain a message named "vehicle_local_position".
 data = dict()
 for root, _, files in os.walk(path):
     for file in files:
