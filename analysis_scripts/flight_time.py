@@ -1,50 +1,55 @@
 import os
 from pyulog import ULog
 
-path = r"C:\Users\User\Desktop\05_FlightTests\Blaue_Gruppe_Blauer_Copter"
+# Pfad zum Ordner mit den .ulg-Dateien
+path = r"C:\PyUlog\Blaue_Gruppe_Blauer_Copter"
 
-
+# Dictionaries zur Speicherung der Flugzeiten
 data = dict()
-longest = 0
+longest_per_flight = dict()
+time_per_user = dict()
 
-
+# Datei für Protokollnachrichten (Start & Landung)
 with open("takeoff_messages.txt", "w") as f:
     for root, _, files in os.walk(path):
         for file in files:
             if file.endswith(".ulg"):
-                fi = os.path.join(root, file)
+                file_path = os.path.join(root, file)
+                # nimmt das erste Wort als Benutzerkennung
+                user = file.split("_")[0]
 
-                ulog = ULog(fi)
+                ulog = ULog(file_path)
+
+                last_start = None
                 for entry in ulog.logged_messages:
                     if "Takeoff detected" in entry.message:
                         last_start = entry.timestamp
                         f.write(f"{entry.timestamp}: {entry.message}\n")
-                    if "Landing detected" in entry.message:
-                        print((entry.timestamp - last_start) / 1e6 / 60)
+
+                    if "Landing detected" in entry.message and last_start:
+                        # in Minuts
+                        flight_duration = (entry.timestamp - last_start
+                                           ) / 1e6 / 60
                         f.write(f"{entry.timestamp}: {entry.message}\n")
-                        d = (entry.timestamp - last_start) / 1e6 / 60
-                        if file[0:2] in data:
-                            data[file[0:2]].append(d)
-                        else:
-                            data[file[0:2]] = [d]
 
+                        data.setdefault(user, []).append(flight_duration)
+                        # Zurücksetzen für den nächsten Start
+                        last_start = None
 
-longest_per_flight = dict()
+# Längste Flugzeit pro Nutzer berechnen
+for user, flights in data.items():
+    longest_per_flight[user] = max(flights)
+    time_per_user[user] = sum(flights)
 
-for (key, value) in data.items():
-    for flight_time in value:
-        if flight_time > longest_per_flight.get(key, 0):
-            longest_per_flight[key] = flight_time
+# Ausgabe
+print("Alle Flugzeiten pro Nutzer [min]:")
+for user, flights in data.items():
+    print(f"  {user}: {['{:.2f}'.format(f) for f in flights]}")
 
-time_per_user = dict()
+print("\nLängste Flugzeit pro Nutzer [min]:")
+for user, longest in longest_per_flight.items():
+    print(f"  {user}: {longest:.2f}")
 
-for (key, value) in data.items():
-    for flight_time in value:
-        time_per_user[key] = time_per_user.get(key, 0) + flight_time
-
-
-
-
-print(f"Flight time: {data}") # [min]
-print(f"Longest flight time: {longest_per_flight}") # [min]
-print(f"Time per user: {time_per_user}") # [min]
+print("\nGesamtflugzeit pro Nutzer [min]:")
+for user, total in time_per_user.items():
+    print(f"  {user}: {total:.2f}")
