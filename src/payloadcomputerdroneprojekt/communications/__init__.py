@@ -2,6 +2,12 @@ class Communications:
     def __init__(self, commlink):
         self.mavsdk = commlink
 
+    def start(self, h):
+        pass
+
+    def land(self):
+        pass
+
     def mov_to_xyz(self, pos, yaw):
         """
         parms:
@@ -26,7 +32,7 @@ class Communications:
         """
         pass
 
-    def mov_v(self, v, yaw):
+    def mov_with_v(self, v, yaw):
         """
         parms:
          v: Velocity Vector

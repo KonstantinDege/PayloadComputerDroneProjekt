@@ -3,7 +3,7 @@ class MissionComputer():
         self._drone = drone
         self._comms = comms
         self._image = image
-        
+
         self.mode = 0
         self.current_mission_plan = {}
         pass
