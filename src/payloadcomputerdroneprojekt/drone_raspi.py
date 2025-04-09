@@ -31,7 +31,7 @@ class Drone(drone.Drone):
 
 
 if __name__ == "__main__":
-    drone = DroneSITL()
+    drone = Drone()
     drone.setup()
     drone.get_current_frame()
     while True:

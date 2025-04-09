@@ -1,7 +1,8 @@
 class Drone:
-    def __init__(self):
+    def __init__(self, config):
         self.connection = None
         self.camera = None
+        self.config = config
 
     def setup(self):
         self.init_control()
