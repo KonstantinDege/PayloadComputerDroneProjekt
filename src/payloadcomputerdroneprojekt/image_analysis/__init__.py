@@ -15,7 +15,7 @@ class ImageAnalysis:
 
     def get_current_offset_closest(self, color, type):
         """
-
+        Was macht Funktion? Wie wird Funktion getestet? Wie wird Funktion funktionieren?
         return
          (x,y) correct to closest
          h height estimation
