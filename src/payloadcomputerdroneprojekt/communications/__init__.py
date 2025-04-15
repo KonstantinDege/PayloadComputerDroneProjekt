@@ -50,7 +50,14 @@ class Communications:
         """
         pass
 
-    def get_position(self):
+    def get_position_xyz(self):
+        """
+
+        return [x,y,z,roll,pitch,yaw]
+        """
+        pass
+
+    def get_position_latlonalt(self):
         """
 
         return [x,y,z,roll,pitch,yaw]
