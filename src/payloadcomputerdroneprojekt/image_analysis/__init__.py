@@ -3,10 +3,11 @@ import cv2
 import numpy as np
 from datetime import datetime
 from payloadcomputerdroneprojekt.camera import Camera
+from payloadcomputerdroneprojekt.communications import Communications
 
 
 class ImageAnalysis:
-    def __init__(self, camera: Camera, comms):
+    def __init__(self, camera: Camera, comms: Communications):
         self._obj = []
         self._camera = camera
         self._comms = comms
