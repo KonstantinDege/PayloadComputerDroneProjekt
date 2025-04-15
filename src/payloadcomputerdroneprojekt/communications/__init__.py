@@ -1,6 +1,16 @@
+import asyncio
+from mavsdk import System
+
+
 class Communications:
-    def __init__(self, commlink):
-        self.mavsdk = commlink
+    def __init__(self, address):
+        self._address = address
+
+    def connect(self):
+        # check if it should be refactored
+        self.connection = System()
+        asyncio.run(self.connection.connect(system_address=self._address))
+        print("MavSDK established")
 
     def start(self, h):
         pass

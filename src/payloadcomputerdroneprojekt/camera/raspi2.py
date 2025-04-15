@@ -1,0 +1,20 @@
+import payloadcomputerdroneprojekt.camera as cam
+from picamera2 import Picamera2
+
+
+class Camera(cam.Camera):
+    def __init__(self, config={"format": 'XRGB8888', "size": (640, 480)}):
+        super().__init__()
+        self._config = config
+
+    def start_camera(self):
+        self._camera = Picamera2()
+        self._camera.configure(
+            self._camera.create_preview_configuration(
+                main=self._config
+            ))
+        self._camera.start()
+        print("Camera started")
+
+    def get_current_frame(self):
+        return self._camera.capture_array()
