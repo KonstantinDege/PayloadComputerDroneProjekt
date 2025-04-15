@@ -2,10 +2,11 @@ import asyncio
 import cv2
 import numpy as np
 from datetime import datetime
+from payloadcomputerdroneprojekt.camera import Camera
 
 
 class ImageAnalysis:
-    def __init__(self, camera, comms):
+    def __init__(self, camera: Camera, comms):
         self._obj = []
         self._camera = camera
         self._comms = comms
@@ -119,7 +120,7 @@ class ImageAnalysis:
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        self.colors = [
+        self._colors = [
             {
                 "name": "rot_1",
                 "lower": [0, 100, 100],

@@ -1,9 +1,9 @@
 from payloadcomputerdroneprojekt.mission_computer import MissionComputer
-from payloadcomputerdroneprojekt.camera.gazebo_sitl import Camera
+from payloadcomputerdroneprojekt.camera.gazebo_sitl import GazeboCamera
 
 
 def main():
-    camera = Camera()
+    camera = GazeboCamera()
     port = "udp://:14540"
     computer = MissionComputer(camera=camera, port=port)
     computer.setup()

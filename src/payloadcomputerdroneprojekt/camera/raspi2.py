@@ -2,7 +2,7 @@ import payloadcomputerdroneprojekt.camera as cam
 from picamera2 import Picamera2
 
 
-class Camera(cam.Camera):
+class RaspiCamera(cam.Camera):
     def __init__(self, config={"format": 'XRGB8888', "size": (640, 480)}):
         super().__init__()
         self._config = config

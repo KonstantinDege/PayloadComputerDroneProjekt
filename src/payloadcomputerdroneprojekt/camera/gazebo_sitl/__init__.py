@@ -3,7 +3,7 @@ from payloadcomputerdroneprojekt.camera.gazebo_sitl.gazebo_camera_lib \
     import Video
 
 
-class Camera(cam.Camera):
+class GazeboCamera(cam.Camera):
     def __init__(self):
         super().__init__()
 
