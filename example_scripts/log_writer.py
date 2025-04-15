@@ -1,31 +1,34 @@
-from payloadcomputerdroneprojekt.drone_sitl import DroneSITL
+from payloadcomputerdroneprojekt.communications import Communications
+from payloadcomputerdroneprojekt.camera.gazebo_sitl import GazeboCamera
 import tempfile
 import time
 from os.path import join
 import cv2
 import os
 
+
 class LogWriter:
     def __init__(self, dir=None, rate=5):
         self.rate = rate
-        self.drone = DroneSITL()
+        self.drone = Communications(address="udp://:14540")
+        self.camera = GazeboCamera()
         if not dir:
             dir = tempfile.mkdtemp("pics")
         self.dir = dir
         print(f"output directory: {dir}")
 
     def setup(self):
-        self.drone.setup()
+        self.camera.start_camera()
+        self.drone.connect()
 
     def run(self):
-
         while True:
-            msg = self.drone.connection_mavlink.recv_match(
+            msg = self.drone._connection.recv_match(
                 type="GLOBAL_POSITION_INT", blocking=True)
             print(msg)
             t = time.time()
-            frame = self.drone.get_current_frame()
-            dir = join(self.dir,str(int(t)))
+            frame = self.camera.get_current_frame()
+            dir = join(self.dir, str(int(t)))
             os.mkdir(dir)
             with open(join(dir, 'coords.txt'), "w+") as f:
                 f.write(str(msg))

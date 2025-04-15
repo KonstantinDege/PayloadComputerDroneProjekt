@@ -47,7 +47,7 @@ class ImageAnalysis:
         How is the function tested?
             Simulation
         How will the function work?
-            An asynchronous task is started to capture and save images, 
+            An asynchronous task is started to capture and save images,
             so the program flow is not interrupted.
 
         params:
@@ -78,7 +78,7 @@ class ImageAnalysis:
         try:
             self._task.cancel()
             return True
-        except:
+        except Exception:  # TODO: try finding concrete Exception Type
             print("Capture already stopped.")
             return False
 
@@ -205,7 +205,7 @@ class ImageAnalysis:
         What does the function do?
             Returns the offset from the drone to the object.
         How is the function tested? Unit tests
-        How will the function work? 
+        How will the function work?
             The object is detected using object detection,
             and the offset is calculated using pixels and additional geometry.
 
@@ -219,14 +219,14 @@ class ImageAnalysis:
     def quality_of_image(image, threshold=200):
         """
         NOT finished
-        What does the function do? 
-            Checks the quality of the image to determine 
+        What does the function do?
+            Checks the quality of the image to determine
             if it is suitable for evaluation.
-        How is the function tested? 
+        How is the function tested?
             Unit tests
-        How will the function work? 
-            The Laplace variance is calculated, 
-            and if it is below a certain value, 
+        How will the function work?
+            The Laplace variance is calculated,
+            and if it is below a certain value,
             the image is classified as blurry/unusable.
 
         parms:
