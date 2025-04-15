@@ -8,8 +8,8 @@ class Communications:
 
     def connect(self):
         # check if it should be refactored
-        self.connection = System()
-        asyncio.run(self.connection.connect(system_address=self._address))
+        self._connection = System()
+        asyncio.run(self._connection.connect(system_address=self._address))
         print("MavSDK established")
 
     def start(self, h):
