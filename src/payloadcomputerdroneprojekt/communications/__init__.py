@@ -1,6 +1,16 @@
+import asyncio
+from mavsdk import System
+
+
 class Communications:
-    def __init__(self, commlink):
-        self.mavsdk = commlink
+    def __init__(self, address):
+        self._address = address
+
+    def connect(self):
+        # check if it should be refactored
+        self._connection = System()
+        asyncio.run(self._connection.connect(system_address=self._address))
+        print("MavSDK established")
 
     def start(self, h):
         pass
@@ -40,10 +50,32 @@ class Communications:
         """
         pass
 
-    def get_position(self):
+    def get_position_xyz(self):
         """
 
         return [x,y,z,roll,pitch,yaw]
+        """
+        pass
+
+    def get_position_latlonalt(self):
+        """
+
+        return [lat,lon,alt,roll,pitch,yaw]
+        """
+        pass
+
+    def get_velocity_xyz(self):
+        """
+
+        return [x,y,z,roll,pitch,yaw]
+        """
+        pass
+
+    def send_precision_land(delta_pos):
+        """
+        parms:
+         pos: Postition Vector local relativ
+         yaw: Yaw Angle
         """
         pass
 

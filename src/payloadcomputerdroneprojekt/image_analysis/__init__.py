@@ -2,9 +2,12 @@ import asyncio
 import cv2
 import numpy as np
 from datetime import datetime
+from payloadcomputerdroneprojekt.camera import Camera
+from payloadcomputerdroneprojekt.communications import Communications
+
 
 class ImageAnalysis:
-    def __init__(self, camera, comms):
+    def __init__(self, camera: Camera, comms: Communications):
         self._obj = []
         self._camera = camera
         self._comms = comms
@@ -12,9 +15,12 @@ class ImageAnalysis:
     async def async_analysis(self, fps):
         """
         finished
-        What does the function do? Captures images and saves them at the given FPS rate.
-        How is the function tested? Simulation
-        How will the function work? See above.
+        What does the function do?
+            Captures images and saves them at the given FPS rate.
+        How is the function tested?
+            Simulation
+        How will the function work?
+            See above.
 
         params:
             fps: Frames per second at which the camera should capture images
@@ -31,15 +37,18 @@ class ImageAnalysis:
                 count += 1
                 await asyncio.sleep(interval)
         except asyncio.CancelledError:
-            print("Capturing stopped.")        
-
+            print("Capturing stopped.")
 
     def start_cam(self, fps):
         """
         finished
-        What does the function do? Starts capturing and saving images.
-        How is the function tested? Simulation
-        How will the function work? An asynchronous task is started to capture and save images, so the program flow is not interrupted.
+        What does the function do?
+            Starts capturing and saving images.
+        How is the function tested?
+            Simulation
+        How will the function work?
+            An asynchronous task is started to capture and save images,
+            so the program flow is not interrupted.
 
         params:
             fps: Frames per second at which the camera should capture images
@@ -52,15 +61,16 @@ class ImageAnalysis:
         except Exception as e:
             print(f"Error starting the capture: {e}")
             return False
-        
-
 
     def stop_cam(self):
         """
         finished
-        What does the function do? Stops capturing and saving images.
-        How is the function tested? Simulation
-        How will the function work? An asynchronous task is stopped.
+        What does the function do?
+            Stops capturing and saving images.
+        How is the function tested?
+            Simulation
+        How will the function work?
+            An asynchronous task is stopped.
 
         return:
             success: bool
@@ -68,10 +78,9 @@ class ImageAnalysis:
         try:
             self._task.cancel()
             return True
-        except:
+        except Exception:  # TODO: try finding concrete Exception Type
             print("Capture already stopped.")
             return False
-
 
     def get_found_obj(self, image, color, position):
         """
@@ -92,9 +101,12 @@ class ImageAnalysis:
     def get_color(self, image, color, colors_hsv):
         """
         NOT finished
-        What does the function do? Returns the color of the object.
-        How is the function tested? Unit tests
-        How will the function work? The color of the object is determined using cv2.
+        What does the function do?
+            Returns the color of the object.
+        How is the function tested?
+            Unit tests
+        How will the function work?
+            The color of the object is determined using cv2.
         params:
             image: Image array
             color: color which should be detected []
@@ -109,7 +121,7 @@ class ImageAnalysis:
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        self.colors = [
+        self._colors = [
             {
                 "name": "rot_1",
                 "lower": [0, 100, 100],
@@ -148,29 +160,37 @@ class ImageAnalysis:
         result_blue = cv2.bitwise_and(frame, frame, mask=mask_blue)
         result_yellow = cv2.bitwise_and(frame, frame, mask=mask_yellow)
 
-        #cv2.imshow("Rot", result_red)
-        #cv2.imshow("Grün", result_green)
-        #cv2.imshow("Blau", result_blue)
-        #cv2.imshow("Gelb", result_yellow)
-        #cv2.imshow("Original", frame)
+        # cv2.imshow("Rot", result_red)
+        # cv2.imshow("Grün", result_green)
+        # cv2.imshow("Blau", result_blue)
+        # cv2.imshow("Gelb", result_yellow)
+        # cv2.imshow("Original", frame)
 
         image_show = np.zeros(frame.shape, np.uint8)
-        image_show[:height//2, :width//2] = cv2.resize(result_red, (width//2, height//2))
-        image_show[height//2:, :width//2] = cv2.resize(result_green, (width//2, height//2))
-        image_show[:height//2, width//2:] = cv2.resize(result_blue, (width//2, height//2))
-        image_show[height//2:, width//2:] = cv2.resize(result_yellow, (width//2, height//2))
-        #image_show = cv2.line(image_show, (width//2, 0), (width//2, height), (255, 255, 255), 1)
-        #image_show = cv2.line(image_show, (0, height//2), (width, height//2), (255, 255, 255), 1)
-        #cv2.imshow("Rot-Blau-Gruen-Gelb", image_show)
+        image_show[:height//2, :width //
+                   2] = cv2.resize(result_red, (width//2, height//2))
+        image_show[height//2:, :width //
+                   2] = cv2.resize(result_green, (width//2, height//2))
+        image_show[:height//2, width //
+                   2:] = cv2.resize(result_blue, (width//2, height//2))
+        image_show[height//2:, width //
+                   2:] = cv2.resize(result_yellow, (width//2, height//2))
+        # image_show = cv2.line(image_show, (width//2, 0),
+        #                       (width//2, height), (255, 255, 255), 1)
+        # image_show = cv2.line(image_show, (0, height//2),
+        #                       (width, height//2), (255, 255, 255), 1)
+        # cv2.imshow("Rot-Blau-Gruen-Gelb", image_show)
 
         return image_show
-    
 
     def get_obj_position(self, image, object):
         """
-        Was macht Funktion? Gibt die Position des Objektes zurück.
-        Wie wird Funktion getestet? unittests
-        Wie wird Funktion funktionieren? Über Geometrien wird die Position des Objektes bestimmt.
+        Was macht Funktion?
+            Gibt die Position des Objektes zurück.
+        Wie wird Funktion getestet?
+            unittests
+        Wie wird Funktion funktionieren?
+            Über Geometrien wird die Position des Objektes bestimmt.
         params:
             image: Image array
             object: point in image (pixel coordinates)
@@ -182,32 +202,41 @@ class ImageAnalysis:
 
     def get_current_offset_closest(self, color, type):
         """
-        What does the function do? Returns the offset from the drone to the object.
+        What does the function do?
+            Returns the offset from the drone to the object.
         How is the function tested? Unit tests
-        How will the function work? The object is detected using object detection, and the offset is calculated using pixels and additional geometry.
+        How will the function work?
+            The object is detected using object detection,
+            and the offset is calculated using pixels and additional geometry.
+
         return
          (x,y) correct to closest
          h height estimation
         """
         pass
 
-    @staticmethod 
+    @staticmethod
     def quality_of_image(image, threshold=200):
         """
         NOT finished
-        What does the function do? Checks the quality of the image to determine if it is suitable for evaluation.
-        How is the function tested? Unit tests
-        How will the function work? The Laplace variance is calculated, and if it is below a certain value, the image is classified as blurry/unusable.
+        What does the function do?
+            Checks the quality of the image to determine
+            if it is suitable for evaluation.
+        How is the function tested?
+            Unit tests
+        How will the function work?
+            The Laplace variance is calculated,
+            and if it is below a certain value,
+            the image is classified as blurry/unusable.
+
         parms:
          image: Image array
          threshold: int, threshold for image quality
         return:
          quality: float [0,1]
         """
-        
+
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         variance = laplacian.var()
         return variance < threshold, variance
-        
-

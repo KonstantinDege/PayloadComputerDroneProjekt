@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def is_image_blurry(image, threshold=200.0):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     laplacian = cv2.Laplacian(gray, cv2.CV_64F)
@@ -8,10 +9,10 @@ def is_image_blurry(image, threshold=200.0):
     return variance < threshold, variance
 
 
-
-
 # Beispielnutzung:
-image = cv2.imread(r"C:\Users\reich\iCloudDrive\THI\6. Semester\Projekt Drohne\SW_selbst\Testing\Bilder\image_15.jpg")
+image = cv2.imread(
+    r"C:\Users\reich\iCloudDrive\THI\6. Semester\Projekt "
+    r"Drohne\SW_selbst\Testing\Bilder\image_15.jpg")
 blurry, sharpness = is_image_blurry(image, threshold=150.0)
 denoised = cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)
 denoised1 = cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
@@ -20,8 +21,8 @@ denoised3 = cv2.GaussianBlur(image, (5, 5), 0)
 sharpen_strength = 1
 
 kernel = np.array([[0, -1, 0],
-                    [-1, 5 + sharpen_strength, -1],
-                    [0, -1, 0]], dtype=np.float32)
+                   [-1, 5 + sharpen_strength, -1],
+                   [0, -1, 0]], dtype=np.float32)
 sharpened = cv2.filter2D(denoised, -1, kernel)
 
 cv2.imshow("Denoised Image", sharpened)
