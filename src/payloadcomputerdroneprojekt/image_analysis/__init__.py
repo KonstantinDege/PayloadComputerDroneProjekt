@@ -92,9 +92,7 @@ class ImageAnalysis:
             color: color which should be detected []
             position: position of object
         return
-            obj: list of objects
-            pos: list of positions
-            color: list of colors
+            obj: one list containing objects, positions and colors
         """
         pass
 
