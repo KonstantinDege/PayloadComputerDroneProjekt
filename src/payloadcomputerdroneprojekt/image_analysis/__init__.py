@@ -55,20 +55,13 @@ class ImageAnalysis:
         return:
             success: bool
         """
-        if type(fps) == int:
-            pass
-        elif type(fps) == float:
-            fps = int(fps)
-        elif type(fps) == str:
+        if not isinstance(fps, int):
             try:
                 fps = int(fps)
             except ValueError:
-                print("FPS must be an integer or a float.")
+                print("FPS must be an integer.")
                 return False
-        else:
-            print("FPS must be an integer.")
-            return False
-        
+
         try:
             self._task = asyncio.create_task(self.async_analysis(fps))
             return True
