@@ -23,8 +23,12 @@ class ImageAnalysis:
             See above.
 
         params:
-            fps: Frames per second at which the camera should capture images
+            fps: Frames per second at which the camera should capture images (false input is handled)
         """
+        # test input types
+        if not ImageAnalysis.test_fps_type(fps):
+            raise TypeError("FPS must be an integer.")
+
         interval = 1.0 / fps
         count = 0
 
@@ -51,16 +55,13 @@ class ImageAnalysis:
             so the program flow is not interrupted.
 
         params:
-            fps: Frames per second at which the camera should capture images
+            fps: Frames per second at which the camera should capture images (false input is handled)
         return:
             success: bool
         """
-        if not isinstance(fps, int):
-            try:
-                fps = int(fps)
-            except ValueError:
-                print("FPS must be an integer.")
-                return False
+        # test input types
+        if not ImageAnalysis.test_fps_type(fps):
+            raise TypeError("FPS must be an integer.")
 
         try:
             self._task = asyncio.create_task(self.async_analysis(fps))
@@ -85,8 +86,8 @@ class ImageAnalysis:
         try:
             self._task.cancel()
             return True
-        except Exception:  # TODO: try finding concrete Exception Type
-            print("Capture already stopped.")
+        except Exception as e:  # TODO: try finding concrete Exception Type
+            print(f"Error stopping the capture: {e}")
             return False
 
     def get_found_obj(self, image, color, position):
@@ -97,15 +98,22 @@ class ImageAnalysis:
         params:
             image: Image array
             color: color which should be detected []
-            position: position of object
+            position: position of drone when capturing image
         return
             obj: one list containing objects, positions and colors
         """
-        pass
+        # test input types
+        if not ImageAnalysis.test_image_type(image):
+            raise TypeError("Image must be an np array.")
+        if not ImageAnalysis.test_color_type(color):
+            raise TypeError("color must be a list.")
+        if not ImageAnalysis.test_position_type(position):
+            raise TypeError("position must be a list.")
 
     def get_color(self, image, color, colors_hsv):
         """
         NOT finished
+        capute false input
         What does the function do?
             Returns the color of the object.
         How is the function tested?
@@ -115,10 +123,19 @@ class ImageAnalysis:
         params:
             image: Image array
             color: color which should be detected []
+            colors_hsv: dict with color ranges in HSV format
 
         return:
             colorfiltered images
         """
+        # test input types
+        if not ImageAnalysis.test_image_type(image):
+            raise TypeError("Image must be an np array.")
+        if not ImageAnalysis.test_color_type(color):
+            raise TypeError("color must be a list.")
+        if not ImageAnalysis.test_colors_hsv_type(colors_hsv):
+            raise TypeError("colors_hsv must be a dict.")
+
         frame = cv2.imread(image)
 
         height = int(frame.shape[0])
@@ -203,6 +220,12 @@ class ImageAnalysis:
         return:
             (x,y) position of object in coordinates
         """
+        # test input types
+        if not ImageAnalysis.test_image_type(image):
+            raise TypeError("Image must be an np array.")
+        if not ImageAnalysis.test_object_type(object):
+            raise TypeError("object must be a tuple containing 2 integers.")
+
         pass
 
     def get_current_offset_closest(self, color, type):
@@ -214,16 +237,25 @@ class ImageAnalysis:
             The object is detected using object detection,
             and the offset is calculated using pixels and additional geometry.
 
+        params:
+            color: color which should be detected []
+            type: type of object (rectangle, circle, etc.) str
         return
          (x,y) correct to closest
          h height estimation
         """
+        # test input types
+        if not ImageAnalysis.test_color_type(color):
+            raise TypeError("color must be a list.")
+        if not ImageAnalysis.test_object_type(type):
+            raise TypeError("type must be a tuple containing 2 integers.")
         pass
 
     @staticmethod
     def quality_of_image(image, threshold=200):
         """
         NOT finished
+        capture false input
         What does the function do?
             Checks the quality of the image to determine
             if it is suitable for evaluation.
@@ -240,8 +272,74 @@ class ImageAnalysis:
         return:
          quality: float [0,1]
         """
+        # test image type
+
+
+
+
+        # test threshold type
+
+
+
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         variance = laplacian.var()
         return variance < threshold, variance
+
+
+
+    # Test input types
+    @staticmethod
+    def test_nparray_type(nparray):
+        if not isinstance(nparray, np.ndarray):
+            try:
+                nparray = np.array(nparray, dtype=np.uint8)
+                return True, nparray
+            except TypeError:
+                print("Input must be a uint8 np.array.")
+                return False
+        return True, nparray
+    
+    @staticmethod
+    def test_int_type(int):
+        if not isinstance(fps, int):
+            try:
+                fps = int(fps)
+                return True
+            except TypeError:
+                print("FPS must be an integer.")
+                return False
+
+    @staticmethod
+    def test_list_type(list, length):
+        #list
+        if not isinstance(fps, int):
+            try:
+                fps = int(fps)
+                return True
+            except TypeError:
+                print("FPS must be an integer.")
+                return False
+
+    @staticmethod
+    def test_tuple_type(tuple):
+        # tuple with 2 int
+        if not isinstance(fps, int):
+            try:
+                fps = int(fps)
+                return True
+            except TypeError:
+                print("FPS must be an integer.")
+                return False
+
+    @staticmethod
+    def test_dict_type(dict):
+        #dict
+        if not isinstance(fps, int):
+            try:
+                fps = int(fps)
+                return True
+            except TypeError:
+                print("FPS must be an integer.")
+                return False
