@@ -12,7 +12,7 @@ class ImageAnalysis:
         self._camera = camera
         self._comms = comms
 
-    async def async_analysis(self, fps):
+    async def async_analysis(self, fps): # finished
         """
         finished
         What does the function do?
@@ -44,7 +44,7 @@ class ImageAnalysis:
         except asyncio.CancelledError:
             print("Capturing stopped.")
 
-    def start_cam(self, fps):
+    def start_cam(self, fps): # finished
         """
         finished
         What does the function do?
@@ -72,7 +72,7 @@ class ImageAnalysis:
             print(f"Error starting the capture: {e}")
             return False
 
-    def stop_cam(self):
+    def stop_cam(self): # finished
         """
         finished
         What does the function do?
@@ -96,7 +96,7 @@ class ImageAnalysis:
         """
         What does the function do? Returns the detected objects.
         How is the function tested? Unit tests
-        How will the function work? Object detection based on cv2.
+        How will the function work? Object detection based on cv2 with prior color filtering.
         params:
             image: Image array; false input is handled
             color: color which should be detected []; false input is handled
@@ -117,9 +117,9 @@ class ImageAnalysis:
         if not suc:
             raise ValueError("Position must be a list with length 6.")
         
-    def get_color(self, image, color, colors_hsv):
+    def get_color(self, image, color, colors_hsv): # finished
         """
-        NOT finished
+        finished
         capute false input
         What does the function do?
             Returns the color of the object.
@@ -134,6 +134,19 @@ class ImageAnalysis:
 
         return:
             colorfiltered images
+
+
+        if image of certain color should be shown the following code can be used, when giving image
+        as np.arry and hsv_farben as dict:
+
+        farben = ["rot", "gelb", "blau", "gruen"]
+        bild_gefiltert = get_color(image, farben, hsv_farben)
+        desired_color = "gelb"
+        for pic in bild_gefiltert:
+            if pic["color"] == desired_color:
+                cv2.imshow("Image", pic["filtered image"])
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         """
         # test input types
         suc, image = ImageAnalysis.test_nparray_type(image)
@@ -153,83 +166,42 @@ class ImageAnalysis:
         if not suc_list or not suc_dict:
             raise ValueError("Colors hsv values must be provided in a dict.")
 
-        frame = cv2.imread(image)
-
-        height = int(frame.shape[0])
-        width = int(frame.shape[1])
-
+        image_show = []
+        frame = image
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        for i in color:
+            # red has two ranges in hsv
+            if i == "rot":
+                lower_red = np.array(colors_hsv["rot_1"]["lower"])
+                upper_red = np.array(colors_hsv["rot_1"]["upper"])
+                mask1_red = cv2.inRange(hsv, lower_red, upper_red)
 
-        self._colors = [
-            {
-                "name": "rot_1",
-                "lower": [0, 100, 100],
-                "upper": [10, 255, 255]
-            },
-            {
-                "name": "rot_2",
-                "lower": [0, 100, 100],
-                "upper": [10, 255, 255]
-            }
-        ]
-        lower_red = np.array(colors_hsv["rot_1"]["lower"])
-        upper_red = np.array(colors_hsv["rot_1"]["upper"])
-        mask1_red = cv2.inRange(hsv, lower_red, upper_red)
+                lower_red2 = np.array(colors_hsv["rot_2"]["lower"])
+                upper_red2 = np.array(colors_hsv["rot_2"]["upper"])
+                mask2_red = cv2.inRange(hsv, lower_red2, upper_red2)
 
-        lower_red2 = np.array(colors_hsv["rot_2"]["lower"])
-        upper_red2 = np.array(colors_hsv["rot_2"]["upper"])
-        mask2_red = cv2.inRange(hsv, lower_red2, upper_red2)
-
-        mask_red = cv2.bitwise_or(mask1_red, mask2_red)
-
-        lower_green = np.array(colors_hsv["gruen"]["lower"])
-        upper_green = np.array(colors_hsv["gruen"]["upper"])
-        mask_green = cv2.inRange(hsv, lower_green, upper_green)
-
-        lower_blue = np.array(colors_hsv["blau"]["lower"])
-        upper_blue = np.array(colors_hsv["blau"]["upper"])
-        mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
-
-        lower_yellow = np.array(colors_hsv["gelb"]["lower"])
-        upper_yellow = np.array(colors_hsv["gelb"]["upper"])
-        mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
-
-        result_red = cv2.bitwise_and(frame, frame, mask=mask_red)
-        result_green = cv2.bitwise_and(frame, frame, mask=mask_green)
-        result_blue = cv2.bitwise_and(frame, frame, mask=mask_blue)
-        result_yellow = cv2.bitwise_and(frame, frame, mask=mask_yellow)
-
-        # cv2.imshow("Rot", result_red)
-        # cv2.imshow("Grün", result_green)
-        # cv2.imshow("Blau", result_blue)
-        # cv2.imshow("Gelb", result_yellow)
-        # cv2.imshow("Original", frame)
-
-        image_show = np.zeros(frame.shape, np.uint8)
-        image_show[:height//2, :width //
-                   2] = cv2.resize(result_red, (width//2, height//2))
-        image_show[height//2:, :width //
-                   2] = cv2.resize(result_green, (width//2, height//2))
-        image_show[:height//2, width //
-                   2:] = cv2.resize(result_blue, (width//2, height//2))
-        image_show[height//2:, width //
-                   2:] = cv2.resize(result_yellow, (width//2, height//2))
-        # image_show = cv2.line(image_show, (width//2, 0),
-        #                       (width//2, height), (255, 255, 255), 1)
-        # image_show = cv2.line(image_show, (0, height//2),
-        #                       (width, height//2), (255, 255, 255), 1)
-        # cv2.imshow("Rot-Blau-Gruen-Gelb", image_show)
+                mask = cv2.bitwise_or(mask1_red, mask2_red)
+            else:
+                try:
+                    lower = np.array(colors_hsv[i]["lower"])
+                    upper = np.array(colors_hsv[i]["upper"])
+                    mask = cv2.inRange(hsv, lower, upper)
+                except KeyError:
+                    raise KeyError(f"Color '{i}' not found in the colors_hsv dictionary.")
+            filtered_image = cv2.bitwise_and(frame, frame, mask=mask)
+            image_show.append({"color": i, "filtered image": filtered_image})
 
         return image_show
 
     def get_obj_position(self, image, obj_pos_px):
         """
-        Was macht Funktion?
-            Gibt die Position des Objektes zurück.
-        Wie wird Funktion getestet?
-            unittests
-        Wie wird Funktion funktionieren?
-            Über Geometrien wird die Position des Objektes bestimmt.
+        What does the function do?
+            Returns the position of the object.
+        How is the function tested?
+            Unit tests
+        How will the function work?
+            The position of the object is determined using geometries.
+        
         params:
             image: Image array; false input is handled
             obj_pos_px: point in image (pixel coordinates (only int)); false input is handled
@@ -244,7 +216,7 @@ class ImageAnalysis:
         
         suc = ImageAnalysis.test_tuple_only_int_type(obj_pos_px, 2)
         if not suc:
-            raise ValueError("Object Position must be a tuple with only integers.")
+            raise ValueError("Object Position must be a tuple of length 2 with only integers.")
 
         pass
 
