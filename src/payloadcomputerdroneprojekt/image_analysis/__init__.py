@@ -149,7 +149,7 @@ class ImageAnalysis:
             if suc_list:
                 break
         suc_dict = ImageAnalysis.test_dict_type(colors_hsv)
-        
+
         if not suc_list or not suc_dict:
             raise ValueError("Colors hsv values must be provided in a dict.")
 
@@ -357,6 +357,7 @@ class ImageAnalysis:
             return False
         return True
 
+    @staticmethod
     def test_str_type(input): # finished
         if not isinstance(input, str):
             try:
