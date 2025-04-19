@@ -16,6 +16,31 @@ class TestImage(unittest.TestCase):
         delta_time = time.time() - time_start
         assert delta_time / len(IMAGES) < 0.3
 
+    def test_color(self):
+        """
+        Tests if the function gets correct color
+        """
+        pass
+
+    def test_object_detection(self):
+        """
+        Tests if the function detects correct objects
+        """
+        pass
+
+    def test_object_position(self):
+        """
+        Tests if the function calculates the correct position of the object
+        """
+        pass
+
+    def test_quality_image(self):
+        """
+        Tests if the function detects the usability of image correctly
+        """
+        pass
+
+
 
 if __name__ == '__main__':
     unittest.main()

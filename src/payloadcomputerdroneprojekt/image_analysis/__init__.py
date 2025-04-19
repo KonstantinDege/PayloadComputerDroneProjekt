@@ -224,7 +224,7 @@ class ImageAnalysis:
         """
         What does the function do?
             Returns the offset from the drone to the object.
-        How is the function tested? Unit tests
+        How is the function tested? simulation / unit tests
         How will the function work?
             The object is detected using object detection,
             and the offset is calculated using pixels and additional geometry.
