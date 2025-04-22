@@ -335,5 +335,6 @@ class ImageAnalysis:
             try:
                 input = str(input)
                 return True, input
-            except TypeError:
+            except Exception as e:
+                print(f"Error converting to string: {e}")
                 return False, None
