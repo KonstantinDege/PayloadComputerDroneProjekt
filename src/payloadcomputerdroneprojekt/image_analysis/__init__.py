@@ -12,7 +12,7 @@ class ImageAnalysis:
         self._camera = camera
         self._comms = comms
 
-    async def async_analysis(self, fps): # finished
+    async def async_analysis(self, fps, path_to_db): # finished
         """
         finished
         What does the function do?
@@ -37,14 +37,15 @@ class ImageAnalysis:
             while True:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"image_{timestamp}.jpg"
-                self._camera.capture_file(filename)
+                path = str(path_to_db) + filename
+                self._camera.capture_file(path)
                 print(f"[{count}] image saved: {filename}")
                 count += 1
                 await asyncio.sleep(interval)
         except asyncio.CancelledError:
             print("Capturing stopped.")
 
-    def start_cam(self, fps): # finished
+    def start_cam(self, fps, path_to_db): # finished
         """
         finished
         What does the function do?
@@ -66,7 +67,7 @@ class ImageAnalysis:
             raise ValueError("FPS must be an integer.")
 
         try:
-            self._task = asyncio.create_task(self.async_analysis(fps))
+            self._task = asyncio.create_task(self.async_analysis(fps, path_to_db))
             return True
         except Exception as e:
             print(f"Error starting the capture: {e}")
@@ -160,7 +161,6 @@ class ImageAnalysis:
             cv2.circle(image, (x_mittel, y_mittel), 2, (255, 255, 255), -1)
             cv2.drawContours(image, [approx], -1, (0, 255, 0), 2)
             cv2.putText(image, shape, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-
 
     def get_color(self, image, color, colors_hsv): # finished
         """
