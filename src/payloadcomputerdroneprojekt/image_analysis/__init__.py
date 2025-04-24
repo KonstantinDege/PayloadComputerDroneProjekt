@@ -7,7 +7,7 @@ from payloadcomputerdroneprojekt.communications import Communications
 
 
 class ImageAnalysis:
-    def __init__(self, camera: Camera, comms: Communications):
+    def __init__(self, camera: Camera, comms: Communications): # finsihed
         self._obj = []
         self._camera = camera
         self._comms = comms
@@ -92,8 +92,9 @@ class ImageAnalysis:
             print(f"Error stopping the capture: {e}")
             return False
 
-    def get_found_obj(self, image, color, position):
+    def get_found_obj(self, image, color, position, colors_hsv): # WIP
         """
+        NOT finished
         What does the function do? Returns the detected objects.
         How is the function tested? Unit tests
         How will the function work? Object detection based on cv2 with prior color filtering.
@@ -101,6 +102,7 @@ class ImageAnalysis:
             image: Image array; false input is handled
             color: color which should be detected []; false input is handled
             position: position of drone when capturing image; false input is handled
+            colors_hsv: dict with color ranges in HSV format; false input is handled
         return
             obj: one list containing objects, positions and colors
         """
@@ -117,6 +119,49 @@ class ImageAnalysis:
         if not suc:
             raise ValueError("Position must be a list with length 6.")
         
+        for item in colors_hsv:
+            suc_list = ImageAnalysis.test_dict_type(item)
+            if suc_list:
+                break
+        suc_dict = ImageAnalysis.test_dict_type(colors_hsv)
+
+        if not suc_list or not suc_dict:
+            raise ValueError("Colors hsv values must be provided in a dict.")
+
+        image = ImageAnalysis.get_color(image, color, colors_hsv)
+        for pic in image:
+            if pic["color"] == "schwarz":
+                image = pic["filtered image"]
+                image = cv2.resize(image, (0,0), fx = 0.3, fy = 0.3)
+
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            approx = cv2.approxPolyDP(contour, 0.04 * cv2.arcLength(contour, True), True)
+            x, y, w, h = cv2.boundingRect(approx)
+            if len(approx) == 3:
+                shape = "Dreieck"
+                x_mittel = (approx[0][0][0] + approx[1][0][0] + approx[2][0][0]) // 3
+                y_mittel = (approx[0][0][1] + approx[1][0][1] + approx[2][0][1]) // 3
+            elif len(approx) == 4:
+                shape = "Rechteck"
+                x_mittel = x + (w // 2)
+                y_mittel = y + (h // 2)
+            elif len(approx) > 4:
+                shape = "Kreis oder Ellipse"
+                x_mittel = x + (w // 2)
+                y_mittel = y + (h // 2)        
+            else:
+                shape = "Unbekannt"
+            cv2.circle(image, (x_mittel, y_mittel), 2, (255, 255, 255), -1)
+            cv2.drawContours(image, [approx], -1, (0, 255, 0), 2)
+            cv2.putText(image, shape, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+
     def get_color(self, image, color, colors_hsv): # finished
         """
         finished
@@ -247,9 +292,9 @@ class ImageAnalysis:
         pass
 
     @staticmethod
-    def quality_of_image(image, threshold=200):
+    def quality_of_image(image, threshold=300): # finished
         """
-        NOT finished
+        finished
         capture false input
         What does the function do?
             Checks the quality of the image to determine
@@ -274,8 +319,6 @@ class ImageAnalysis:
         suc, threshold = ImageAnalysis.test_int_type(threshold)
         if not suc:
             raise ValueError("Threshold must be an integer.")
-
-
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         variance = laplacian.var()
