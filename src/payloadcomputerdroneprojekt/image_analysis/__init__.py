@@ -39,7 +39,6 @@ class ImageAnalysis:
                 filename = f"image_{timestamp}.jpg"
                 path = str(path_to_db) + filename
                 self._camera.capture_file(path)
-                print(f"[{count}] image saved: {filename}")
                 count += 1
                 await asyncio.sleep(interval)
         except asyncio.CancelledError:
