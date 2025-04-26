@@ -92,7 +92,7 @@ class ImageAnalysis:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 mh.add_latlonalt(obj, pos, rot)
 
-    def compute_image(self, image):
+    def compute_image(self, image: np.array):
         objects: list[dict] = []
         filtered_images, computed_image, shape_image = \
             self.filter_colors(image)
@@ -100,7 +100,7 @@ class ImageAnalysis:
             self.detect_obj(filtered_image, objects)
         return objects, computed_image, shape_image
 
-    def detect_obj(self, filtered_image, objects: list[dict]):
+    def detect_obj(self, filtered_image: np.array, objects: list[dict]):
         image = cv2.resize(
             filtered_image["filtered image"], (0, 0), fx=0.3, fy=0.3)
 
@@ -133,7 +133,7 @@ class ImageAnalysis:
             })
         return objects
 
-    def get_shape(self, black_image, obj):
+    def get_shape(self, black_image: np.array, obj: dict):
         image = cv2.resize(black_image, (0, 0), fx=0.3, fy=0.3)
         bound_box = obj["bound_box"]
         subframe = image[bound_box["x_start"]:bound_box["x_stop"],
@@ -158,7 +158,7 @@ class ImageAnalysis:
             else:
                 return False
 
-    def filter_colors(self, image):
+    def filter_colors(self, image: np.array):
         image_show = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         for name, elements in self.colors:
@@ -182,6 +182,21 @@ class ImageAnalysis:
         shape_image = cv2.bitwise_and(image, image, mask=mask)
 
         return image_show, shape_image
+
+    def filter_color(self, image: np.array, color: str):
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        elements = self.colors[color]
+        if isinstance(elements, list):
+            masks = []
+            for elem in elements:
+                masks.append(cv2.inRange(
+                    hsv, elem["lower"], elem["upper"]))
+
+            mask = cv2.bitwise_or(**masks)
+        else:
+            mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
+
+        return cv2.bitwise_and(image, image, mask=mask)
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
@@ -247,7 +262,7 @@ class ImageAnalysis:
         pass
 
     @staticmethod
-    def quality_of_image(image):  # finished
+    def quality_of_image(image: np.array):  # finished
         """
         finished
         capture false input
