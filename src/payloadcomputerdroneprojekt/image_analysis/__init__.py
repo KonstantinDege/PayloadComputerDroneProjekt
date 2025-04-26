@@ -297,5 +297,4 @@ class ImageAnalysis:
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
-        variance = laplacian.var()
-        return variance
+        return laplacian.var()
