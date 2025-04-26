@@ -25,6 +25,6 @@
                 10,10,10
             ]
         },
-        "treashold": 100
+        "treashold": -1
     }
 }

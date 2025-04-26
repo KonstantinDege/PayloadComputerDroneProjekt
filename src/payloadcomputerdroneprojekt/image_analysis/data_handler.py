@@ -23,7 +23,7 @@ class DataHandler:
             json.dump(data, f)
 
     def __enter__(self) -> DataItem:
-        return self._get_new_item(self)
+        return self._get_new_item()
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self._save()

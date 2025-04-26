@@ -20,12 +20,12 @@ class ImageAnalysis:
             if "upper_1" in color.keys():
                 self.colors[color["name"]] = [
                     {
-                        "lower": np.array(color["lower"]),
-                        "upper": np.array(color["upper"])
+                        "lower": np.array(color["lower_0"]),
+                        "upper": np.array(color["upper_0"])
                     },
                     {
-                        "lower": np.array(color["lower"]),
-                        "upper": np.array(color["upper"])
+                        "lower": np.array(color["lower_1"]),
+                        "upper": np.array(color["upper_1"])
                     }
                 ]
 
@@ -77,28 +77,30 @@ class ImageAnalysis:
     def image_loop(self) -> None:
         pos, rot = self._comms.get_position_latlonalt()
         image = self._camera.get_current_frame()
-        if quality := self.quality_of_image(
-                image) < self.config["treashold"]:
+        if (quality := self.quality_of_image(
+                image)) < self.config["treashold"]:
+            print("Skipped Image; Quality to low")
             return
 
         with self._dh as item:
             item.add_position(pos, rot)
             item.add_raw_image(image)
             item.add_quality(quality)
-            objects, computed_image, shape_image = self.compute_image(image)
+            objects, shape_image = self.compute_image(image)
             # item.add_computed_image(computed_image)
             item.add_objects(objects)
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
-                mh.add_latlonalt(obj, pos, rot)
+                mh.add_latlonalt(obj, pos, rot,
+                                 imagesize=(640, 480), fov=(41, 66))
 
     def compute_image(self, image: np.array):
         objects: list[dict] = []
-        filtered_images, computed_image, shape_image = \
+        filtered_images, shape_image = \
             self.filter_colors(image)
         for filtered_image in filtered_images:
             self.detect_obj(filtered_image, objects)
-        return objects, computed_image, shape_image
+        return objects, shape_image
 
     def detect_obj(self, filtered_image: np.array, objects: list[dict]):
         image = cv2.resize(
@@ -161,7 +163,7 @@ class ImageAnalysis:
     def filter_colors(self, image: np.array):
         image_show = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        for name, elements in self.colors:
+        for name, elements in self.colors.items():
             # red has two ranges in hsv
             if isinstance(elements, list):
                 masks = []

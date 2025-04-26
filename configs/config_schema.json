@@ -18,17 +18,62 @@
                                 "properties": {
                                     "name": {
                                         "type": "string"
+                                    },
+                                    "upper": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "upper_1": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower_1": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "upper_0": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower_0": {
+                                        "$ref": "#/definitions/color_val"
                                     }
                                 },
-                                "required": [
-                                    "name"
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "name",
+                                            "upper",
+                                            "lower"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "name",
+                                            "upper_0",
+                                            "lower_0",
+                                            "upper_1",
+                                            "lower_1"
+                                        ]
+                                    }
                                 ]
                             }
                         ]
                     },
                     "minLength": 1
+                },
+                "shape_color": {
+                    "upper": {
+                        "$ref": "#/definitions/color_val"
+                    },
+                    "lower": {
+                        "$ref": "#/definitions/color_val"
+                    }
+                },
+                "treashold": {
+                    "type": "number"
                 }
-            }
+            },
+            "required": ["colors", "shape_color"]
         },
         "camera": {
             "description": "Parameters for camera analysis",
@@ -79,6 +124,22 @@
                     ]
                 }
             ]
+        }
+    },
+    "definitions": {
+        "color_val": {
+            "type": "array",
+            "minLength": 3,
+            "maxLength": 3,
+            "items": {
+                "anyOf": [
+                    {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    }
+                ]
+            }
         }
     },
     "required": [
