@@ -24,5 +24,8 @@ class DataItem:
             f.write(image)
         self._data["raw_path"] = raw_path
 
+    def add_objects(self, objects):
+        self._data["obj"] = objects
+
     def get_dict(self):
         return self._data

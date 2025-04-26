@@ -4,6 +4,7 @@ import numpy as np
 from payloadcomputerdroneprojekt.camera import Camera
 from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
+import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 
 
 class ImageAnalysis:
@@ -13,6 +14,26 @@ class ImageAnalysis:
         self._camera = camera
         self._comms = comms
         self._dh = DataHandler(config["path"])
+
+        self.colors: dict = {}
+        for color in config["colors"]:
+            if "upper_1" in color.keys():
+                self.colors[color["name"]] = [
+                    {
+                        "lower": np.array(color["lower"]),
+                        "upper": np.array(color["upper"])
+                    },
+                    {
+                        "lower": np.array(color["lower"]),
+                        "upper": np.array(color["upper"])
+                    }
+                ]
+
+            else:
+                self.colors[color["name"]] = {
+                    "lower": np.array(color["lower"]),
+                    "upper": np.array(color["upper"])
+                }
 
     async def async_analysis(self, ips: float):
         """
@@ -49,12 +70,48 @@ class ImageAnalysis:
             print("Capturing stopped.")
 
     def image_loop(self) -> None:
+        pos, rot = self._comms.get_position_latlonalt()
+        image = self._camera.get_current_frame()
+        if quality := self.quality_of_image(
+                image) < self.config["treashold"]:
+            return
+
         with self._dh as item:
-            pos, rot = self._comms.get_position_latlonalt()
             item.add_position(pos, rot)
-            image = self._camera.get_current_frame()
             item.add_raw_image(image)
-            # TODO: Add Analysis
+            item.add_quality(quality)
+            objects, computed_image = self.compute_image(image)
+            item.add_computed_image(computed_image)
+            item.add_objects(objects)
+            for obj in objects:
+                mh.add_latlonalt(obj, pos, rot)
+
+    def compute_image(self, image):
+        objects = []
+        filtered_images = self.filter_colors(image)
+        # Add Object definition 
+        return objects, computed_image
+
+    def filter_colors(self, image):
+        image_show = []
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        for name, elements in self.colors:
+            # red has two ranges in hsv
+            if isinstance(elements, list):
+                masks = []
+                for elem in elements:
+                    masks.append(cv2.inRange(
+                        hsv, elem["lower"], elem["upper"]))
+
+                mask = cv2.bitwise_or(**masks)
+            else:
+                mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
+
+            filtered_image = cv2.bitwise_and(image, image, mask=mask)
+            image_show.append(
+                {"color": name, "filtered image": filtered_image})
+
+        return image_show
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
@@ -153,65 +210,6 @@ class ImageAnalysis:
             cv2.putText(image, shape, (x, y - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
-    def get_color(self, image, color, colors_hsv):  # finished
-        """
-        finished
-        capute false input
-        What does the function do?
-            Returns the color of the object.
-        How is the function tested?
-            Unit tests
-        How will the function work?
-            The color of the object is determined using cv2.
-        params:
-            image: Image array
-            color: color which should be detected []
-            colors_hsv: dict with color ranges in HSV format
-
-        return:
-            colorfiltered images
-
-
-        if image of certain color should be shown the following code can be
-        used, when giving image as np.arry and hsv_farben as dict:
-
-        farben = ["rot", "gelb", "blau", "gruen"]
-        bild_gefiltert = get_color(image, farben, hsv_farben)
-        desired_color = "gelb"
-        for pic in bild_gefiltert:
-            if pic["color"] == desired_color:
-                cv2.imshow("Image", pic["filtered image"])
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        """
-        image_show = []
-        frame = image
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        for i in color:
-            # red has two ranges in hsv
-            if i == "rot":
-                lower_red = np.array(colors_hsv["rot_1"]["lower"])
-                upper_red = np.array(colors_hsv["rot_1"]["upper"])
-                mask1_red = cv2.inRange(hsv, lower_red, upper_red)
-
-                lower_red2 = np.array(colors_hsv["rot_2"]["lower"])
-                upper_red2 = np.array(colors_hsv["rot_2"]["upper"])
-                mask2_red = cv2.inRange(hsv, lower_red2, upper_red2)
-
-                mask = cv2.bitwise_or(mask1_red, mask2_red)
-            else:
-                try:
-                    lower = np.array(colors_hsv[i]["lower"])
-                    upper = np.array(colors_hsv[i]["upper"])
-                    mask = cv2.inRange(hsv, lower, upper)
-                except KeyError:
-                    raise KeyError(
-                        f"Color '{i}' not found in the colors_hsv dictionary.")
-            filtered_image = cv2.bitwise_and(frame, frame, mask=mask)
-            image_show.append({"color": i, "filtered image": filtered_image})
-
-        return image_show
-
     def get_obj_position(self, image, obj_pos_px):
         """
         What does the function do?
@@ -251,7 +249,7 @@ class ImageAnalysis:
         pass
 
     @staticmethod
-    def quality_of_image(image, threshold=300):  # finished
+    def quality_of_image(image):  # finished
         """
         finished
         capture false input
@@ -267,12 +265,11 @@ class ImageAnalysis:
 
         parms:
          image: Image array
-         threshold: int, threshold for image quality
         return:
-         quality: float [0,1]
+         variance: float
         """
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         variance = laplacian.var()
-        return variance < threshold, variance
+        return variance
