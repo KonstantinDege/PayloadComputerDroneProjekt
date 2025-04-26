@@ -10,6 +10,8 @@ class DataHandler:
             makedirs(path)
 
         self._path = path
+        
+        print(f"Mission Path: {path}")
         self._list: list[DataItem] = []
 
     def _get_new_item(self) -> DataItem:

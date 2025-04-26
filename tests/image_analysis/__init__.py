@@ -88,6 +88,7 @@ class TestImage(unittest.TestCase):
         ia = ImageAnalysis(config, cam, Communications(""))
 
         obj, img = ia.compute_image(cam.get_current_frame())
+        
         print(obj)
 
     def test_image_loop(self):

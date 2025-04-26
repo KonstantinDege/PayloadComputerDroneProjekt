@@ -3,7 +3,8 @@ import math
 
 
 def add_latlonalt(obj, pos, rot, imagesize, fov):
-    px, py = obj["x"], obj["y"]
+    return
+    px, py = obj["x_center"], obj["y_center"]
     local_vec = compute_local(px, py, rot, imagesize, fov)
     obj["latlonalt"] = []
 

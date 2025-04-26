@@ -89,22 +89,25 @@ class ImageAnalysis:
             objects, shape_image = self.compute_image(image)
             # item.add_computed_image(computed_image)
             item.add_objects(objects)
+
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
+                # TODO: add FOV to config
                 mh.add_latlonalt(obj, pos, rot,
-                                 imagesize=(640, 480), fov=(41, 66))
+                                 imagesize=image.shape[:2], fov=(41, 66))
+
+            print(objects)
 
     def compute_image(self, image: np.array):
         objects: list[dict] = []
-        filtered_images, shape_image = \
-            self.filter_colors(image)
+        filtered_images, shape_image = self.filter_colors(image)
         for filtered_image in filtered_images:
             self.detect_obj(filtered_image, objects)
         return objects, shape_image
 
     def detect_obj(self, filtered_image: np.array, objects: list[dict]):
         image = cv2.resize(
-            filtered_image["filtered image"], (0, 0), fx=0.3, fy=0.3)
+            filtered_image["filtered_image"], (0, 0), fx=0.3, fy=0.3)
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -135,11 +138,13 @@ class ImageAnalysis:
             })
         return objects
 
-    def get_shape(self, black_image: np.array, obj: dict):
-        image = cv2.resize(black_image, (0, 0), fx=0.3, fy=0.3)
+    def get_shape(self, obj: dict, shape_image: np.array):
+        image = cv2.resize(shape_image, (0, 0), fx=0.3, fy=0.3)
+
         bound_box = obj["bound_box"]
-        subframe = image[bound_box["x_start"]:bound_box["x_stop"],
-                         bound_box["y_start"]:bound_box["y_stop"]]
+
+        subframe = image[bound_box["y_start"]:bound_box["y_stop"],
+                         bound_box["x_start"]:bound_box["x_stop"]]
 
         gray = cv2.cvtColor(subframe, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -156,45 +161,36 @@ class ImageAnalysis:
             elif len(approx) == 4:
                 return "Rechteck"
             elif len(approx) > 4:
-                return "Kreis oder Ellipse"
-            else:
-                return False
+                return "Kreis"
+
+        return False
 
     def filter_colors(self, image: np.array):
         image_show = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         for name, elements in self.colors.items():
-            # red has two ranges in hsv
-            if isinstance(elements, list):
-                masks = []
-                for elem in elements:
-                    masks.append(cv2.inRange(
-                        hsv, elem["lower"], elem["upper"]))
 
-                mask = cv2.bitwise_or(**masks)
-            else:
-                mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
-
-            filtered_image = cv2.bitwise_and(image, image, mask=mask)
             image_show.append(
-                {"color": name, "filtered image": filtered_image})
+                {"color": name,
+                 "filtered_image": self._filter_color(hsv, image, elements)})
 
-        mask = cv2.inRange(
-            hsv, self.shape_color["lower"],  self.shape_color["upper"])
-        shape_image = cv2.bitwise_and(image, image, mask=mask)
+        shape_image = self._filter_color(
+            hsv, cv2.bitwise_not(image), self.shape_color)
 
         return image_show, shape_image
 
     def filter_color(self, image: np.array, color: str):
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        elements = self.colors[color]
+        return self._filter_color(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
+                                  image, self.colors[color])
+
+    def _filter_color(self, hsv, image, elements: dict):
         if isinstance(elements, list):
             masks = []
             for elem in elements:
                 masks.append(cv2.inRange(
                     hsv, elem["lower"], elem["upper"]))
 
-            mask = cv2.bitwise_or(**masks)
+            mask = cv2.bitwise_or(masks[0], masks[1])
         else:
             mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
 

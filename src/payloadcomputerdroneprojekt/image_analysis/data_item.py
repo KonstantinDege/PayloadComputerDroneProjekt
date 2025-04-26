@@ -7,7 +7,7 @@ class DataItem:
     def __init__(self, path: str):
         self._path = path
         self._time = int(time()*100)
-        self._data = {"time": self._time, "found_obj": []}
+        self._data = {"time": self._time, "found_objs": []}
 
     def add_position(self, latlonalt: np.array, rot: np.array):
         self._data["latlonalt"] = latlonalt
@@ -24,7 +24,7 @@ class DataItem:
         self._data["raw_path"] = raw_path
 
     def add_objects(self, objects: dict):
-        self._data["obj"] = objects
+        self._data["found_objs"] = objects
 
     def add_quality(self, quality: float):
         self._data["quality"] = float(quality)
