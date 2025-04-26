@@ -4,11 +4,11 @@ from payloadcomputerdroneprojekt.camera.gazebo_sitl.gazebo_camera_lib \
 
 
 class GazeboCamera(cam.Camera):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        super().__init__(config)
 
     def start_camera(self):
-        self._camera = Video()
+        self._camera = Video(self._config.get("port", 5600))
         print("Camera started")
 
     def get_current_frame(self):

@@ -1,0 +1,11 @@
+{
+    "$schema": "config_schema.json",
+    "camera": {
+        "format": "XRGB8888",
+        "size": [
+            640,
+            480
+        ]
+    },
+    "image": {}
+}

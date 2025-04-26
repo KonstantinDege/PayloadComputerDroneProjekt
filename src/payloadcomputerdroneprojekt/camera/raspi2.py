@@ -3,9 +3,11 @@ from picamera2 import Picamera2
 
 
 class RaspiCamera(cam.Camera):
-    def __init__(self, config={"format": 'XRGB8888', "size": (640, 480)}):
-        super().__init__()
-        self._config = config
+    def __init__(self, config):
+        super().__init__(config)
+        if not self._config:
+            self._config = {"format": 'XRGB8888', "size": (640, 480)}
+        self._config["size"] = tuple(self._config["size"])
 
     def start_camera(self):
         self._camera = Picamera2()

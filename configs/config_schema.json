@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "blau.config",
+    "title": "DroneConfig",
+    "description": "A config description of team Blau for the drone project",
+    "type": "object",
+    "properties": {
+        "image": {
+            "description": "Parameters for image analysis",
+            "type": "object",
+            "properties": {
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        ]
+                    },
+                    "minLength": 1
+                }
+            }
+        },
+        "camera": {
+            "description": "Parameters for camera analysis",
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "examples": [
+                        5600
+                    ]
+                },
+                "format": {
+                    "type": "string",
+                    "examples": [
+                        "XRGB8888"
+                    ]
+                },
+                "size": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        ]
+                    },
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "examples": [
+                        [
+                            640,
+                            480
+                        ]
+                    ]
+                }
+            },
+            "oneOf": [
+                {
+                    "required": [
+                        "port"
+                    ]
+                },
+                {
+                    "required": [
+                        "format",
+                        "size"
+                    ]
+                }
+            ]
+        }
+    },
+    "required": [
+        "image",
+        "camera"
+    ]
+}
