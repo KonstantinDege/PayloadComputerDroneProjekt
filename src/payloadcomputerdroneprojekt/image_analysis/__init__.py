@@ -259,6 +259,21 @@ class ImageAnalysis:
 
         pass
 
+    def get_filtered_objs(self):
+        object_store: dict[str, dict] = {}
+        for items in self._dh.get_items():
+            for obj in items["found_objs"]:
+                d = object_store.setdefault(obj["color"], {})
+                if obj.get("shape", False):
+                    d.setdefault(obj["shape"], []).append(obj)
+                else:
+                    d.setdefault("all", []).append(obj)
+
+        # TODO: add sorting for distance for each shape, and add all to each of
+        # those runs so that all elements under deltapos < same_obj_distance
+        # are in one list
+        print(object_store)
+
     @staticmethod
     def quality_of_image(image: np.array):  # finished
         """

@@ -63,6 +63,8 @@ class TestImage(unittest.TestCase):
         print(f"Computation Time: {delta_time / count:.2f}")
         assert delta_time / count < 0.3
 
+        ia.get_filtered_objs()
+
     def test_color(self):
         """
         Tests if the function gets correct color
@@ -116,6 +118,8 @@ class TestImage(unittest.TestCase):
         ia = ImageAnalysis(config, cam, TestCommunications(""))
 
         ia.image_loop()
+
+        ia.get_filtered_objs()
 
 
 if __name__ == '__main__':
