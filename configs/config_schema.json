@@ -69,11 +69,16 @@
                         "$ref": "#/definitions/color_val"
                     }
                 },
-                "treashold": {
-                    "type": "number"
+                "threashold": {
+                    "type": "number",
+                    "minimum": -1
                 }
             },
-            "required": ["colors", "shape_color"]
+            "min_diagonal": {
+                "type": "number",
+                "minimum": 0
+            },
+            "required": ["colors", "shape_color", "min_diagonal", "threashold"]
         },
         "camera": {
             "description": "Parameters for camera analysis",

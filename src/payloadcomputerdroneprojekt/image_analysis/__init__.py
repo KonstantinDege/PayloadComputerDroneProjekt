@@ -78,7 +78,7 @@ class ImageAnalysis:
         pos, rot = self._comms.get_position_latlonalt()
         image = self._camera.get_current_frame()
         if (quality := self.quality_of_image(
-                image)) < self.config["treashold"]:
+                image)) < self.config["threashold"]:
             print("Skipped Image; Quality to low")
             return
 
@@ -95,8 +95,6 @@ class ImageAnalysis:
                 # TODO: add FOV to config
                 mh.add_latlonalt(obj, pos, rot,
                                  imagesize=image.shape[:2], fov=(41, 66))
-
-            print(objects)
 
     def compute_image(self, image: np.array):
         objects: list[dict] = []
@@ -120,6 +118,8 @@ class ImageAnalysis:
             approx = cv2.approxPolyDP(
                 contour, 0.04 * cv2.arcLength(contour, True), True)
             x, y, w, h = cv2.boundingRect(approx)
+            if (w**2 + h**2) < self.config["min_diagonal"]**2:
+                continue
             if len(approx) == 4:
                 x_mittel = x + (w // 2)
                 y_mittel = y + (h // 2)

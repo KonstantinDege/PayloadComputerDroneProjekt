@@ -40,17 +40,27 @@ class TestCommunications(Communications):
 
 
 class TestImage(unittest.TestCase):
-    @unittest.skip
     def test_fps(self):
         """
         Tests if the function could achive the realistic computation time
         """
         time_start = time.time()
         count = 0
-        for image in os.walk(os.path.join(FILE_PATH, "test_data")):
-            ImageAnalysis.get_current_offset_closest(image)
+
+        path = tempfile.mkdtemp(prefix="image_analysis")
+        with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
+            config = json.load(json_data)["image"]
+
+        config["path"] = path
+
+        cam = TestCamera(config)
+        ia = ImageAnalysis(config, cam, TestCommunications(""))
+
+        for _ in cam.files:
+            ia.image_loop()
             count += 1
         delta_time = time.time() - time_start
+        print(f"Computation Time: {delta_time / count:.2f}")
         assert delta_time / count < 0.3
 
     def test_color(self):
@@ -75,7 +85,9 @@ class TestImage(unittest.TestCase):
         """
         Tests if the function detects the usability of image correctly
         """
-        pass
+        image = cv2.imread(os.path.join(
+            FILE_PATH, "test_data", "artifical_1.jpg"))
+        assert 50 < ImageAnalysis.quality_of_image(image) < 60
 
     def test_compute_image(self):
         path = tempfile.mkdtemp(prefix="image_analysis")
@@ -86,10 +98,12 @@ class TestImage(unittest.TestCase):
 
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, Communications(""))
+        image = cv2.imread(os.path.join(
+            FILE_PATH, "test_data", "artifical_1.jpg"))
 
-        obj, img = ia.compute_image(cam.get_current_frame())
-        
-        print(obj)
+        obj, _ = ia.compute_image(image)
+
+        assert len(obj) == 4
 
     def test_image_loop(self):
         path = tempfile.mkdtemp(prefix="image_analysis")

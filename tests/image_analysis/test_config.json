@@ -71,6 +71,7 @@
                 30
             ]
         },
-        "treashold": -1
+        "min_diagonal": 5,
+        "threashold": -1
     }
 }
