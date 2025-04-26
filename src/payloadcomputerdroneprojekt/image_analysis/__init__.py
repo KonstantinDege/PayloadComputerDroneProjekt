@@ -35,6 +35,11 @@ class ImageAnalysis:
                     "upper": np.array(color["upper"])
                 }
 
+        self.shape_color = {
+            "lower": np.array([config["shape_color"]["lower"]]),
+            "upper": np.array([config["shape_color"]["upper"]])
+        }
+
     async def async_analysis(self, ips: float):
         """
         finished
@@ -80,17 +85,78 @@ class ImageAnalysis:
             item.add_position(pos, rot)
             item.add_raw_image(image)
             item.add_quality(quality)
-            objects, computed_image = self.compute_image(image)
-            item.add_computed_image(computed_image)
+            objects, computed_image, shape_image = self.compute_image(image)
+            # item.add_computed_image(computed_image)
             item.add_objects(objects)
             for obj in objects:
+                obj["shape"] = self.get_shape(obj, shape_image)
                 mh.add_latlonalt(obj, pos, rot)
 
     def compute_image(self, image):
-        objects = []
-        filtered_images = self.filter_colors(image)
-        # Add Object definition 
-        return objects, computed_image
+        objects: list[dict] = []
+        filtered_images, computed_image, shape_image = \
+            self.filter_colors(image)
+        for filtered_image in filtered_images:
+            self.detect_obj(filtered_image, objects)
+        return objects, computed_image, shape_image
+
+    def detect_obj(self, filtered_image, objects: list[dict]):
+        image = cv2.resize(
+            filtered_image["filtered image"], (0, 0), fx=0.3, fy=0.3)
+
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+
+        contours, _ = cv2.findContours(
+            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            approx = cv2.approxPolyDP(
+                contour, 0.04 * cv2.arcLength(contour, True), True)
+            x, y, w, h = cv2.boundingRect(approx)
+            if len(approx) == 4:
+                x_mittel = x + (w // 2)
+                y_mittel = y + (h // 2)
+            else:
+                continue
+            objects.append({
+                "color": filtered_image["color"],
+                "bound_box": {
+                    "x_start": x,
+                    "x_stop": x+w,
+                    "y_start": y,
+                    "y_stop": y+h
+                },
+                "x_center": x_mittel,
+                "y_center": y_mittel
+            })
+        return objects
+
+    def get_shape(self, black_image, obj):
+        image = cv2.resize(black_image, (0, 0), fx=0.3, fy=0.3)
+        bound_box = obj["bound_box"]
+        subframe = image[bound_box["x_start"]:bound_box["x_stop"],
+                         bound_box["y_start"]:bound_box["y_stop"]]
+
+        gray = cv2.cvtColor(subframe, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+
+        contours, _ = cv2.findContours(
+            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            approx = cv2.approxPolyDP(
+                contour, 0.04 * cv2.arcLength(contour, True), True)
+            if len(approx) == 3:
+                return "Dreieck"
+            elif len(approx) == 4:
+                return "Rechteck"
+            elif len(approx) > 4:
+                return "Kreis oder Ellipse"
+            else:
+                return False
 
     def filter_colors(self, image):
         image_show = []
@@ -111,7 +177,11 @@ class ImageAnalysis:
             image_show.append(
                 {"color": name, "filtered image": filtered_image})
 
-        return image_show
+        mask = cv2.inRange(
+            hsv, self.shape_color["lower"],  self.shape_color["upper"])
+        shape_image = cv2.bitwise_and(image, image, mask=mask)
+
+        return image_show, shape_image
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
@@ -156,78 +226,6 @@ class ImageAnalysis:
         except Exception as e:  # TODO: try finding correct Exception Type
             print(f"Error stopping the capture: {e}")
             return False
-
-    def get_found_obj(self, image, color, position, colors_hsv):  # WIP
-        """
-        NOT finished
-        What does the function do? Returns the detected objects.
-        How is the function tested? Unit tests
-        How will the function work?
-            Object detection based on cv2 with prior color filtering.
-        params:
-            image: Image array
-            color: color which should be detected []
-            position: position of drone when capturing image
-            colors_hsv: dict with color ranges in HSV format
-        return
-            obj: one list containing objects, positions and colors
-        """
-        image = ImageAnalysis.get_color(image, color, colors_hsv)
-        for pic in image:
-            if pic["color"] == "schwarz":
-                image = pic["filtered image"]
-                image = cv2.resize(image, (0, 0), fx=0.3, fy=0.3)
-
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
-
-        contours, _ = cv2.findContours(
-            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        for contour in contours:
-            approx = cv2.approxPolyDP(
-                contour, 0.04 * cv2.arcLength(contour, True), True)
-            x, y, w, h = cv2.boundingRect(approx)
-            if len(approx) == 3:
-                shape = "Dreieck"
-                x_mittel = (approx[0][0][0] + approx[1]
-                            [0][0] + approx[2][0][0]) // 3
-                y_mittel = (approx[0][0][1] + approx[1]
-                            [0][1] + approx[2][0][1]) // 3
-            elif len(approx) == 4:
-                shape = "Rechteck"
-                x_mittel = x + (w // 2)
-                y_mittel = y + (h // 2)
-            elif len(approx) > 4:
-                shape = "Kreis oder Ellipse"
-                x_mittel = x + (w // 2)
-                y_mittel = y + (h // 2)
-            else:
-                shape = "Unbekannt"
-            cv2.circle(image, (x_mittel, y_mittel), 2, (255, 255, 255), -1)
-            cv2.drawContours(image, [approx], -1, (0, 255, 0), 2)
-            cv2.putText(image, shape, (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-
-    def get_obj_position(self, image, obj_pos_px):
-        """
-        What does the function do?
-            Returns the position of the object.
-        How is the function tested?
-            Unit tests
-        How will the function work?
-            The position of the object is determined using geometries.
-
-        params:
-            image: Image array
-            obj_pos_px: point in image (pixel coordinates (only int))
-
-        return:
-            (x,y) position of object in coordinates
-        """
-
-        pass
 
     def get_current_offset_closest(self, color, type_of_obj):
         """
