@@ -40,7 +40,7 @@ class ImageAnalysis:
             "upper": np.array([config["shape_color"]["upper"]])
         }
 
-    async def async_analysis(self, ips: float):
+    async def _async_analysis(self, ips: float):
         """
         finished
         What does the function do?
@@ -276,7 +276,7 @@ class ImageAnalysis:
         """
         self._camera.start_camera()
         try:
-            self._task = asyncio.create_task(self.async_analysis(ips))
+            self._task = asyncio.create_task(self._async_analysis(ips))
             return True
         except Exception as e:
             print(f"Error starting the capture: {e}")
