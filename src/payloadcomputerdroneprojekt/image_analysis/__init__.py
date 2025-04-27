@@ -75,6 +75,9 @@ class ImageAnalysis:
             print("Capturing stopped.")
 
     def image_loop(self) -> None:
+        """
+        Wraps the logik that runs the analysis each frame.
+        """
         image = self._camera.get_current_frame()
         pos, rot = self._comms.get_position_latlonalt()
         self._image_sub_routine(image, pos, rot)
@@ -98,14 +101,38 @@ class ImageAnalysis:
                 mh.add_latlonalt(obj, pos, rot,
                                  imagesize=image.shape[:2], fov=(41, 66))
 
-    def compute_image(self, image: np.array):
+    def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
+        """
+        Filters image for colors and returns all found color squares and a
+        total image filtered for shape color.
+
+        Args:
+            image (np.array): Image to filter for colors
+
+        Returns:
+            objects (list[dict]):
+                Returns a list of dict that contains all information of each
+                obj
+            shape_image (np.array):
+                A image filtered for the shape color
+        """
         objects: list[dict] = []
         filtered_images, shape_image = self.filter_colors(image)
         for filtered_image in filtered_images:
-            self.detect_obj(filtered_image, objects)
+            self.detect_obj(objects, filtered_image)
         return objects, shape_image
 
-    def detect_obj(self, filtered_image: np.array, objects: list[dict]):
+    def detect_obj(self, objects: list[dict],
+                   filtered_image: np.array) -> None:
+        """_summary_
+
+        Args:
+            objects (list[dict]): List to append new obj
+            filtered_image (np.array): color filtered image
+
+        Returns:
+            None
+        """
         image = cv2.resize(
             filtered_image["filtered_image"], (0, 0), fx=0.3, fy=0.3)
 
@@ -138,9 +165,18 @@ class ImageAnalysis:
                 "x_center": x_mittel,
                 "y_center": y_mittel
             })
-        return objects
 
     def get_shape(self, obj: dict, shape_image: np.array):
+        """
+        Returns the first plossible shape that is inside the object boundaries
+
+        Args:
+            obj (dict): info dict of one object
+            shape_image (np.array):
+
+        Returns:
+            str: The shape name inside
+        """
         image = cv2.resize(shape_image, (0, 0), fx=0.3, fy=0.3)
 
         bound_box = obj["bound_box"]
@@ -158,6 +194,9 @@ class ImageAnalysis:
         for contour in contours:
             approx = cv2.approxPolyDP(
                 contour, 0.04 * cv2.arcLength(contour, True), True)
+            *_, w, h = cv2.boundingRect(approx)
+            if (w**2 + h**2) < self.config.get("min_diagonal_shape", 1)**2:
+                continue
             if len(approx) == 3:
                 return "Dreieck"
             elif len(approx) == 4:
@@ -167,11 +206,20 @@ class ImageAnalysis:
 
         return False
 
-    def filter_colors(self, image: np.array):
+    def filter_colors(self, image: np.array) -> tuple[list[dict], np.array]:
+        """
+        Filters the Image for each of the defined colors
+
+        Args:
+            image (np.array):
+
+        Returns:
+            image_show: list of dict that contain color name and filtered image
+            shape_image: image filtered for shape_color (f.E. black or white)
+        """
         image_show = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         for name, elements in self.colors.items():
-
             image_show.append(
                 {"color": name,
                  "filtered_image": self._filter_color(hsv, image, elements)})
@@ -181,7 +229,20 @@ class ImageAnalysis:
 
         return image_show, shape_image
 
-    def filter_color(self, image: np.array, color: str):
+    def filter_color(self, image: np.array, color: str) -> np.array:
+        """
+        Returns the image filtered for the specified color.
+
+        Args:
+            image (np.array): _description_
+            color (str): Color name needs to be in the list of defined colors
+
+        Returns:
+            np.array: filtered image
+        """
+        if color not in self.colors.keys():
+            raise IndexError(
+                f"the color {color} is not defined in the color list")
         return self._filter_color(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
                                   image, self.colors[color])
 
@@ -261,7 +322,34 @@ class ImageAnalysis:
 
         pass
 
-    def get_filtered_objs(self):
+    def get_filtered_objs(self) -> list[dict]:
+        """
+        Returns a list of all filtered obj
+
+        Returns:
+            dict[str, dict[str, list]]: _description_
+        """
+        object_store = self._get_obj_tree()
+
+        # TODO: add sorting for distance for each shape, and add all to each of
+        # those runs so that all elements under deltapos < same_obj_distance
+        # are in one list
+        print(object_store)
+
+    def get_matching_objects(self, color: str, shape: str = None
+                             ) -> list[dict]:
+        """
+        Returns all matching filtered objects
+
+        Args:
+            color (str): name of the color
+            shape (str, optional): name of the shape. Defaults to None.
+
+        Returns:
+            list[dict]: Obj dictionaries
+        """
+
+    def _get_obj_tree(self) -> dict[str, dict[str, list[dict]]]:
         object_store: dict[str, dict] = {}
         for items in self._dh.get_items():
             for obj in items["found_objs"]:
@@ -270,14 +358,10 @@ class ImageAnalysis:
                     d.setdefault(obj["shape"], []).append(obj)
                 else:
                     d.setdefault("all", []).append(obj)
-
-        # TODO: add sorting for distance for each shape, and add all to each of
-        # those runs so that all elements under deltapos < same_obj_distance
-        # are in one list
-        print(object_store)
+        return object_store
 
     @staticmethod
-    def quality_of_image(image: np.array):  # finished
+    def quality_of_image(image: np.array) -> float:  # finished
         """
         finished
         capture false input
