@@ -3,6 +3,8 @@ import json
 from os.path import exists, join
 from os import makedirs
 
+FILENAME = "__data__.json"
+
 
 class DataHandler:
     def __init__(self, path: str):
@@ -12,9 +14,9 @@ class DataHandler:
         print(f"Mission Path: {path}")
         self._list: list[DataItem] = []
 
-        if exists(join(self._path, "data.json")):
+        if exists(join(self._path, FILENAME)):
             print("loading already existing data")
-            with open(join(self._path, "data.json"), "r") as f:
+            with open(join(self._path, FILENAME), "r") as f:
                 self._list = json.load(f)
 
     def _get_new_item(self) -> DataItem:
@@ -27,7 +29,7 @@ class DataHandler:
         return [item.get_dict() for item in self._list]
 
     def _save(self) -> None:
-        with open(join(self._path, "data.json"), "w") as f:
+        with open(join(self._path, FILENAME), "w") as f:
             json.dump(self.get_items(), f)
 
     def __enter__(self) -> DataItem:
