@@ -1,6 +1,7 @@
 from time import time
 from os.path import join
 import numpy as np
+import cv2
 
 
 class DataItem:
@@ -15,13 +16,13 @@ class DataItem:
         self._data["rot"] = rot
 
     def add_raw_image(self, image: np.array):
-        raw_path = join(self._path, f"raw_image_{self._time}.npy")
-        np.save(raw_path, image)
+        raw_path = join(self._path, f"raw_image_{self._time}.jpg")
+        cv2.imwrite(raw_path, image)
         self._data["raw_path"] = raw_path
 
     def add_computed_image(self, image: np.array):
-        raw_path = join(self._path, f"computed_image_{self._time}.npy")
-        np.save(raw_path, image)
+        raw_path = join(self._path, f"computed_image_{self._time}.jpg")
+        cv2.imwrite(raw_path, image)
         self._data["raw_path"] = raw_path
 
     def add_objects(self, objects: dict):
