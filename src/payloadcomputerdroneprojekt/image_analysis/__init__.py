@@ -98,8 +98,9 @@ class ImageAnalysis:
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                mh.add_latlonalt(obj, pos, rot,
-                                 imagesize=image.shape[:2], fov=(41, 66))
+                mh.add_latlonalt(
+                    obj, pos, rot,
+                    imagesize=shape_image.shape[:2], fov=(41, 66))
 
     def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
         """
@@ -133,10 +134,8 @@ class ImageAnalysis:
         Returns:
             None
         """
-        image = cv2.resize(
-            filtered_image["filtered_image"], (0, 0), fx=0.3, fy=0.3)
-
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(
+            filtered_image["filtered_image"], cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
@@ -177,12 +176,10 @@ class ImageAnalysis:
         Returns:
             str: The shape name inside
         """
-        image = cv2.resize(shape_image, (0, 0), fx=0.3, fy=0.3)
-
         bound_box = obj["bound_box"]
 
-        subframe = image[bound_box["y_start"]:bound_box["y_stop"],
-                         bound_box["x_start"]:bound_box["x_stop"]]
+        subframe = shape_image[bound_box["y_start"]:bound_box["y_stop"],
+                               bound_box["x_start"]:bound_box["x_stop"]]
 
         gray = cv2.cvtColor(subframe, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -257,7 +254,8 @@ class ImageAnalysis:
         else:
             mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
 
-        return cv2.bitwise_and(image, image, mask=mask)
+        shape_image = cv2.bitwise_and(image, image, mask=mask)
+        return cv2.resize(shape_image, (0, 0), fx=0.3, fy=0.3)
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
