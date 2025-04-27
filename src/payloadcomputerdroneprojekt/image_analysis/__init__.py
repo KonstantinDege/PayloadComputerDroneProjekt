@@ -95,12 +95,17 @@ class ImageAnalysis:
             # item.add_computed_image(computed_image)
             item.add_objects(objects)
 
+            computed = cv2.resize(image, (0, 0), fx=0.3, fy=0.3)
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
                 mh.add_latlonalt(
                     obj, pos, rot,
                     imagesize=shape_image.shape[:2], fov=(41, 66))
+                cv2.circle(
+                    computed, (obj["x_center"], obj["y_center"]),
+                    2, (166, 0, 178), -1)
+            item.add_computed_image(computed)
 
     def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
         """
