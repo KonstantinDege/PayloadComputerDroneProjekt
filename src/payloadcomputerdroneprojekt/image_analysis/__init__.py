@@ -161,6 +161,7 @@ class ImageAnalysis:
                     "y_start": y,
                     "y_stop": y+h
                 },
+                "contour": [[int(y) for y in x[0]] for x in approx],
                 "x_center": x_mittel,
                 "y_center": y_mittel
             })
