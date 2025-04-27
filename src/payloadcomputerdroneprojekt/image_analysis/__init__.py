@@ -75,16 +75,18 @@ class ImageAnalysis:
             print("Capturing stopped.")
 
     def image_loop(self) -> None:
-        pos, rot = self._comms.get_position_latlonalt()
         image = self._camera.get_current_frame()
-        if (quality := self.quality_of_image(
-                image)) < self.config["threashold"]:
-            print("Skipped Image; Quality to low")
-            return
+        pos, rot = self._comms.get_position_latlonalt()
+        self._image_sub_routine(image, pos, rot)
 
+    def _image_sub_routine(self, image, pos, rot):
         with self._dh as item:
             item.add_position(pos, rot)
             item.add_raw_image(image)
+            if (quality := self.quality_of_image(
+                    image)) < self.config["threashold"]:
+                print("Skipped Image; Quality to low")
+                return
             item.add_quality(quality)
             objects, shape_image = self.compute_image(image)
             # item.add_computed_image(computed_image)
