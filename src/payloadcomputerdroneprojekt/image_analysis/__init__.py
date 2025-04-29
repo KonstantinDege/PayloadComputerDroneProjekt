@@ -228,7 +228,7 @@ class ImageAnalysis:
                  "filtered_image": self._filter_color(hsv, image, elements)})
 
         shape_image = self._filter_color(
-            hsv, cv2.bitwise_not(image), self.shape_color)
+            hsv, image, self.shape_color, invert=True)
 
         return image_show, shape_image
 
@@ -249,7 +249,7 @@ class ImageAnalysis:
         return self._filter_color(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
                                   image, self.colors[color])
 
-    def _filter_color(self, hsv, image, elements: dict):
+    def _filter_color(self, hsv, image, elements: dict, invert: bool = False):
         if isinstance(elements, list):
             masks = []
             for elem in elements:
@@ -260,8 +260,11 @@ class ImageAnalysis:
         else:
             mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
 
-        shape_image = cv2.bitwise_and(image, image, mask=mask)
-        return cv2.resize(shape_image, (0, 0), fx=0.3, fy=0.3)
+        if invert:
+            image = cv2.bitwise_not(image)
+            return cv2.bitwise_and(image, image, mask=mask)
+        else:
+            return cv2.bitwise_and(image, image, mask=mask)
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
