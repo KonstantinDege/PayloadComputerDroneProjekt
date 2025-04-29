@@ -99,9 +99,7 @@ class ImageAnalysis:
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                mh.add_latlonalt(
-                    obj, pos, rot,
-                    imagesize=shape_image.shape[:2], fov=(41, 66))
+                self.add_latlonalt(obj, pos, rot, shape_image.shape[:2])
                 cv2.circle(
                     computed, (obj["x_center"], obj["y_center"]),
                     2, (166, 0, 178), -1)
@@ -391,3 +389,12 @@ class ImageAnalysis:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         return laplacian.var()
+
+    def add_latlonalt(self, obj, pos, rot, imagesize):
+        return
+        px, py = obj["x_center"], obj["y_center"]
+        self.config.get("fov")
+        # offset of camera position in x and y compared to drone center
+        self.config.get("camera_offset")
+        local_vec = mh.compute_local(px, py, rot, imagesize, fov)
+        obj["latlonalt"] = []
