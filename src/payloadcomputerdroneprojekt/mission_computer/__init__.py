@@ -8,14 +8,16 @@ class MissionComputer():
         self._comms = communications(port)
         self._image = image_analysis(camera, self._comms)
 
-        self.mode = 0
         self.current_mission_plan = {}
 
-    def start(self, mode=0):
+    def start(self, missionfile=""):
         """
         this function starts the computer
 
+        see "Ablaufdiagramm.png"
+
         parms:
-         mode: 0/1 defines
+         missionfile: file descriping the mission and it's parameters
+                      if not given waiting for Network
         """
         pass
