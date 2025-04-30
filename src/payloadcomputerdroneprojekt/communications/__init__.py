@@ -1,7 +1,8 @@
 import asyncio
 import math
 from mavsdk import System
-from mavsdk.offboard import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw, OffboardError
+from mavsdk.offboard \
+    import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw, OffboardError
 
 
 class Communications:
@@ -15,11 +16,14 @@ class Communications:
         connects to the specified address, and verifies the connection.
 
         Parameters:
-            address (str): Connection address (e.g., serial:///dev/ttyAMA0:57600).
-                          Defaults to "serial:///dev/ttyAMA0:57600" if not provided.
+            address (str):
+                Connection address (e.g., serial:///dev/ttyAMA0:57600).
+                Defaults to "serial:///dev/ttyAMA0:57600" if not provided.
 
         Returns:
-            bool: True if the connection is successfully established, False otherwise.
+            bool:
+                True if the connection is successfully established,
+                False otherwise.
         """
         try:
             # Initialize the System object if not already initialized
@@ -59,14 +63,19 @@ class Communications:
     async def start(self, altitude=2.0):
         """
         Take off, rise to the altitude (default 2m), and hover in place.
-        Captures initial GPS position (if available) to designate as the NED (0, 0, 0) origin.
+        Captures initial GPS position (if available)
+        to designate as the NED (0, 0, 0) origin.
         Proceeds without GPS if unavailable.
 
         Parameters:
-            altitude (float): Target altitude in meters above ground level (default is 2.0 meters).
+            altitude (float):
+                Target altitude in meters above ground level
+                (default is 2.0 meters).
 
         Returns:
-            None: Arms the drone, takes off to the specified altitude, and maintains hover.
+            None:
+                Arms the drone, takes off to the specified altitude,
+                and maintains hover.
         """
         try:
             # Initialize home position variables
@@ -74,7 +83,8 @@ class Communications:
             self._home_lon = None
             self._home_alt = None
 
-            # Check if the drone is connected and attempt to capture GPS position
+            # Check if the drone is connected
+            # and attempt to capture GPS position
             async for state in self.drone.telemetry.health():
                 if state.is_global_position_ok and state.is_home_position_ok:
                     print("-- Drone is connected and GPS is ready")
@@ -82,11 +92,15 @@ class Communications:
                         self._home_lat = position.latitude_deg
                         self._home_lon = position.longitude_deg
                         self._home_alt = position.absolute_altitude_m
-                        print(f"Set NED origin at GPS: (lat: {self._home_lat}, lon: {self._home_lon}, alt: {self._home_alt})")
+                        print(
+                            f"Set NED origin at GPS: (lat: {self._home_lat}, "
+                            f"lon: {self._home_lon}, alt: {self._home_alt})")
                         break
                     break
                 else:
-                    print("GPS unavailable, proceeding without setting NED origin...")
+                    print(
+                        "GPS unavailable, "
+                        "proceeding without setting NED origin...")
                     break
                 await asyncio.sleep(1)
 
@@ -105,13 +119,16 @@ class Communications:
             # Wait until the drone reaches approximately the target altitude
             async for position in self.drone.telemetry.position():
                 if abs(position.relative_altitude_m - altitude) < 0.5:
-                    print(f"-- Drone reached target altitude of {altitude} meters")
+                    print(
+                        "-- Drone reached target altitude "
+                        f"of {altitude} meters")
                     break
                 await asyncio.sleep(0.1)
 
             # Transition to offboard mode for hovering
             print("Switching to offboard mode...")
-            await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -altitude, 0.0))
+            await self.drone.offboard.set_position_ned(
+                PositionNedYaw(0.0, 0.0, -altitude, 0.0))
             await self.drone.offboard.start()
             print("-- Offboard mode activated, drone is hovering")
 
@@ -119,7 +136,8 @@ class Communications:
             duration = 10
             start_time = asyncio.get_event_loop().time()
             while asyncio.get_event_loop().time() - start_time < duration:
-                await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -altitude, 0.0))
+                await self.drone.offboard.set_position_ned(
+                    PositionNedYaw(0.0, 0.0, -altitude, 0.0))
                 await asyncio.sleep(0.1)
 
             print("-- Hover duration completed")
@@ -135,7 +153,8 @@ class Communications:
     async def land(self):
         """
         Command the drone to land from its current altitude.
-        Uses offboard mode for precise velocity control during the final phase and ensures a smooth landing.
+        Uses offboard mode for precise velocity control during
+        the final phase and ensures a smooth landing.
 
         Returns:
             None: Manages the descent, lands the drone, and disarms it.
@@ -149,7 +168,8 @@ class Communications:
 
             # Transition to offboard mode for controlled descent
             print("Switching to offboard mode for controlled descent...")
-            await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, 0.0, 0.0))
+            await self.drone.offboard.set_velocity_ned(
+                VelocityNedYaw(0.0, 0.0, 0.0, 0.0))
             await self.drone.offboard.start()
             print("-- Offboard mode activated")
 
@@ -157,9 +177,12 @@ class Communications:
             target_altitude = 0.5
             descent_speed = 0.5
             if current_altitude > target_altitude:
-                print(f"Descending to {target_altitude} meters at {descent_speed} m/s...")
+                print(
+                    f"Descending to {target_altitude} meters "
+                    f"at {descent_speed} m/s...")
                 async for position in self.drone.telemetry.position():
-                    await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, descent_speed, 0.0))
+                    await self.drone.offboard.set_velocity_ned(
+                        VelocityNedYaw(0.0, 0.0, descent_speed, 0.0))
                     if position.relative_altitude_m <= target_altitude + 0.1:
                         print("-- Reached altitude 0.5 meters")
                         break
@@ -167,9 +190,11 @@ class Communications:
 
             # Phase 2: Slow descent at 0.1 m/s for the final 0.5 meters
             slow_descent_speed = 0.1
-            print(f"Descending final 0.5 meters at {slow_descent_speed} m/s...")
+            print(
+                f"Descending final 0.5 meters at {slow_descent_speed} m/s...")
             async for position in self.drone.telemetry.position():
-                await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, slow_descent_speed, 0.0))
+                await self.drone.offboard.set_velocity_ned(
+                    VelocityNedYaw(0.0, 0.0, slow_descent_speed, 0.0))
                 if position.relative_altitude_m <= 0.1:
                     print("Drone near ground, initiating final landing...")
                     break
@@ -203,14 +228,19 @@ class Communications:
 
     async def mov_to_xyz(self, pos, yaw):
         """
-        Move the drone to a specified position (x, y, z) in the NED coordinate system with a given yaw angle.
+        Move the drone to a specified position (x, y, z)
+        in the NED coordinate system with a given yaw angle.
 
         Parameters:
-            pos (list or tuple): Position vector [x, y, z] in meters in the local NED frame.
-            yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+            pos (list or tuple):
+                Position vector [x, y, z] in meters in the local NED frame.
+            yaw (float):
+                Yaw angle in degrees (0 = North, positive = clockwise).
 
         Returns:
-            None: Sends the position setpoint and waits for the drone to reach the target.
+            None:
+                Sends the position setpoint
+                and waits for the drone to reach the target.
         """
         try:
             # Ensure the drone is in offboard mode
@@ -228,7 +258,9 @@ class Communications:
 
             # Send the position setpoint to the drone
             await self.drone.offboard.set_position_ned(position_setpoint)
-            print(f"Commanded drone to move to position ({pos[0]}, {pos[1]}, {pos[2]}) with yaw {yaw} degrees...")
+            print(
+                f"Commanded drone to move to position ({pos[0]}, "
+                f"{pos[1]}, {pos[2]}) with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position_velocity_ned():
@@ -250,17 +282,23 @@ class Communications:
 
     async def mov_to_lat_lon_alt(self, pos, yaw):
         """
-        Move the drone to a specified position in the global GPS coordinate system with a given yaw angle.
-        
+        Move the drone to a specified position
+        in the global GPS coordinate system with a given yaw angle.
+
         Parameters:
-            pos (list or tuple): Position vector [latitude, longitude, altitude] where:
-                - latitude (float): Latitude in degrees.
-                - longitude (float): Longitude in degrees.
-                - altitude (float): Altitude in meters above mean sea level (AMSL).
-            yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+            pos (list or tuple):
+                Position vector [latitude, longitude, altitude] where:
+                    - latitude (float): Latitude in degrees.
+                    - longitude (float): Longitude in degrees.
+                    - altitude (float): Altitude in meters above
+                                        mean sea level (AMSL).
+            yaw (float):
+                Yaw angle in degrees (0 = North, positive = clockwise).
 
         Returns:
-            None: Sends the global position setpoint and waits for the drone to reach the target.
+            None:
+                Sends the global position setpoint
+                and waits for the drone to reach the target.
         """
         try:
             # Ensure the drone is in offboard mode
@@ -279,7 +317,10 @@ class Communications:
 
             # Send the global position setpoint to the drone
             await self.drone.offboard.set_position_global(position_setpoint)
-            print(f"Commanded drone to move to position (lat: {pos[0]}, lon: {pos[1]}, alt: {pos[2]}) with yaw {yaw} degrees...")
+            print(
+                "Commanded drone to move to position "
+                f"(lat: {pos[0]}, lon: {pos[1]}, alt: {pos[2]}) "
+                f"with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position():
@@ -301,17 +342,22 @@ class Communications:
 
     async def mov_by_xyz(self, pos, yaw):
         """
-        Move the drone by a relative displacement in the NED coordinate system with a given yaw angle.
+        Move the drone by a relative displacement
+        in the NED coordinate system with a given yaw angle.
 
         Parameters:
-            pos (list or tuple): Relative position vector [x, y, z] in meters where:
-                - x (float): Displacement in meters along the North axis.
-                - y (float): Displacement in meters along the East axis.
-                - z (float): Displacement in meters along the Down axis (positive down).
-            yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+            pos (list or tuple):
+                Relative position vector [x, y, z] in meters where:
+                    - x (float): Displacement in meters along the North axis.
+                    - y (float): Displacement in meters along the East axis.
+                    - z (float): Displacement in meters along the Down axis
+                        (positive down).
+            yaw (float):
+                Yaw angle in degrees (0 = North, positive = clockwise).
 
         Returns:
-            None: Calculates the target position relative to the current position, sends the position setpoint,
+            None: Calculates the target position relative to the current
+                  position, sends the position setpoint,
                   and waits for the drone to reach the target.
         """
         try:
@@ -343,7 +389,10 @@ class Communications:
 
             # Send the position setpoint to the drone
             await self.drone.offboard.set_position_ned(position_setpoint)
-            print(f"Commanded drone to move by ({pos[0]}, {pos[1]}, {pos[2]}) to position ({target_north}, {target_east}, {target_down}) with yaw {yaw} degrees...")
+            print(
+                f"Commanded drone to move by ({pos[0]}, {pos[1]}, {pos[2]}) "
+                f"to position ({target_north}, {target_east}, {target_down}) "
+                f"with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position_velocity_ned():
@@ -365,15 +414,21 @@ class Communications:
 
     async def mov_with_speed(self, speed, yaw):
         """
-        Move the drone with a specified speed in the direction defined by the yaw angle,
-        maintaining the current altitude in the NED coordinate system.
+        Move the drone with a specified speed in the direction defined
+        by the yaw angle, maintaining the current altitude in the NED
+        coordinate system.
 
         Parameters:
-            speed (float): Speed in meters per second (magnitude of horizontal velocity).
-            yaw (float): Yaw angle in degrees (0 = North, positive = clockwise), defining the direction of motion.
+            speed (float):
+                Speed in meters per second (magnitude of horizontal velocity).
+            yaw (float):
+                Yaw angle in degrees (0 = North, positive = clockwise),
+                defining the direction of motion.
 
         Returns:
-            None: Sends velocity setpoints to control the drone's motion in the horizontal plane until stopped.
+            None:
+                Sends velocity setpoints to control the drone's motion
+                in the horizontal plane until stopped.
         """
         try:
             # Ensure the drone is in offboard mode
@@ -399,7 +454,10 @@ class Communications:
 
             # Send the velocity setpoint to the drone
             await self.drone.offboard.set_velocity_ned(velocity_setpoint)
-            print(f"Commanded drone to move with speed {speed} m/s in direction of yaw {yaw} degrees (vx: {vx}, vy: {vy}, vz: {vz})...")
+            print(
+                f"Commanded drone to move with speed {speed} m/s "
+                f"in direction of yaw {yaw} degrees (vx: {vx}, "
+                f"vy: {vy}, vz: {vz})...")
 
             # Send the setpoint for a short duration (5 seconds)
             duration = 5
@@ -411,7 +469,8 @@ class Communications:
             # Stop the drone by setting velocity to zero
             zero_velocity = VelocityNedYaw(0.0, 0.0, 0.0, yaw)
             await self.drone.offboard.set_velocity_ned(zero_velocity)
-            print("-- Velocity setpoint set to zero; drone should hover or stop")
+            print(
+                "-- Velocity setpoint set to zero; drone should hover or stop")
 
         except OffboardError as error:
             print(f"Offboard mode error: {error}")
@@ -428,10 +487,12 @@ class Communications:
             list: [x, y, z, roll, pitch, yaw] where:
                 - x (float): Position in meters along the North axis.
                 - y (float): Position in meters along the East axis.
-                - z (float): Position in meters along the Down axis (positive down).
+                - z (float):
+                    Position in meters along the Down axis (positive down).
                 - roll (float): Roll angle in degrees.
                 - pitch (float): Pitch angle in degrees.
-                - yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+                - yaw (float):
+                    Yaw angle in degrees (0 = North, positive = clockwise).
         """
         try:
             # Fetch position data from telemetry in NED frame
@@ -466,7 +527,8 @@ class Communications:
                 - alt (float): Altitude in meters above mean sea level (AMSL).
                 - roll (float): Roll angle in degrees.
                 - pitch (float): Pitch angle in degrees.
-                - yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+                - yaw (float):
+                    Yaw angle in degrees (0 = North, positive = clockwise).
         """
         try:
             # Fetch GPS position data
@@ -491,16 +553,20 @@ class Communications:
 
     async def get_velocity_xyz(self):
         """
-        Retrieve the drone's current velocity (vx, vy, vz) in the NED coordinate system.
+        Retrieve the drone's current velocity (vx, vy, vz)
+        in the NED coordinate system.
 
         Returns:
             list: [vx, vy, vz, roll, pitch, yaw] where:
                 - vx (float): Velocity in meters/second along the North axis.
                 - vy (float): Velocity in meters/second along the East axis.
-                - vz (float): Velocity in meters/second along the Down axis (positive down).
+                - vz (float):
+                    Velocity in meters/second along the Down axis
+                    (positive down).
                 - roll (float): Roll angle in degrees.
                 - pitch (float): Pitch angle in degrees.
-                - yaw (float): Yaw angle in degrees (0 = North, positive = clockwise).
+                - yaw (float):
+                    Yaw angle in degrees (0 = North, positive = clockwise).
         """
         try:
             # Fetch velocity data
@@ -526,13 +592,16 @@ class Communications:
 
     async def send_status(self, status: str) -> bool:
         """
-        Send a status message to the ground control station (e.g., QGroundControl).
+        Send a status message to the ground control station
+        (e.g., QGroundControl).
 
         Parameters:
             status (str): The status message to send.
 
         Returns:
-            bool: True if the status message was sent successfully, False otherwise.
+            bool:
+                True if the status message was sent successfully,
+                False otherwise.
         """
         try:
             if not self.drone:
