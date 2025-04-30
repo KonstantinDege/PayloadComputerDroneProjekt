@@ -10,7 +10,7 @@ class Communications:
         self.address = address
         self.drone = None
 
-    async def connect(self, address="serial:///dev/ttyAMA0:57600"):
+    async def connect(self):
         """
         Establish a connection to the drone. Initializes the System object,
         connects to the specified address, and verifies the connection.
@@ -32,11 +32,10 @@ class Communications:
                 print("-- System initialized")
 
             # Use provided address or fallback to instance attribute
-            connection_address = address if address else self.address
-            print(f"Connecting to drone at {connection_address} ...")
+            print(f"Connecting to drone at {self.address} ...")
 
             # Connect to the drone
-            await self.drone.connect(system_address=connection_address)
+            await self.drone.connect(system_address=self.address)
 
             # Wait for the drone to be connected by checking for a heartbeat
             async for state in self.drone.core.connection_state():
@@ -60,9 +59,9 @@ class Communications:
             self.drone = None
             return False
 
-    async def start(self, altitude=2.0):
+    async def start(self, altitude=5.0):
         """
-        Take off, rise to the altitude (default 2m), and hover in place.
+        Take off, rise to the altitude (default 5 m), and hover in place.
         Captures initial GPS position (if available)
         to designate as the NED (0, 0, 0) origin.
         Proceeds without GPS if unavailable.
@@ -70,7 +69,7 @@ class Communications:
         Parameters:
             altitude (float):
                 Target altitude in meters above ground level
-                (default is 2.0 meters).
+                (default is 5.0 meters).
 
         Returns:
             None:
@@ -108,6 +107,7 @@ class Communications:
             print("Arming the drone...")
             await self.drone.action.arm()
             print("-- Drone armed successfully")
+            # TODO: Wait until external arm
 
             # Set takeoff altitude (relative to ground)
             await self.drone.action.set_takeoff_altitude(altitude)
@@ -132,6 +132,7 @@ class Communications:
             await self.drone.offboard.start()
             print("-- Offboard mode activated, drone is hovering")
 
+            # TODO: function needs to end when hight reached
             # Continuously send position setpoints to maintain hover
             duration = 10
             start_time = asyncio.get_event_loop().time()
@@ -170,6 +171,7 @@ class Communications:
             print("Switching to offboard mode for controlled descent...")
             await self.drone.offboard.set_velocity_ned(
                 VelocityNedYaw(0.0, 0.0, 0.0, 0.0))
+            # TODO: check if is in offboard -> error
             await self.drone.offboard.start()
             print("-- Offboard mode activated")
 
@@ -199,6 +201,9 @@ class Communications:
                     print("Drone near ground, initiating final landing...")
                     break
                 await asyncio.sleep(0.1)
+
+            # TODO: when should disarm???, mission 3 only on last
+            # stay in offboard
 
             # Stop offboard mode and command final landing
             await self.drone.offboard.stop()
@@ -271,7 +276,7 @@ class Communications:
                 ):
                     print("-- Drone reached target position")
                     break
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.1)  # TODO: check if needed?
 
         except OffboardError as error:
             print(f"Offboard mode error: {error}")
@@ -373,6 +378,7 @@ class Communications:
                 current_east = current_pos.east_m
                 current_down = current_pos.down_m
                 break
+            # TODO: reuse already implemented functions
 
             # Calculate the target position by adding the relative displacement
             target_north = current_north + pos[0]
@@ -466,6 +472,9 @@ class Communications:
                 await self.drone.offboard.set_velocity_ned(velocity_setpoint)
                 await asyncio.sleep(0.1)
 
+            # TODO: check logic against mission computer
+            # probably only set no checks and no resets
+            
             # Stop the drone by setting velocity to zero
             zero_velocity = VelocityNedYaw(0.0, 0.0, 0.0, yaw)
             await self.drone.offboard.set_velocity_ned(zero_velocity)
@@ -496,6 +505,7 @@ class Communications:
         """
         try:
             # Fetch position data from telemetry in NED frame
+            # TODO: check if coordinate system is correct
             async for state in self.drone.telemetry.position_velocity_ned():
                 position_data = state.position
                 x = position_data.north_m
@@ -624,18 +634,6 @@ class Communications:
             print(f"Error in send_status: {e}")
             return False
 
-    #
-    # develop
-    #
-
-    def send_precision_land(delta_pos):
-        """
-        parms:
-         pos: Postition Vector local relativ
-         yaw: Yaw Angle
-        """
-        pass
-
     def send_image(self, image):
         """
 
@@ -647,7 +645,7 @@ class Communications:
         """
         pass
 
-    def send_found_obj(self):
+    def send_found_obj(self, obj):
         """
 
         parms:
@@ -665,4 +663,6 @@ class Communications:
          plan: str<json>
          ok: bool
         """
+        
+        # TODO: check what mission expects?
         pass
