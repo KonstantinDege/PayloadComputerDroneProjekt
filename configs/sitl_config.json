@@ -1,0 +1,5 @@
+{
+    "$schema": "config_schema.json",
+    "camera": {"port": 5600},
+    "image": {}
+}
