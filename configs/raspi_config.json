@@ -1,0 +1,30 @@
+{
+    "$schema": "config_schema.json",
+    "camera": {
+        "format": "XRGB8888",
+        "size": [
+            640,
+            480
+        ]
+    },
+    "image": {
+        "colors": [
+            {
+                "name": "blue",
+                "lower": [
+                    100,100,100
+                ],
+                "upper": [
+                    120,120,120
+                ]
+            }
+        ],
+        "shape_color": {
+            "lower": [0,0,0],
+            "upper": [
+                10,10,10
+            ]
+        },
+        "treashold": 100
+    }
+}

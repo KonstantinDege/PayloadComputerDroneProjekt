@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "blau.mission",
+    "title": "DroneConfig",
+    "description": "A mission description of team Blau for the drone project",
+    "type": "object",
+    "properties": {
+        "path": {
+            "description": "Path for saving in this mission",
+            "type": "string"
+        }
+    }
+}
