@@ -474,7 +474,7 @@ class Communications:
 
             # TODO: check logic against mission computer
             # probably only set no checks and no resets
-            
+
             # Stop the drone by setting velocity to zero
             zero_velocity = VelocityNedYaw(0.0, 0.0, 0.0, yaw)
             await self.drone.offboard.set_velocity_ned(zero_velocity)
@@ -663,6 +663,6 @@ class Communications:
          plan: str<json>
          ok: bool
         """
-        
+
         # TODO: check what mission expects?
         pass
