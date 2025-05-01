@@ -9,7 +9,7 @@ class CommAsync:
     async def move_by():
         con = Communications(address=PORT)
         await con.connect()
-
+        await con.start()
         await con.mov_by_xyz([0,0,-10], 0)
         
 
