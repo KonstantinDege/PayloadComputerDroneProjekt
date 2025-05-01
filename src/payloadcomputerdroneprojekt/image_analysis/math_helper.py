@@ -3,8 +3,9 @@ import math
 from scipy.spatial.transform import Rotation as R
 
 
-def compute_local(px, py, rot, imagesize, fov):
-    return rotation_matrix(rot) @ compute_pixel_vec(px, py, imagesize, fov)
+def compute_local(px, py, rot, offset, imagesize, fov):
+    return rotation_matrix(rot) @ (
+        offset + compute_pixel_vec(px, py, imagesize, fov))
 
 
 def compute_pixel_vec(px, py, imagesize, fov):

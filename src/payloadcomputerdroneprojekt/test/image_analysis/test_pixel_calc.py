@@ -21,7 +21,8 @@ class TestImage(unittest.TestCase):
         pos_com = [
             0, 0, 0, 0, 0, 0
         ]
-        pos = ia.add_latlonalt(obj, pos_com, (460, 650))
+        height = 1
+        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
         assert np.linalg.norm(np.array(pos) - np.array([0, 0, 1])) == 0
 
 

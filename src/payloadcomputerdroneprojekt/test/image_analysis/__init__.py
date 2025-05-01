@@ -32,3 +32,6 @@ class TestCommunications(Communications):
 
     def get_position_latlonalt(self):
         return [0, 0, 0, 0, 0, 0]
+
+    def get_relativ_height(self):
+        return 0
