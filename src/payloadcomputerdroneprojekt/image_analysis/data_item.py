@@ -11,9 +11,8 @@ class DataItem:
         self._data = {"time": self._time, "found_objs": []}
         self._id: int
 
-    def add_position(self, latlonalt: np.array, rot: np.array):
-        self._data["latlonalt"] = latlonalt
-        self._data["rot"] = rot
+    def add_image_position(self, latlonalt: np.array):
+        self._data["image_pos"] = latlonalt
 
     def add_raw_image(self, image: np.array):
         raw_path = join(self._path, f"{self._time}_raw_image.jpg")

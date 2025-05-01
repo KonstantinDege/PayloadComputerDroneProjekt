@@ -79,12 +79,12 @@ class ImageAnalysis:
         Wraps the logik that runs the analysis each frame.
         """
         image = self._camera.get_current_frame()
-        pos, rot = self._comms.get_position_latlonalt()
-        self._image_sub_routine(image, pos, rot)
+        pos_com = self._comms.get_position_latlonalt()
+        self._image_sub_routine(image, pos_com)
 
-    def _image_sub_routine(self, image, pos, rot):
+    def _image_sub_routine(self, image, pos_com):
         with self._dh as item:
-            item.add_position(pos, rot)
+            item.add_image_position(pos_com)
             item.add_raw_image(image)
             if (quality := self.quality_of_image(
                     image)) < self.config["threashold"]:
@@ -95,15 +95,15 @@ class ImageAnalysis:
             # item.add_computed_image(computed_image)
             item.add_objects(objects)
 
-            computed = cv2.resize(image, (0, 0), fx=0.3, fy=0.3)
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                self.add_latlonalt(obj, pos, rot, shape_image.shape[:2])
+                self.add_latlonalt(obj, pos_com, shape_image.shape[:2])
                 cv2.circle(
-                    computed, (obj["x_center"], obj["y_center"]),
+                    image, (obj["x_center"], obj["y_center"]),
                     2, (166, 0, 178), -1)
-            item.add_computed_image(computed)
+
+            item.add_computed_image(image)
 
     def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
         """
@@ -390,11 +390,15 @@ class ImageAnalysis:
         laplacian = cv2.Laplacian(gray, cv2.CV_64F)
         return laplacian.var()
 
-    def add_latlonalt(self, obj, pos, rot, imagesize):
-        return
+    def add_latlonalt(self, obj, pos_com, imagesize):
         px, py = obj["x_center"], obj["y_center"]
-        self.config.get("fov")
+        pos, rot = pos_com[0:3], pos_com[3:6]
+
+        fov = self.config.get("fov", [41, 66])
         # offset of camera position in x and y compared to drone center
-        self.config.get("camera_offset")
-        local_vec = mh.compute_local(px, py, rot, imagesize, fov)
+        offset = np.array(self.config.get("camera_offset", [0, 0, 0]))
+        local_vec = offset + mh.compute_local(px, py, rot, imagesize, fov)
+
         obj["latlonalt"] = []
+        return local_vec
+        
