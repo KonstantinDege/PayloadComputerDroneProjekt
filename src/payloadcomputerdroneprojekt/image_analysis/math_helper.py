@@ -8,8 +8,8 @@ def compute_local(px, py, rot, imagesize, fov):
 
 
 def compute_pixel_vec(px, py, imagesize, fov):
-    x = px/(imagesize[0]) - 0.5
-    y = py/(imagesize[1]) - 0.5
+    x = px/(imagesize[0]/2) - 1
+    y = py/(imagesize[1]/2) - 1
 
     return np.array([x * math.tan(fov[0]), y * math.tan(fov[1]), 1])
 
