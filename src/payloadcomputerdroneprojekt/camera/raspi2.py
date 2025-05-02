@@ -20,9 +20,7 @@ class RaspiCamera(cam.Camera):
         return self._camera.capture_array()
 
 
-
 if __name__ == "__main__":
     cam = RaspiCamera(None)
     cam.start_camera()
     cam.get_current_frame()
-    
