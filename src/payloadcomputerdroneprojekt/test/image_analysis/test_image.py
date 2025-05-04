@@ -35,6 +35,18 @@ class TestImage(unittest.TestCase):
 
         ia.get_filtered_objs()
 
+    def test_start_camera(self):
+        path = tempfile.mkdtemp(prefix="image_analysis")
+        with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
+            config = json.load(json_data)["image"]
+
+        config["path"] = path
+
+        cam = TestCamera(config)
+        ia = ImageAnalysis(config, cam, TestCommunications(""))
+        assert ia.start_cam() == True
+
+
     def test_color(self):
         """
         Tests if the function gets correct color

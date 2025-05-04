@@ -308,7 +308,7 @@ class ImageAnalysis:
             print(f"Error stopping the capture: {e}")
             return False
 
-    def get_current_offset_closest(self, color, type_of_obj):
+    def get_current_offset_closest(self, color, pos_of_obj):
         """
         What does the function do?
             Returns the offset from the drone to the object.
@@ -319,12 +319,12 @@ class ImageAnalysis:
 
         params:
             color: color which should be detected []
-            type_of_obj: type of object (rectangle, circle, etc.) str
+            pos_of_obj: pixel coordinates of object tuple (x,y)
         return
          (x,y) correct to closest
          h height estimation
         """
-
+        
         pass
 
     def get_filtered_objs(self) -> list[dict]:
