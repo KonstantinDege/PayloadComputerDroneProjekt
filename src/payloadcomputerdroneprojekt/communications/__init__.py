@@ -731,7 +731,7 @@ class Communications:
 
             # Fetch relative altitude and vertical velocity
             relative_altitude = await self._get_relative_altitude()
-            vertical_velocity = await self._get_vertical_velocity()
+            _ = await self._get_vertical_velocity()
 
             if relative_altitude >= 0:
                 # Here, we assume relative_altitude is

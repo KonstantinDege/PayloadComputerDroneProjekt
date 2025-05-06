@@ -33,5 +33,5 @@ class TestCommunications(Communications):
     async def get_position_lat_lon_alt(self):
         return [0, 0, 0, 0, 0, 0]
 
-    async def get_relativ_height(self):
+    async def get_relative_height(self):
         return 0

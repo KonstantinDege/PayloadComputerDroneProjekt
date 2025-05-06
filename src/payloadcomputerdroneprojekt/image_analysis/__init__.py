@@ -6,6 +6,7 @@ from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
+from scipy.cluster.hierarchy import fclusterdata
 
 
 class ImageAnalysis:
@@ -315,52 +316,7 @@ class ImageAnalysis:
         else:
             return cv2.bitwise_and(image, image, mask=mask)
 
-    def start_cam(self, ips: float = 1.0) -> bool:
-        """
-        finished
-        What does the function do?
-            Starts capturing and saving images.
-        How is the function tested?
-            Simulation
-        How will the function work?
-            An asynchronous task is started to capture and save images,
-            so the program flow is not interrupted.
-
-        params:
-            fps: Frames per second at which the camera should capture images
-        return:
-            success: bool
-        """
-        self._camera.start_camera()
-        try:
-            self._task = asyncio.create_task(self._async_analysis(ips))
-            return True
-        except Exception as e:
-            print(f"Error starting the capture: {e}")
-            return False
-
-    def stop_cam(self) -> bool:
-        """
-        finished
-        What does the function do?
-            Stops capturing and saving images.
-        How is the function tested?
-            Simulation
-        How will the function work?
-            An asynchronous task is stopped.
-
-        return:
-            success: bool
-        """
-        try:
-            self._task.cancel()
-            return True
-        except Exception as e:  # TODO: try finding correct Exception Type
-            print(f"Error stopping the capture: {e}")
-            return False
-
     def get_current_offset_closest(self, color, pos_of_obj):
-
         """
         What does the function do?
             Returns the offset from the drone to the object.
@@ -376,7 +332,7 @@ class ImageAnalysis:
          (x,y) correct to closest
          h height estimation
         """
-        
+
         pass
 
     def get_filtered_objs(self) -> list[dict]:
@@ -388,10 +344,28 @@ class ImageAnalysis:
         """
         object_store = self._get_obj_tree()
 
+        output = {}
+        for color, shapes in object_store.items():
+            output[color] = {}
+            array = []
+            if "all" in shapes.keys():
+                array = shapes["all"].copy()
+
+            for shape, objs in shapes.items():
+                if shape == "all":
+                    continue
+                output[color][shape] = {}
+                a = array.copy() + objs
+                a_list = np.array([np.array(o["latlonalt"]) for o in a])
+                labels = fclusterdata(
+                    a_list, t=self.config.get("distance_objs", 5))
+                for i, o in enumerate(a):
+                    output[color][shape].setdefault(labels[i], []).append(o)
+
         # TODO: add sorting for distance for each shape, and add all to each of
         # those runs so that all elements under deltapos < same_obj_distance
         # are in one list
-        print(object_store)
+        print(output)
 
     def get_matching_objects(self, color: str, shape: str = None
                              ) -> list[dict]:
@@ -455,5 +429,6 @@ class ImageAnalysis:
 
         local_vec_streched = local_vec * height / local_vec[2]
 
-        obj["latlonalt"] = []
+        obj["latlonalt"] = mh.local_to_global(
+            pos[0], pos[1], local_vec_streched[0], local_vec_streched[1])
         return local_vec_streched
