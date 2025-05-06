@@ -88,7 +88,7 @@ class TestImage(unittest.TestCase):
         obj, _ = ia.compute_image(image)
 
         assert len(obj) == 4
-        
+
         ia.get_filtered_objs()
 
     def test_image_loop(self):
