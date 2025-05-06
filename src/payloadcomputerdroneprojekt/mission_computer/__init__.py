@@ -6,10 +6,11 @@ from payloadcomputerdroneprojekt.camera import Camera
 class MissionComputer():
     def __init__(self, config: dict, port: str, camera: Camera,
                  communications=Communications, image_analysis=ImageAnalysis):
-        self._comms = communications(port)
+        self._comms = communications(port, config.get("communications", {}))
 
         self._image = image_analysis(
-            camera(config.get("camera", None)), self._comms)
+            config=config.get("image", {}), camera=camera(
+                config.get("camera", None)), comms=self._comms)
         self.config = config
 
         self.current_mission_plan = {}

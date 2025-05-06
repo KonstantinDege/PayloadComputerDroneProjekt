@@ -3,15 +3,23 @@ from payloadcomputerdroneprojekt.camera.raspi2 import RaspiCamera
 import argparse
 import os
 import json
+import asyncio
 
 
-def main(config):
+async def run_cam(computer: MissionComputer):
+    await computer._comms.connect()
+    computer._image.start_cam()
+
+
+def main(config, mission):
     with open(config) as f:
         config = json.load(f)
     port = "serial:///dev/ttyAMA0:57600"
     computer = MissionComputer(config=config, camera=RaspiCamera, port=port)
-    computer.setup()
-    computer.start()
+    if mission == "demo_cam":
+        asyncio.run(run_cam(computer))
+    else:
+        computer.start(mission)
 
 
 def args():
@@ -29,6 +37,5 @@ def args():
 if __name__ == "__main__":
     a = args()
     print(a.config)
-    if a.mission == "demo_cam":
-        print("starting only cam")
-    main()
+
+    main(a.config, a.mission)

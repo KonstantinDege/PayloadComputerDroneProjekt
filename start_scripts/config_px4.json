@@ -1,0 +1,77 @@
+{
+    "$schema": "../configs/config_schema.json",
+    "camera": {
+        "format": "XRGB8888",
+        "size": [
+            640,
+            480
+        ]
+    },
+    "image": {
+        "colors": [
+            {
+                "name": "blue",
+                "lower": [
+                    100,
+                    100,
+                    100
+                ],
+                "upper": [
+                    140,
+                    255,
+                    255
+                ]
+            },
+            {
+                "name": "rot",
+                "lower_0": [
+                    0,
+                    50,
+                    50
+                ],
+                "upper_0": [
+                    10,
+                    255,
+                    255
+                ],
+                "lower_1": [
+                    160,
+                    50,
+                    50
+                ],
+                "upper_1": [
+                    179,
+                    255,
+                    255
+                ]
+            },
+            {
+                "name": "gelb",
+                "lower": [
+                    20,
+                    10,
+                    100
+                ],
+                "upper": [
+                    60,
+                    255,
+                    255
+                ]
+            }
+        ],
+        "shape_color": {
+            "lower": [
+                0,
+                0,
+                0
+            ],
+            "upper": [
+                180,
+                255,
+                30
+            ]
+        },
+        "min_diagonal": 15,
+        "threashold": -1
+    }
+}
