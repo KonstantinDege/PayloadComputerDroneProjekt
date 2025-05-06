@@ -6,7 +6,8 @@ from mavsdk.offboard \
 
 
 class Communications:
-    def __init__(self, address):
+    def __init__(self, address, config={}):
+        self.config = config
         self.address = address
         self.drone = None
         self._home_lat = None
@@ -57,10 +58,12 @@ class Communications:
                 Set zero velocity setpoint before starting.
         """
         try:
-            if not await self.drone.offboard.is_active():
-                if set_velocity_zero:
-                    await self.drone.offboard.set_velocity_ned(
-                        VelocityNedYaw(0.0, 0.0, 0.0, 0.0))
+            async for mode in self.drone.telemetry.flight_mode():
+                print(mode)
+                break
+            if mode != "OFFBOARD":
+                await self.drone.offboard.set_velocity_ned(
+                    VelocityNedYaw(0.0, 0.0, 0.0, 0.0))
                 await self.drone.offboard.start()
                 print("-- Offboard mode activated")
             else:
@@ -84,7 +87,7 @@ class Communications:
             print(f"Error fetching attitude: {e}")
             return None
 
-    async def _wait_for_armed_state(self, expect_armed=True, timeout=5.0):
+    async def _wait_for_armed_state(self, expect_armed=True, timeout=10.0):
         """
         Wait for the drone to reach the expected arming state.
 
@@ -95,6 +98,9 @@ class Communications:
         Raises:
             Exception: If the expected state is not reached within timeout.
         """
+        if self.config.get("allowed_arm", False):
+            await self.drone.action.arm()
+
         start_time = asyncio.get_event_loop().time()
         async for armed_state in self.drone.telemetry.armed():
             if armed_state == expect_armed:
@@ -102,6 +108,7 @@ class Communications:
                     f"-- Drone {'armed' if expect_armed else 'disarmed'}"
                     " by user via radio controller")
                 return
+
             if asyncio.get_event_loop().time() - start_time > timeout:
                 raise Exception(
                     f"Drone {'not armed' if expect_armed else 'not disarmed'}"
@@ -196,6 +203,7 @@ class Communications:
                 Arms the drone, takes off to the specified altitude,
                 and maintains hover.
         """
+        # TODO: check if already in flight
         try:
             # Initialize home position variables
             self._home_lat = None
@@ -233,12 +241,11 @@ class Communications:
 
             # Wait until the drone reaches approximately the target altitude
             async for position in self.drone.telemetry.position():
-                if abs(position.relative_altitude_m - altitude) < 0.5:
+                if abs(position.relative_altitude_m - altitude) < 0.02:
                     print(
                         "-- Drone reached target altitude of "
                         f"{altitude} meters")
                     break
-                await asyncio.sleep(0.1)
 
             # Transition to offboard mode for hovering
             print("Switching to offboard mode...")
@@ -466,7 +473,7 @@ class Communications:
             # TODO: reuse already implemented functions
 
             # Calculate the target position by adding the relative displacement
-            # TODO: 
+            # TODO:
             #   you need to rotate local xy to global xy and add yaw on top
             target_north = current_north + pos[0]
             target_east = current_east + pos[1]

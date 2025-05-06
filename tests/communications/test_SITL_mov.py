@@ -8,13 +8,13 @@ PORT = "udp://:14540"
 class CommAsync:
     @staticmethod
     async def move_by():
-        con = Communications(address=PORT)
+        con = Communications(address=PORT, config={"allowed_arm": True})
         await con.connect()
         await con.start()
         print("start checkpoint")
         await con.mov_by_xyz([0, -5, 0], 0)
         print("first checkpoint")
-        await con.mov_by_xyz([0, -5, 0], 0)
+        await con.mov_to_xyz([0, 0, -5], 0)
 
 
 class TestCommunication(unittest.TestCase):
