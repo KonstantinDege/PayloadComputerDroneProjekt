@@ -109,7 +109,7 @@ class ImageAnalysis:
         try:
             while True:
                 try:
-                    self.image_loop()
+                    await self.image_loop()
                 except Exception as e:
                     print(f"Error {e} on Image with count: {count}")
                 print(f"Current amount of images: {count}")
@@ -118,13 +118,13 @@ class ImageAnalysis:
         except asyncio.CancelledError:
             print("Capturing stopped.")
 
-    def image_loop(self) -> None:
+    async def image_loop(self) -> None:
         """
         Wraps the logik that runs the analysis each frame.
         """
         image = self._camera.get_current_frame()
-        pos_com = self._comms.get_position_latlonalt()
-        height = self._comms.get_relativ_height()
+        pos_com = await self._comms.get_position_latlonalt()
+        height = await self._comms.get_relativ_height()
         self._image_sub_routine(image, pos_com, height)
 
     def _image_sub_routine(self, image, pos_com, height):

@@ -30,8 +30,8 @@ class TestCommunications(Communications):
     def connect(self):
         pass
 
-    def get_position_latlonalt(self):
+    async def get_position_latlonalt(self):
         return [0, 0, 0, 0, 0, 0]
 
-    def get_relativ_height(self):
+    async def get_relativ_height(self):
         return 0
