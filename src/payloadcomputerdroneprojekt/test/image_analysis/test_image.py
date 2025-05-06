@@ -45,8 +45,7 @@ class TestImage(unittest.TestCase):
 
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, TestCommunications(""))
-        assert ia.start_cam() == True
-
+        assert ia.start_cam()
 
     def test_color(self):
         """
@@ -89,6 +88,8 @@ class TestImage(unittest.TestCase):
         obj, _ = ia.compute_image(image)
 
         assert len(obj) == 4
+
+        ia.get_filtered_objs()
 
     def test_image_loop(self):
         path = tempfile.mkdtemp(prefix="image_analysis")

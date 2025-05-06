@@ -13,6 +13,30 @@ async def run_cam(computer: MissionComputer):
         await asyncio.sleep(2)
 
 
+async def fligh(computer: MissionComputer):
+    con = computer._comms
+    await con.connect()
+    await con.start()
+    print("start checkpoint")
+    await con.mov_by_xyz([0, -15, 0])
+    print("first checkpoint")
+    await con.mov_to_xyz([0, 0, -5])
+    await con.land()
+
+
+async def fligh_cam(computer: MissionComputer):
+    con = computer._comms
+    await con.connect()
+    computer._image.start_cam()
+    await con.start()
+    print("start checkpoint")
+    await con.mov_by_xyz([0, -15, 0])
+    print("first checkpoint")
+    await con.mov_to_xyz([0, 0, -5])
+    await con.land()
+    computer._image.stop_cam()
+
+
 def main(config, mission):
     with open(config) as f:
         config = json.load(f)
@@ -20,6 +44,10 @@ def main(config, mission):
     computer = MissionComputer(config=config, camera=RaspiCamera, port=port)
     if mission == "demo_cam":
         asyncio.run(run_cam(computer))
+    elif mission == "fligh":
+        asyncio.run(fligh(computer))
+    elif mission == "fligh_cam":
+        asyncio.run(fligh_cam(computer))
     else:
         computer.start(mission)
 

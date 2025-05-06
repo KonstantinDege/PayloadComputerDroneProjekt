@@ -12,9 +12,10 @@ class CommAsync:
         await con.connect()
         await con.start()
         print("start checkpoint")
-        await con.mov_by_xyz([0, -5, 0], 0)
+        await con.mov_by_xyz([0, -15, 0])
         print("first checkpoint")
-        await con.mov_to_xyz([0, 0, -5], 0)
+        await con.mov_to_xyz([0, 0, -5])
+        await con.land()
 
 
 class TestCommunication(unittest.TestCase):
