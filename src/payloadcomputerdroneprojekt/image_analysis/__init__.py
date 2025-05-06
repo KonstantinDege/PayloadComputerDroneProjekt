@@ -315,7 +315,52 @@ class ImageAnalysis:
         else:
             return cv2.bitwise_and(image, image, mask=mask)
 
-    def get_current_offset_closest(self, color, type_of_obj):
+    def start_cam(self, ips: float = 1.0) -> bool:
+        """
+        finished
+        What does the function do?
+            Starts capturing and saving images.
+        How is the function tested?
+            Simulation
+        How will the function work?
+            An asynchronous task is started to capture and save images,
+            so the program flow is not interrupted.
+
+        params:
+            fps: Frames per second at which the camera should capture images
+        return:
+            success: bool
+        """
+        self._camera.start_camera()
+        try:
+            self._task = asyncio.create_task(self._async_analysis(ips))
+            return True
+        except Exception as e:
+            print(f"Error starting the capture: {e}")
+            return False
+
+    def stop_cam(self) -> bool:
+        """
+        finished
+        What does the function do?
+            Stops capturing and saving images.
+        How is the function tested?
+            Simulation
+        How will the function work?
+            An asynchronous task is stopped.
+
+        return:
+            success: bool
+        """
+        try:
+            self._task.cancel()
+            return True
+        except Exception as e:  # TODO: try finding correct Exception Type
+            print(f"Error stopping the capture: {e}")
+            return False
+
+    def get_current_offset_closest(self, color, pos_of_obj):
+
         """
         What does the function do?
             Returns the offset from the drone to the object.
@@ -326,12 +371,12 @@ class ImageAnalysis:
 
         params:
             color: color which should be detected []
-            type_of_obj: type of object (rectangle, circle, etc.) str
+            pos_of_obj: pixel coordinates of object tuple (x,y)
         return
          (x,y) correct to closest
          h height estimation
         """
-
+        
         pass
 
     def get_filtered_objs(self) -> list[dict]:
