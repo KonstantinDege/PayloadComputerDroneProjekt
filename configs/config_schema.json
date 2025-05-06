@@ -1,0 +1,154 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "blau.config",
+    "title": "DroneConfig",
+    "description": "A config description of team Blau for the drone project",
+    "type": "object",
+    "properties": {
+        "image": {
+            "description": "Parameters for image analysis",
+            "type": "object",
+            "properties": {
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "upper": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "upper_1": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower_1": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "upper_0": {
+                                        "$ref": "#/definitions/color_val"
+                                    },
+                                    "lower_0": {
+                                        "$ref": "#/definitions/color_val"
+                                    }
+                                },
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "name",
+                                            "upper",
+                                            "lower"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "name",
+                                            "upper_0",
+                                            "lower_0",
+                                            "upper_1",
+                                            "lower_1"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "minLength": 1
+                },
+                "shape_color": {
+                    "upper": {
+                        "$ref": "#/definitions/color_val"
+                    },
+                    "lower": {
+                        "$ref": "#/definitions/color_val"
+                    }
+                },
+                "threashold": {
+                    "type": "number",
+                    "minimum": -1
+                }
+            },
+            "min_diagonal": {
+                "type": "number",
+                "minimum": 0
+            },
+            "required": ["colors", "shape_color", "min_diagonal", "threashold"]
+        },
+        "camera": {
+            "description": "Parameters for camera analysis",
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "examples": [
+                        5600
+                    ]
+                },
+                "format": {
+                    "type": "string",
+                    "examples": [
+                        "XRGB8888"
+                    ]
+                },
+                "size": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        ]
+                    },
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "examples": [
+                        [
+                            640,
+                            480
+                        ]
+                    ]
+                }
+            },
+            "oneOf": [
+                {
+                    "required": [
+                        "port"
+                    ]
+                },
+                {
+                    "required": [
+                        "format",
+                        "size"
+                    ]
+                }
+            ]
+        }
+    },
+    "definitions": {
+        "color_val": {
+            "type": "array",
+            "minLength": 3,
+            "maxLength": 3,
+            "items": {
+                "anyOf": [
+                    {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "image",
+        "camera"
+    ]
+}
