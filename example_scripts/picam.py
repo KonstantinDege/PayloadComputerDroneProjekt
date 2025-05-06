@@ -1,5 +1,5 @@
 import time
-
+import sys
 from picamera2 import Picamera2
 
 picam2 = Picamera2()
@@ -9,4 +9,6 @@ picam2.configure(preview_config)
 picam2.start()
 time.sleep(2)
 
-picam2.capture_file("test.png")
+picam2.capture_file(
+    "/home/aviator/PayloadComputerDroneProjekt/tests"
+    f"/image_analysis/pixel_imgs/{sys.argv[1]}.png")
