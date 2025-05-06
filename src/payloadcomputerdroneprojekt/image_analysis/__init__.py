@@ -5,6 +5,7 @@ from payloadcomputerdroneprojekt.camera import Camera
 from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
+import tempfile
 
 
 class ImageAnalysis:
@@ -13,7 +14,8 @@ class ImageAnalysis:
         self.config = config
         self._camera = camera
         self._comms = comms
-        self._dh = DataHandler(config["path"])
+        self._dh = DataHandler(config.setdefault(
+            "path", tempfile.mkdtemp(prefix="image_analysis")))
 
         self.colors: dict = {}
         for color in config["colors"]:
@@ -108,12 +110,12 @@ class ImageAnalysis:
 
         try:
             while True:
+                print(f"Current amount of images: {count}")
+                count += 1
                 try:
                     await self.image_loop()
                 except Exception as e:
                     print(f"Error {e} on Image with count: {count}")
-                print(f"Current amount of images: {count}")
-                count += 1
                 await asyncio.sleep(interval)
         except asyncio.CancelledError:
             print("Capturing stopped.")
@@ -123,8 +125,8 @@ class ImageAnalysis:
         Wraps the logik that runs the analysis each frame.
         """
         image = self._camera.get_current_frame()
-        pos_com = await self._comms.get_position_latlonalt()
-        height = await self._comms.get_relativ_height()
+        pos_com = await self._comms.get_position_lat_lon_alt()
+        height = await self._comms.get_relative_height()
         self._image_sub_routine(image, pos_com, height)
 
     def _image_sub_routine(self, image, pos_com, height):

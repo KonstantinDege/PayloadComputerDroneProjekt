@@ -9,6 +9,8 @@ import asyncio
 async def run_cam(computer: MissionComputer):
     await computer._comms.connect()
     computer._image.start_cam()
+    while True:
+        await asyncio.sleep(2)
 
 
 def main(config, mission):
