@@ -11,7 +11,10 @@ class CommAsync:
         con = Communications(address=PORT)
         await con.connect()
         await con.start()
-        await con.mov_by_xyz([0, 0, -10], 0)
+        print("start checkpoint")
+        await con.mov_by_xyz([0, -5, 0], 0)
+        print("first checkpoint")
+        await con.mov_by_xyz([0, -5, 0], 0)
 
 
 class TestCommunication(unittest.TestCase):

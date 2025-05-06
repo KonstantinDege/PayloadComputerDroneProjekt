@@ -16,14 +16,18 @@ class Communications:
     async def _check_telemetry_health(self, require_home_position=False,
                                       allow_proceed_without_gps=False):
         """
-        Check if telemetry is healthy (global position OK, optionally home position OK).
+        Check if telemetry is healthy (global position OK, optionally home
+        position OK).
 
         Parameters:
-            require_home_position (bool): Require is_home_position_ok to be True.
-            allow_proceed_without_gps (bool): Return True if GPS is unavailable (for connect).
+            require_home_position (bool):
+                Require is_home_position_ok to be True.
+            allow_proceed_without_gps (bool):
+                Return True if GPS is unavailable (for connect).
 
         Returns:
-            bool: True if telemetry is healthy, False if not (or None for failure).
+            bool: True if telemetry is healthy, False if not
+                (or None for failure).
         """
         try:
             async for state in self.drone.telemetry.health():
@@ -49,7 +53,8 @@ class Communications:
         Ensure the drone is in offboard mode, starting it if necessary.
 
         Parameters:
-            set_velocity_zero (bool): Set zero velocity setpoint before starting.
+            set_velocity_zero (bool):
+                Set zero velocity setpoint before starting.
         """
         try:
             if not await self.drone.offboard.is_active():
@@ -73,7 +78,8 @@ class Communications:
         """
         try:
             async for attitude in self.drone.telemetry.attitude_euler():
-                return (attitude.roll_deg, attitude.pitch_deg, attitude.yaw_deg)
+                return (attitude.roll_deg, attitude.pitch_deg,
+                        attitude.yaw_deg)
         except Exception as e:
             print(f"Error fetching attitude: {e}")
             return None
@@ -93,11 +99,13 @@ class Communications:
         async for armed_state in self.drone.telemetry.armed():
             if armed_state == expect_armed:
                 print(
-                    f"-- Drone {'armed' if expect_armed else 'disarmed'} by user via radio controller")
+                    f"-- Drone {'armed' if expect_armed else 'disarmed'}"
+                    " by user via radio controller")
                 return
             if asyncio.get_event_loop().time() - start_time > timeout:
                 raise Exception(
-                    f"Drone {'not armed' if expect_armed else 'not disarmed'} within timeout")
+                    f"Drone {'not armed' if expect_armed else 'not disarmed'}"
+                    " within timeout")
             await asyncio.sleep(0.1)
 
     async def _get_relative_altitude(self):
@@ -163,7 +171,8 @@ class Communications:
                 await asyncio.sleep(0.5)
 
             # Wait for initial telemetry to ensure the drone is ready
-            return await self._check_telemetry_health(allow_proceed_without_gps=True)
+            return await self._check_telemetry_health(
+                allow_proceed_without_gps=True)
 
         except Exception as e:
             print(f"Error in connect: {e}")
@@ -195,19 +204,25 @@ class Communications:
 
             # Check if the drone is connected
             # and attempt to capture GPS position
-            if not await self._check_telemetry_health(require_home_position=True):
-                print("GPS unavailable, proceeding without setting NED origin...")
+            if not await self._check_telemetry_health(
+                    require_home_position=True):
+                print(
+                    "GPS unavailable, proceeding "
+                    "without setting NED origin...")
             else:
                 pos = await self.get_position_lat_lon_alt()
                 if pos:
-                    self._home_lat, self._home_lon, self._home_alt = pos[0], pos[1], pos[2]
+                    self._home_lat, self._home_lon, self._home_alt = \
+                        pos[0], pos[1], pos[2]
                     print(
-                        f"Set NED origin at GPS: (lat: {self._home_lat}, lon: {self._home_lon}, alt: {self._home_alt})")
+                        f"Set NED origin at GPS: (lat: {self._home_lat},"
+                        f" lon: {self._home_lon}, alt: {self._home_alt})")
 
             # Check if the drone is armed by user via radio controller
             print("Checking if drone is armed...")
             arm_timeout = 5  # seconds
-            await self._wait_for_armed_state(expect_armed=True, timeout=arm_timeout)
+            await self._wait_for_armed_state(
+                expect_armed=True, timeout=arm_timeout)
 
             # Set takeoff altitude (relative to ground)
             await self.drone.action.set_takeoff_altitude(altitude)
@@ -220,13 +235,15 @@ class Communications:
             async for position in self.drone.telemetry.position():
                 if abs(position.relative_altitude_m - altitude) < 0.5:
                     print(
-                        f"-- Drone reached target altitude of {altitude} meters")
+                        "-- Drone reached target altitude of "
+                        f"{altitude} meters")
                     break
                 await asyncio.sleep(0.1)
 
             # Transition to offboard mode for hovering
             print("Switching to offboard mode...")
-            await self.drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -altitude, 0.0))
+            await self.drone.offboard.set_position_ned(
+                PositionNedYaw(0.0, 0.0, -altitude, 0.0))
             await self._ensure_offboard_mode()
 
         except OffboardError as error:
@@ -244,7 +261,8 @@ class Communications:
         the final phase and ensures a smooth landing.
 
         Returns:
-            None: Manages the descent, lands the drone, and confirms it is disarmed by the user.
+            None: Manages the descent, lands the drone,
+                and confirms it is disarmed by the user.
         """
         try:
             # Get the current altitude to confirm starting position
@@ -262,9 +280,11 @@ class Communications:
             descent_speed = 0.5
             if relative_altitude > target_altitude:
                 print(
-                    f"Descending to {target_altitude} meters at {descent_speed} m/s...")
+                    f"Descending to {target_altitude} meters "
+                    f"at {descent_speed} m/s...")
                 async for position in self.drone.telemetry.position():
-                    await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, descent_speed, 0.0))
+                    await self.drone.offboard.set_velocity_ned(
+                        VelocityNedYaw(0.0, 0.0, descent_speed, 0.0))
                     if position.relative_altitude_m <= target_altitude + 0.1:
                         print("-- Reached altitude 0.5 meters")
                         break
@@ -275,7 +295,8 @@ class Communications:
             print(
                 f"Descending final 0.5 meters at {slow_descent_speed} m/s...")
             async for position in self.drone.telemetry.position():
-                await self.drone.offboard.set_velocity_ned(VelocityNedYaw(0.0, 0.0, slow_descent_speed, 0.0))
+                await self.drone.offboard.set_velocity_ned(
+                    VelocityNedYaw(0.0, 0.0, slow_descent_speed, 0.0))
                 if position.relative_altitude_m <= 0.1:
                     print("Drone near ground, initiating final landing...")
                     break
@@ -297,7 +318,8 @@ class Communications:
             # Check if the drone is disarmed by user via radio controller
             print("Checking if drone is disarmed...")
             disarm_timeout = 5  # seconds
-            await self._wait_for_armed_state(expect_armed=False, timeout=disarm_timeout)
+            await self._wait_for_armed_state(
+                expect_armed=False, timeout=disarm_timeout)
 
         except OffboardError as error:
             print(f"Offboard mode error: {error}")
@@ -335,7 +357,8 @@ class Communications:
             # Send the position setpoint to the drone
             await self.drone.offboard.set_position_ned(position_setpoint)
             print(
-                f"Commanded drone to move to position ({pos[0]}, {pos[1]}, {pos[2]}) with yaw {yaw} degrees...")
+                f"Commanded drone to move to position "
+                f"({pos[0]}, {pos[1]}, {pos[2]}) with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position_velocity_ned():
@@ -382,12 +405,15 @@ class Communications:
 
             # Create a global position setpoint
             position_setpoint = PositionGlobalYaw(
-                lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2], yaw_deg=yaw, is_msl=True)
+                lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2],
+                yaw_deg=yaw, is_msl=True)
 
             # Send the global position setpoint to the drone
             await self.drone.offboard.set_position_global(position_setpoint)
             print(
-                f"Commanded drone to move to position (lat: {pos[0]}, lon: {pos[1]}, alt: {pos[2]}) with yaw {yaw} degrees...")
+                f"Commanded drone to move to position "
+                f"(lat: {pos[0]}, lon: {pos[1]}, alt: {pos[2]}) "
+                f"with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position():
@@ -435,22 +461,28 @@ class Communications:
             current_pos = await self.get_position_xyz()
             if current_pos is None:
                 raise Exception("Failed to get current position")
-            current_north, current_east, current_down = current_pos[0], current_pos[1], current_pos[2]
+            current_north, current_east, current_down = \
+                current_pos[0], current_pos[1], current_pos[2]
             # TODO: reuse already implemented functions
 
             # Calculate the target position by adding the relative displacement
+            # TODO: 
+            #   you need to rotate local xy to global xy and add yaw on top
             target_north = current_north + pos[0]
             target_east = current_east + pos[1]
             target_down = current_down + pos[2]
 
             # Create a position setpoint in NED coordinates
             position_setpoint = PositionNedYaw(
-                north_m=target_north, east_m=target_east, down_m=target_down, yaw_deg=yaw)
+                north_m=target_north, east_m=target_east,
+                down_m=target_down, yaw_deg=yaw)
 
             # Send the position setpoint to the drone
             await self.drone.offboard.set_position_ned(position_setpoint)
             print(
-                f"Commanded drone to move by ({pos[0]}, {pos[1]}, {pos[2]}) to position ({target_north}, {target_east}, {target_down}) with yaw {yaw} degrees...")
+                f"Commanded drone to move by ({pos[0]}, {pos[1]}, {pos[2]}) "
+                f"to position ({target_north}, {target_east}, {target_down}) "
+                f"with yaw {yaw} degrees...")
 
             # Monitor the drone's position to confirm it has reached the target
             async for state in self.drone.telemetry.position_velocity_ned():
@@ -507,7 +539,9 @@ class Communications:
             # Send the velocity setpoint to the drone
             await self.drone.offboard.set_velocity_ned(velocity_setpoint)
             print(
-                f"Commanded drone to move with speed {speed} m/s in direction of yaw {yaw} degrees (vx: {vx}, vy: {vy}, vz: {vz})...")
+                f"Commanded drone to move with speed {speed} m/s "
+                f"in direction of yaw {yaw} degrees "
+                f"(vx: {vx}, vy: {vy}, vz: {vz})...")
 
             # Send the setpoint for a short duration (5 seconds)
             duration = 5
@@ -522,7 +556,8 @@ class Communications:
             # Stop the drone by setting velocity to zero
             zero_velocity = VelocityNedYaw(0.0, 0.0, 0.0, yaw)
             await self.drone.offboard.set_velocity_ned(zero_velocity)
-            print("-- Velocity setpoint set to zero; drone should hover or stop")
+            print(
+                "-- Velocity setpoint set to zero; drone should hover or stop")
 
         except OffboardError as error:
             print(f"Offboard mode error: {error}")
@@ -548,7 +583,8 @@ class Communications:
         """
         try:
             # Fetch position data from telemetry in NED frame
-            # Confirmed: position_velocity_ned provides NED coordinates (north_m, east_m, down_m)
+            # Confirmed: position_velocity_ned provides NED coordinates
+            # (north_m, east_m, down_m)
             async for state in self.drone.telemetry.position_velocity_ned():
                 position_data = state.position
                 x = position_data.north_m
@@ -628,13 +664,7 @@ class Communications:
                 vz = velocity_data.down_m_s
                 break
 
-            # Fetch attitude data
-            attitude = await self._get_attitude()
-            if attitude is None:
-                return None
-            roll, pitch, yaw = attitude
-
-            return [vx, vy, vz, roll, pitch, yaw]
+            return [vx, vy, vz]
 
         except Exception as e:
             print(f"Error in get_velocity_xyz: {e}")
@@ -680,7 +710,9 @@ class Communications:
         Retrieve the drone's altitude above ground level in meters.
 
         Returns:
-            float: Altitude above ground level in meters, or None if telemetry fails.
+            float:
+                Altitude above ground level in meters,
+                or None if telemetry fails.
         """
         try:
             # Check if telemetry is healthy
@@ -692,9 +724,11 @@ class Communications:
             vertical_velocity = await self._get_vertical_velocity()
 
             if relative_altitude >= 0:
-                # Here, we assume relative_altitude is reliable unless velocity suggests drift
+                # Here, we assume relative_altitude is
+                # reliable unless velocity suggests drift
                 print(
-                    f"AGL = {relative_altitude} meters (relative altitude, assuming flat terrain)")
+                    f"AGL = {relative_altitude} meters "
+                    f"(relative altitude, assuming flat terrain)")
                 return relative_altitude
             else:
                 print("Invalid relative altitude (negative)")
