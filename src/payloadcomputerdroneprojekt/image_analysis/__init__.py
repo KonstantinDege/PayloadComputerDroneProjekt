@@ -144,9 +144,13 @@ class ImageAnalysis:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
                 self.add_latlonalt(obj, pos_com, height, shape_image.shape[:2])
-                cv2.circle(
-                    image, (obj["x_center"], obj["y_center"]),
-                    2, (166, 0, 178), -1)
+                # cv2.circle(
+                #     image, (obj["x_center"], obj["y_center"]),
+                #     2, (166, 0, 178), -1)
+
+            cv2.circle(
+                image, (350, 10),
+                2, (166, 0, 178), -1)
 
             item.add_computed_image(image)
 
@@ -394,8 +398,10 @@ class ImageAnalysis:
     def add_latlonalt(self, obj, pos_com, height, imagesize):
         px, py = obj["x_center"], obj["y_center"]
         pos, rot = pos_com[0:3], pos_com[3:6]
+        rot = np.array(rot) + \
+            np.array(self.config.get("rotation_offset", [0, 0, 0]))
 
-        fov = self.config.get("fov", [41, 66])
+        fov = self.config.get("fov", [66, 41])  # shape is height width
         # offset of camera position in x and y compared to drone center
         offset = np.array(self.config.get("camera_offset", [0, 0, 0]))
         local_vec = mh.compute_local(px, py, rot, offset, imagesize, fov)
