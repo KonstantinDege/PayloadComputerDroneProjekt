@@ -626,6 +626,9 @@ class Communications:
                     Yaw angle in degrees (0 = North, positive = clockwise).
         """
         try:
+            # Check if telemetry is healthy
+            if not await self._check_telemetry_health():
+                return [0, 0, 0, 0, 0, 0]
             # Fetch GPS position data
             async for state in self.drone.telemetry.position():
                 lat = state.latitude_deg
@@ -724,7 +727,7 @@ class Communications:
         try:
             # Check if telemetry is healthy
             if not await self._check_telemetry_health():
-                return None
+                return 10000
 
             # Fetch relative altitude and vertical velocity
             relative_altitude = await self._get_relative_altitude()
@@ -739,11 +742,11 @@ class Communications:
                 return relative_altitude
             else:
                 print("Invalid relative altitude (negative)")
-                return 0
+                return 10000
 
         except Exception as e:
             print(f"Error in get_relative_height: {e}")
-            return 0
+            return 10000
 
     def send_image(self, image):
         """
