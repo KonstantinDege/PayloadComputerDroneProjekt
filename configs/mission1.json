@@ -1,4 +1,31 @@
 {
     "$schema": "mission_schema.json",
-    "path": "/tmp/mission1"
+    "path": "/tmp/mission1",
+    "mode": 1,
+    "waypoints": [
+        {
+            "id": 1,
+            "name": "Start",
+            "coordinates": [0, 0],
+            "description": "Starting point of the mission."
+        },
+        {
+            "id": 2,
+            "name": "Waypoint 1",
+            "coordinates": [10, 10],
+            "description": "First waypoint to reach."
+        },
+        {
+            "id": 3,
+            "name": "Waypoint 2",
+            "coordinates": [20, 20],
+            "description": "Second waypoint to reach."
+        },
+        {
+            "id": 4,
+            "name": "End",
+            "coordinates": [30, 30],
+            "description": "End point of the mission."
+        }
+    ]
 }
