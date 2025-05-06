@@ -21,11 +21,18 @@ class CommAsync:
         print(f"XYZ {pos}")
 
     @staticmethod
-    async def get_vel():
+    async def get_height():
         con = Communications(address=PORT)
         await con.connect()
-        pos = await con.get_velocity_xyz()
-        print(f"Velocity {pos}")
+        pos = await con.get_relative_height()
+        print(f"Height {pos}")
+
+    @staticmethod
+    async def is_flighing():
+        con = Communications(address=PORT)
+        await con.connect()
+        pos = await con.is_flighing()
+        print(f"In flight {pos}")
 
 
 class TestCommunication(unittest.TestCase):
@@ -35,8 +42,11 @@ class TestCommunication(unittest.TestCase):
     def test_get_xyz(self):
         asyncio.run(CommAsync.get_xyz())
 
-    def test_get_vel(self):
-        asyncio.run(CommAsync.get_vel())
+    def test_get_height(self):
+        asyncio.run(CommAsync.get_height())
+
+    def test_is_flighing(self):
+        asyncio.run(CommAsync.is_flighing())
 
 
 if __name__ == '__main__':
