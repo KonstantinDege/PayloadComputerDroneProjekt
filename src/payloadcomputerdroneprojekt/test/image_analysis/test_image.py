@@ -7,6 +7,7 @@ import tempfile
 import json
 from payloadcomputerdroneprojekt.test.image_analysis \
     import TestCommunications, TestCamera, FILE_PATH
+import asyncio
 
 
 class TestImage(unittest.TestCase):
@@ -27,7 +28,7 @@ class TestImage(unittest.TestCase):
         ia = ImageAnalysis(config, cam, TestCommunications(""))
 
         for _ in cam.files:
-            ia.image_loop()
+            asyncio.run(ia.image_loop())
             count += 1
         delta_time = time.time() - time_start
         print(f"Computation Time: {delta_time / count:.2f}")
@@ -99,7 +100,7 @@ class TestImage(unittest.TestCase):
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, TestCommunications(""))
 
-        ia.image_loop()
+        asyncio.run(ia.image_loop())
 
         ia.get_filtered_objs()
 

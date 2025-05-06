@@ -32,6 +32,9 @@ class DataItem:
     def add_quality(self, quality: float):
         self._data["quality"] = float(quality)
 
+    def add_height(self, height: float):
+        self._data["height"] = float(height)
+
     def get_dict(self):
         self._data["id"] = self._id
         return self._data
