@@ -26,7 +26,7 @@ def main(config, mission):
 
 def args():
     parser = argparse.ArgumentParser(
-        description="A simple argument parser example.")
+        description="This is the start script for the Raspberry Pi 5 with PX4")
     parser.add_argument("mission", type=str, help="Path to the mission file")
     parser.add_argument("--config", type=str,
                         help="Path to the config file",
