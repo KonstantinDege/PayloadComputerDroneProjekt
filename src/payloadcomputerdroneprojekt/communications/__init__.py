@@ -2,6 +2,8 @@ import math
 from mavsdk import System
 from mavsdk.offboard \
     import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw
+import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 
 def save_execute(msg):
@@ -156,24 +158,31 @@ class Communications:
         await self.drone.offboard.set_velocity_ned(VelocityNedYaw(
             north_m_s=vel[0], east_m_s=vel[1], down_m_s=vel[2], yaw_deg=yaw))
 
-    @save_execute("Move by Velocity")
+    @save_execute("Move by XYZ")
     async def mov_by_xyz(self, pos, yaw=0):
+        pos = np.array(pos)
         cur_pos = await self.get_position_xyz()
-        new_pos = [pos[i] + cur_pos[i] for i in range(3)]
+        yaw_cur = cur_pos[5]
+        cur_pos = np.array(cur_pos[:3])
+        new_pos = cur_pos + rotation_matrix_yaw(yaw_cur) @ pos
         yaw += cur_pos[5]
-        await self.drone.offboard.set_position_ned(PositionNedYaw(
-            north_m=new_pos[0], east_m=new_pos[1], down_m=new_pos[2],
-            yaw_deg=yaw))
-        await wait_for(
-            self.drone.telemetry.position_velocity_ned(), reached_pos(new_pos))
+        await self.mov_to_xyz(new_pos, yaw)
 
-    @save_execute("Move with Velocity")
+    @save_execute("Move by XYZ old")
+    async def mov_by_xyz_old(self, pos, yaw=0):
+        pos = np.array(pos)
+        cur_pos = await self.get_position_xyz()
+        cur_pos = np.array(cur_pos[:3])
+        new_pos = cur_pos + pos
+        yaw += cur_pos[5]
+        await self.mov_to_xyz(new_pos, yaw)
+
+    @save_execute("Move by Velocity")
     async def mov_by_vel(self, vel, yaw=0):
         yaw += await self._get_yaw()
-        await self.drone.offboard.set_velocity_ned(VelocityNedYaw(
-            north_m_s=vel[0], east_m_s=vel[1], down_m_s=vel[2], yaw_deg=yaw))
-
-    @save_execute("Move to XYZ")
+        await self.mov_by_vel(vel, yaw)
+    
+    @save_execute("Move to Lat Lon Alt")
     async def mov_to_lat_lon_alt(self, pos, yaw=None):
         if yaw is None:
             yaw = await self._get_yaw()
@@ -220,3 +229,7 @@ async def wait_for(func, b):
     async for res in func:
         if b(res):
             return res
+
+
+def rotation_matrix_yaw(rot):
+    return R.from_euler('z', [rot], degrees=True).as_matrix()
