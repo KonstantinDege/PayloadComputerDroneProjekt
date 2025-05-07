@@ -100,13 +100,14 @@ class Communications:
         return await get_data(self.drone.telemetry.in_air())
 
     @save_execute("Start")
-    async def start(self, height: float =5):
+    async def start(self, height: float = 5):
         await self.await_arm()
         if await self.get_relative_height() >= height:
             return True
         await self.check_health()
         await self._ensure_offboard()
-        await self.mov_to_xyz([0, 0, -height], 0)
+        h = await self.get_relative_height()
+        await self.mov_by_xyz([0, 0, -height-h], 0)
 
     async def _get_attitude(self):
         # Timspektion
