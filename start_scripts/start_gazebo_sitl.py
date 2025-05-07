@@ -13,6 +13,17 @@ async def run_cam(computer: MissionComputer):
         await asyncio.sleep(2)
 
 
+async def flight_raspi_hover(computer: MissionComputer):
+    con = computer._comms
+    await con.connect()
+    await con.start(0.5)
+    print("start checkpoint")
+    await con.mov_by_xyz([0, -5, 0])
+    print("checkpoint reached")
+    while True:
+        await asyncio.sleep(2)
+
+
 async def fligh(computer: MissionComputer):
     con = computer._comms
     await con.connect()
@@ -46,6 +57,8 @@ def main(config, mission):
         asyncio.run(run_cam(computer))
     elif mission == "fligh":
         asyncio.run(fligh(computer))
+    elif mission == "fligh_low_ris":
+        asyncio.run(flight_raspi_hover(computer))
     elif mission == "fligh_cam":
         asyncio.run(fligh_cam(computer))
     else:
