@@ -100,7 +100,7 @@ class Communications:
         return await get_data(self.drone.telemetry.in_air())
 
     @save_execute("Start")
-    async def start(self, height=5):
+    async def start(self, height: float =5):
         await self.await_arm()
         if await self.get_relative_height() >= height:
             return True
