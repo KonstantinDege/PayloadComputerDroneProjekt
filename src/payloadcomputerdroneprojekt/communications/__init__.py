@@ -181,7 +181,7 @@ class Communications:
     async def mov_by_vel(self, vel, yaw=0):
         yaw += await self._get_yaw()
         await self.mov_by_vel(vel, yaw)
-    
+
     @save_execute("Move to Lat Lon Alt")
     async def mov_to_lat_lon_alt(self, pos, yaw=None):
         if yaw is None:
