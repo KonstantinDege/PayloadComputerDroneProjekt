@@ -109,6 +109,7 @@ class Communications:
         await self.mov_to_xyz([0, 0, -height], 0)
 
     async def _get_attitude(self):
+        # Timspektion
         if not await self.check_health():
             print("Telemetry not ready")
             return [0, 0, 0]
