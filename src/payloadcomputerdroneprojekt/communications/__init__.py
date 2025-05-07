@@ -158,29 +158,30 @@ class Communications:
         await self.drone.offboard.set_velocity_ned(VelocityNedYaw(
             north_m_s=vel[0], east_m_s=vel[1], down_m_s=vel[2], yaw_deg=yaw))
 
+    @save_execute("Move by Velocity")
+    async def mov_by_vel(self, vel, yaw=0):
+        old_yaw = await self._get_yaw()
+        new_vel = rotation_matrix_yaw(old_yaw) @ np.array(vel)
+        await self.mov_with_vel(new_vel[0], old_yaw + yaw)
+
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, pos, yaw=0):
         pos = np.array(pos)
         cur_pos = await self.get_position_xyz()
         yaw_cur = cur_pos[5]
+        yaw += yaw_cur
         cur_pos = np.array(cur_pos[:3])
         new_pos = cur_pos + rotation_matrix_yaw(yaw_cur) @ pos
-        yaw += cur_pos[5]
-        await self.mov_to_xyz(new_pos, yaw)
+        await self.mov_to_xyz(new_pos[0], yaw)
 
     @save_execute("Move by XYZ old")
     async def mov_by_xyz_old(self, pos, yaw=0):
         pos = np.array(pos)
         cur_pos = await self.get_position_xyz()
+        yaw += cur_pos[5]
         cur_pos = np.array(cur_pos[:3])
         new_pos = cur_pos + pos
-        yaw += cur_pos[5]
         await self.mov_to_xyz(new_pos, yaw)
-
-    @save_execute("Move by Velocity")
-    async def mov_by_vel(self, vel, yaw=0):
-        yaw += await self._get_yaw()
-        await self.mov_by_vel(vel, yaw)
 
     @save_execute("Move to Lat Lon Alt")
     async def mov_to_lat_lon_alt(self, pos, yaw=None):
@@ -206,9 +207,6 @@ class Communications:
 def reached_pos(target, error=0.5):
     def func(state):
         pos_a = state.position
-        print(pythagoras(
-            [pos_a.north_m, pos_a.east_m, pos_a.down_m],
-            target))
         return pythagoras(
             [pos_a.north_m, pos_a.east_m, pos_a.down_m],
             target) < error
