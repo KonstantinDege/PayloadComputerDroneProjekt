@@ -41,6 +41,17 @@ class CommAsync:
         await asyncio.sleep(15)
         await con.land()
 
+    @staticmethod
+    async def move_global():
+        con = Communications(address=PORT, config={"allowed_arm": True})
+        await con.connect()
+        await con.start()
+        pos = await con.get_position_lat_lon_alt()
+        print(pos)
+        await con.mov_to_lat_lon_alt(pos[:2] + [10])
+        print("in global mode")
+        await con.land()
+
 
 class TestCommunication(unittest.TestCase):
     def test_move_by(self):
@@ -51,6 +62,9 @@ class TestCommunication(unittest.TestCase):
 
     def test_move_by_speed(self):
         asyncio.run(CommAsync.move_by_speed())
+
+    def test_move_global_1(self):
+        asyncio.run(CommAsync.move_global())
 
 
 if __name__ == '__main__':

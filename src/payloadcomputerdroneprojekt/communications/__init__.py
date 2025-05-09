@@ -156,7 +156,9 @@ class Communications:
         await self.drone.offboard.set_position_ned(PositionNedYaw(
             north_m=pos[0], east_m=pos[1], down_m=pos[2], yaw_deg=yaw))
         await wait_for(
-            self.drone.telemetry.position_velocity_ned(), reached_pos(pos))
+            self.drone.telemetry.position_velocity_ned(),
+            reached_pos(pos, self.config.get("pos_error", 0.75),
+                        self.config.get("vel_error", 0.5)))
 
     @save_execute("Move with Velocity")
     async def mov_with_vel(self, vel, yaw=None):
@@ -195,22 +197,28 @@ class Communications:
         if yaw is None:
             yaw = await self._get_yaw()
         await self.drone.offboard.set_position_global(PositionGlobalYaw(
-            north_m=pos[0], east_m=pos[1], down_m=pos[2], yaw_deg=yaw,
-            altitude_type=0))
+            lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2], yaw_deg=yaw,
+            altitude_type=PositionGlobalYaw.AltitudeType(0)))
 
         def reach_func(state: Position):
-            return (abs(state.latitude_deg - pos[0]) < 0.00001 and
-                    abs(state.longitude_deg - pos[1]) < 0.00001 and
-                    abs(state.absolute_altitude_m - pos[2]) < 0.5)
+            return (abs(state.latitude_deg - pos[0]
+                        ) < self.config.get("degree_error", 0.00001) and
+                    abs(state.longitude_deg - pos[1]
+                        ) < self.config.get("degree_error", 0.00001) and
+                    abs(state.absolute_altitude_m - pos[2]
+                        ) < self.config.get("pos_error", 0.75))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
+        await wait_for(self.drone.telemetry.position_velocity_ned(),
+                       lambda x: abs_vel(
+                           get_pos_vec(x)) < self.config.get("vel_error", 0.5))
 
     @save_execute("Land")
     async def land(self):
         await self.drone.action.land()
 
 
-def reached_pos(target: list, error=0.5, error_vel=0.01):
+def reached_pos(target: list, error=0.5, error_vel=0.1):
     def func(state: PositionVelocityNed):
         return (pythagoras(get_pos_vec(state), target) < error
                 ) and (abs_vel(get_vel_vec(state)) < error_vel)
