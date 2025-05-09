@@ -18,7 +18,7 @@ def compute_pixel_vec(px, py, imagesize, fov):
 
 
 def rotation_matrix(rot):
-    return R.from_euler('xyz', rot, degrees=True).as_matrix()
+    return R.from_euler('zyx', rot[::-1], degrees=True).as_matrix()
 
 
 def local_to_global(initial_global_lat, initial_global_lon, nord_loc, ost_loc):
