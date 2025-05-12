@@ -8,6 +8,7 @@
         ]
     },
     "image": {
+        "path": "data/images/spazieren",
         "colors": [
             {
                 "name": "blue",
