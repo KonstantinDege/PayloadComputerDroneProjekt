@@ -22,7 +22,7 @@ class DataItem:
     def add_computed_image(self, image: np.array):
         raw_path = join(self._path, f"{self._time}_computed_image.jpg")
         cv2.imwrite(raw_path, image)
-        self._data["raw_path"] = raw_path
+        self._data["computed_path"] = raw_path
 
     def add_objects(self, objects: dict):
         self._data["found_objs"] = objects
