@@ -13,7 +13,7 @@ __pycache__/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
-data/*
+
 # Project files
 .ropeproject
 .project
@@ -53,3 +53,6 @@ MANIFEST
 .conda*/
 .python-version
 myenv/*
+
+data/*
+pics/*
