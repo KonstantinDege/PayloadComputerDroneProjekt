@@ -23,8 +23,11 @@ def main(path, config):
 
 def args():
     parser = argparse.ArgumentParser(
-        description="This is the start script for the Raspberry Pi 5 with PX4")
-    parser.add_argument("path", type=str, help="Path to the mission file")
+        description="This script reruns the image analysis "
+        "for the given mission file path.")
+    parser.add_argument(
+        "path", type=str,
+        help="Path to the folder containing the images and __data__.json")
     parser.add_argument("--config", type=str,
                         help="Path to the config file",
                         default=os.path.join(os.path.dirname(__file__),
