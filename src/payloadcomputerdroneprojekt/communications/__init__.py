@@ -217,6 +217,18 @@ class Communications:
     async def land(self):
         await self.drone.action.land()
 
+    def receive_mission_file():
+        pass
+
+    def send_found_obj(obj: dict):
+        pass
+
+    def send_image(path: str):
+        pass
+
+    def send_status(status: str):
+        pass
+
 
 def reached_pos(target: list, error=0.5, error_vel=0.1):
     def func(state: PositionVelocityNed):

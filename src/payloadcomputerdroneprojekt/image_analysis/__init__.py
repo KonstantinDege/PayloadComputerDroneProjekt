@@ -15,6 +15,7 @@ class ImageAnalysis:
         self.config = config
         self._camera = camera
         self._comms = comms
+        self._task = None
         self._dh = DataHandler(config.setdefault(
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
@@ -87,6 +88,20 @@ class ImageAnalysis:
             print(f"Error stopping the capture: {e}")
             return False
 
+    def take_image(self):
+        try:
+            asyncio.run(self._take_image())
+        except Exception as e:
+            print(f"Take image failed {e}")
+            return False
+        return True
+
+    def _take_image(self):
+        if not self._camera.is_active:
+            self._camera.start_camera()
+            asyncio.sleep(2)
+        self.image_loop()
+
     async def _async_analysis(self, ips: float):
         """
         finished
@@ -147,13 +162,12 @@ class ImageAnalysis:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
                 self.add_latlonalt(obj, pos_com, height, shape_image.shape[:2])
-                # cv2.circle(
-                #     image, (obj["x_center"], obj["y_center"]),
-                #     2, (166, 0, 178), -1)
-
-            cv2.circle(
-                image, (350, 10),
-                2, (166, 0, 178), -1)
+                cv2.circle(
+                    image, (obj["x_center"], obj["y_center"]),
+                    5, (166, 0, 178), -1)
+                bb = obj["bound_box"]
+                cv2.rectangle(image, (bb["x_start"], bb["y_start"]),
+                              (bb["x_stop"], bb["y_stop"]), (0, 255, 0), 2)
 
             item.add_computed_image(image)
 

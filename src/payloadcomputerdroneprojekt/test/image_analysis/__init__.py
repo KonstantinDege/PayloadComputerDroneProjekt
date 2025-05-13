@@ -13,7 +13,7 @@ class TestCamera(Camera):
         self.files = [f for f in os.listdir(self.path)
                       if os.path.isfile(os.path.join(self.path, f))]
 
-    def start_camera(self):
+    def start_camera(self, config=None):
         pass
 
     def get_current_frame(self):
@@ -21,6 +21,9 @@ class TestCamera(Camera):
         if self.current >= len(self.files):
             self.current = 0
         return cv2.imread(os.path.join(self.path, self.files[self.current]))
+
+    def stop_camera(self):
+        pass
 
 
 class TestCommunications(Communications):
