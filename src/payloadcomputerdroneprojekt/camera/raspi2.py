@@ -17,6 +17,7 @@ class RaspiCamera(cam.Camera):
                 self.stop_camera()
                 self.start_camera()
             return
+        # TODO: add sensor config
         config = self._camera.create_preview_configuration(
             main=self._config
         )
