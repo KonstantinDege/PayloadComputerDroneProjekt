@@ -7,7 +7,7 @@ class GazeboCamera(cam.Camera):
     def __init__(self, config):
         super().__init__(config)
 
-    def start_camera(self):
+    def start_camera(self, config=None):
         self._camera = Video(self._config.get("port", 5600))
         print("Camera started")
 
@@ -17,3 +17,6 @@ class GazeboCamera(cam.Camera):
             if not self._camera.frame_available():
                 continue
             return self._camera.frame()
+
+    def stop_camera(self):
+        pass

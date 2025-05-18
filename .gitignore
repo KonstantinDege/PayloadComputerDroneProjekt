@@ -53,3 +53,7 @@ MANIFEST
 .conda*/
 .python-version
 myenv/*
+
+data/*
+pics/*
+test_image/*

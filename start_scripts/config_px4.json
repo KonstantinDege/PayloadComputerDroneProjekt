@@ -3,11 +3,12 @@
     "camera": {
         "format": "XRGB8888",
         "size": [
-            640,
-            480
+            1280,
+            960
         ]
     },
     "image": {
+        "path": "data/images/spazieren",
         "colors": [
             {
                 "name": "blue",
@@ -71,7 +72,8 @@
                 30
             ]
         },
-        "min_diagonal": 15,
-        "threashold": -1
+        "min_diagonal": 50,
+        "threashold": -1,
+        "min_diagonal_shape": 2
     }
 }
