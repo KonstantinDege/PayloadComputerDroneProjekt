@@ -4,6 +4,7 @@ import os
 import json
 import cv2
 import tempfile
+from os.path import join
 
 
 def main(path, config):
@@ -12,8 +13,17 @@ def main(path, config):
 
     config["image"]["path"] = tempfile.mkdtemp(prefix="precalc_", dir=path)
     ia = ImageAnalysis(config=config["image"], camera=None, comms=None)
-    with open(os.path.join(path, "__data__.json")) as f:
-        data = json.load(f)
+
+    with open(join(path, "__data__.json")) as f:
+        content = f.read()
+
+        if content.startswith("["):
+            data = json.loads(content)
+        else:
+            data = []
+            for line in content.splitlines():
+                data.append(json.loads(line))
+
     for item in data:
         ia._image_sub_routine(
             image=cv2.imread(os.path.join(path, item["raw_path"])),
