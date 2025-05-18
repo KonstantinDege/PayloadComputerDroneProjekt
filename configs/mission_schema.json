@@ -2,12 +2,70 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "blau.mission",
     "title": "DroneConfig",
-    "description": "A mission description of team Blau for the drone project",
+    "description": "Mission configuration schema for Team Blau's drone project",
     "type": "object",
     "properties": {
-        "path": {
-            "description": "Path for saving in this mission",
-            "type": "string"
+        "parameter": {
+            "type": "object",
+            "properties": {
+                "flight_height": {
+                    "type": "number",
+                    "description": "The height of the flight in meters.",
+                    "minimum": 0,
+                    "examples": [5, 10, 15]
+                }
+            },
+            "required": ["flight_height"]
+        },
+        "mission_type": {
+            "type": "string",
+            "enum": ["list", "mov_multiple"],
+            "description": "Defines the type of mission."
+        },
+        "commands": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/command"
+            }
+        }
+    },
+    "required": ["parameter", "mission_type", "commands"],
+    "definitions": {
+        "command": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": ["start_camera", "stop_camera", "takeoff", "land", "delay", "list"],
+                    "description": "The type of action for the drone."
+                },
+                "parameters": {
+                    "anyOf": [
+                        { "$ref": "#/definitions/timed_action" },
+                        { "$ref": "#/definitions/movement" }
+                    ]
+                }
+            },
+            "required": ["action"]
+        },
+        "timed_action": {
+            "type": "object",
+            "properties": {
+                "time": { "type": "number", "minimum": 0, "description": "Duration in seconds." },
+                "altitude": { "type": "number", "minimum": 0, "description": "Altitude in meters." },
+                "lat": { "type": "number", "description": "Latitude of the landing spot." },
+                "lon": { "type": "number", "description": "Longitude of the landing spot." }
+            }
+        },
+        "movement": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "lat": { "type": "number", "description": "Latitude coordinate." },
+                    "lon": { "type": "number", "description": "Longitude coordinate." }
+                }
+            }
         }
     }
 }

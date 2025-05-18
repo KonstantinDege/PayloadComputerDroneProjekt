@@ -1,4 +1,69 @@
 {
     "$schema": "mission_schema.json",
-    "path": "/tmp/mission1"
+    "name": "Mission 1",
+    "description": "This is the first mission.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 15
+    },
+    "values": [
+        {
+            "type": "start_camera"
+        },
+        {
+            "type": "mov_multiple",
+            "values": [
+                {
+                    "lat": 0,
+                    "lon": 0
+                },
+                {
+                    "lat": 1,
+                    "lon": 1
+                }
+            ]
+        },
+        {
+            "type": "retake_obj_pictures",
+            "values": {
+                "height": 7
+            }
+        },
+        {
+            "type": "stop_camera"
+        },
+        {
+            "type": "list",
+            "values": [
+                {
+                    "type": "land",
+                    "values": {
+                        "lat": 0,
+                        "lon": 0
+                    }
+                },
+                {
+                    "type": "delay",
+                    "values": {
+                        "time": 5
+                    }
+                },
+                {
+                    "type": "takeoff",
+                    "values": {
+                        "altitude": 15
+                    }
+                },
+                {
+                    "type": "land",
+                    "values": {
+                        "lat": 0,
+                        "lon": 0,
+                        "color": "blau",
+                        "shape": "easy_code"
+                    }
+                }
+            ]
+        }
+    ]
 }
