@@ -198,7 +198,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.080, places=0)
-        self.assertAlmostEqual(pos[1], 0, places=1)
+        self.assertAlmostEqual(pos[1], 0, places=2)
 
     def test_local_coords_image_3(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -217,7 +217,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0, places=1)
-        self.assertAlmostEqual(pos[1], 0.050, places=1)
+        self.assertAlmostEqual(pos[1], 0.050, places=2)
 
     def test_local_coords_image_4(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -236,7 +236,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0, places=1)
-        self.assertAlmostEqual(pos[1], -0.070, places=1)
+        self.assertAlmostEqual(pos[1], -0.070, places=2)
 
     def test_local_coords_image_5(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -293,7 +293,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
-        self.assertAlmostEqual(pos[1], -0.040, places=1)
+        self.assertAlmostEqual(pos[1], -0.040, places=2)
 
     def test_local_coords_image_8(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -312,7 +312,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.025, places=1)
-        self.assertAlmostEqual(pos[1], 0.055, places=1)
+        self.assertAlmostEqual(pos[1], 0.055, places=2)
 
     def test_local_coords_image_9(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -331,7 +331,7 @@ class TestImage(unittest.TestCase):
         height = 0.712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.240, places=1)
-        self.assertAlmostEqual(pos[1], 0, places=1)
+        self.assertAlmostEqual(pos[1], 0, places=2)
 
     def test_local_coords_image_10(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -388,7 +388,7 @@ class TestImage(unittest.TestCase):
         height = 0.740
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
-        self.assertAlmostEqual(pos[1], 0.040, places=1)
+        self.assertAlmostEqual(pos[1], 0.040, places=2)
 
     def test_local_coords_image_13(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -407,7 +407,7 @@ class TestImage(unittest.TestCase):
         height = 0.725
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
-        self.assertAlmostEqual(pos[1], 0.040, places=1)
+        self.assertAlmostEqual(pos[1], 0.040, places=2)
 
     def test_local_coords_image_14(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -446,7 +446,7 @@ class TestImage(unittest.TestCase):
         height = 1
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.05, places=3)
-        self.assertAlmostEqual(pos[1], 0, places=1)
+        self.assertAlmostEqual(pos[1], 0, places=2)
 
     def test_offset_reduced_height(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -466,7 +466,7 @@ class TestImage(unittest.TestCase):
         height = 0.5
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.05, places=3)
-        self.assertAlmostEqual(pos[1], 0, places=1)
+        self.assertAlmostEqual(pos[1], 0, places=2)
 
 
 if __name__ == '__main__':
