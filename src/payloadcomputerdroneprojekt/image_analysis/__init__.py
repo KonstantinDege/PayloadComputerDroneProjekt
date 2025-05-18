@@ -118,9 +118,8 @@ class ImageAnalysis:
         try:
             ips = float(ips)
         except Exception as e:
-            print(f"Could not ips to float, using Standard ips=1; {e}")
+            print(f"Could not convert ips to float, using Standard ips=1; {e}")
             ips = 1.0
-
         interval = 1.0 / ips
         count = 0
 
