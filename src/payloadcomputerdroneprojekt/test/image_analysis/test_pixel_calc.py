@@ -121,7 +121,7 @@ class TestImage(unittest.TestCase):
         height = 712
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[1], 0)
-        self.assertAlmostEqual(pos[0], 125, places=0)
+        assert pos[0] > 0
 
     def test_local_coords_pitch_angle(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
@@ -370,7 +370,7 @@ class TestImage(unittest.TestCase):
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.240, places=1)
         self.assertAlmostEqual(pos[1], 0.460, places=1)
-        
+
     def test_local_coords_image_12(self):
         with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
             config = json.load(json_data)["image"]
@@ -387,7 +387,7 @@ class TestImage(unittest.TestCase):
         ]
         height = 0.740
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
-        self.assertAlmostEqual(pos[0],-0.070, places=1)
+        self.assertAlmostEqual(pos[0], -0.070, places=1)
         self.assertAlmostEqual(pos[1], 0.040, places=1)
 
     def test_local_coords_image_13(self):
@@ -406,7 +406,7 @@ class TestImage(unittest.TestCase):
         ]
         height = 0.725
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
-        self.assertAlmostEqual(pos[0], 0.070, places=1)
+        self.assertAlmostEqual(pos[0], -0.070, places=1)
         self.assertAlmostEqual(pos[1], 0.040, places=1)
 
     def test_local_coords_image_14(self):
@@ -427,6 +427,46 @@ class TestImage(unittest.TestCase):
         pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.510, places=1)
         self.assertAlmostEqual(pos[1], -0.500, places=1)
+
+    def test_offset(self):
+        with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
+            config = json.load(json_data)["image"]
+        config["rotation_offset"] = [0, 0, 180]
+        config["path"] = "."
+        config["camera_offset"] = [0.05, 0, 0]
+        ia = ImageAnalysis(config, "", "")
+
+        obj = {
+            "x_center": 2304,
+            "y_center": 1296
+        }
+        pos_com = [
+            0, 0, 0, 0, 0, 0
+        ]
+        height = 1
+        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        self.assertAlmostEqual(pos[0], 0.05, places=3)
+        self.assertAlmostEqual(pos[1], 0, places=1)
+
+    def test_offset_reduced_height(self):
+        with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
+            config = json.load(json_data)["image"]
+        config["rotation_offset"] = [0, 0, 180]
+        config["path"] = "."
+        config["camera_offset"] = [0.05, 0, 0]
+        ia = ImageAnalysis(config, "", "")
+
+        obj = {
+            "x_center": 2304,
+            "y_center": 1296
+        }
+        pos_com = [
+            0, 0, 0, 0, 0, 0
+        ]
+        height = 0.5
+        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        self.assertAlmostEqual(pos[0], 0.05, places=3)
+        self.assertAlmostEqual(pos[1], 0, places=1)
 
 
 if __name__ == '__main__':

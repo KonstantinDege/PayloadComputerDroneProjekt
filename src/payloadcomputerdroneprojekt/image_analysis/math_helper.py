@@ -4,17 +4,17 @@ from scipy.spatial.transform import Rotation as R
 from pyproj import CRS, Transformer
 
 
-def compute_local(px, py, rot, offset, imagesize, fov):
-    return rotation_matrix(rot) @ (
-        offset + compute_pixel_vec(px, py, imagesize, fov))
+def compute_local(px, py, rot, imagesize, fov):
+    rot_mat = rotation_matrix(rot)
+    return rot_mat @ compute_pixel_vec(px, py, imagesize, fov)
 
 
 def compute_pixel_vec(px, py, imagesize, fov):
-    x = (px-imagesize[1]/2) / imagesize[1]
-    y = (py-imagesize[0]/2) / imagesize[0]
+    x = (px/imagesize[1]-0.5) * 2
+    y = (py/imagesize[0]-0.5) * 2
 
-    return np.array([-y * math.tan(math.radians(fov[0]/2)),
-                     x * math.tan(math.radians(fov[1]/2)), 1])
+    return np.array([-y * math.tan(math.radians(fov[1]/2)),
+                     x * math.tan(math.radians(fov[0]/2)), 1])
 
 
 def rotation_matrix(rot):
