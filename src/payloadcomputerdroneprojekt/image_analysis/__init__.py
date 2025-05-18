@@ -152,10 +152,10 @@ class ImageAnalysis:
             if (quality := self.quality_of_image(
                     image)) < self.config["threashold"]:
                 print("Skipped Image; Quality to low")
+                item.add_quality(quality)
                 return
             if pos_com[0] == 0:
                 return
-            item.add_quality(quality)
             objects, shape_image = self.compute_image(image)
             item.add_objects(objects)
 
