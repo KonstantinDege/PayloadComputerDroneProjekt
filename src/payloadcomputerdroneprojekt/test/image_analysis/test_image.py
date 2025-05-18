@@ -32,7 +32,7 @@ class TestImage(unittest.TestCase):
             count += 1
         delta_time = time.time() - time_start
         print(f"Computation Time: {delta_time / count:.2f}")
-        assert delta_time / count < 0.3
+        assert delta_time / count < 0.1
 
         ia.get_filtered_objs()
 

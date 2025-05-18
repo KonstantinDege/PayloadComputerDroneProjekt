@@ -159,10 +159,14 @@ class ImageAnalysis:
             objects, shape_image = self.compute_image(image)
             item.add_objects(objects)
 
+            loc_to_glo = mh.local_to_global(pos_com[0], pos_com[1])
+
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                self.add_latlonalt(obj, pos_com, height, shape_image.shape[:2])
+                self.add_latlonalt(
+                    obj, pos_com[3:6], height, shape_image.shape[:2],
+                    loc_to_glo)
                 cv2.circle(
                     image, (obj["x_center"], obj["y_center"]),
                     5, (166, 0, 178), -1)
@@ -537,10 +541,9 @@ class ImageAnalysis:
         local_vec_streched = local_vec * height / local_vec[2]
         return local_vec_streched + rot_mat @ offset
 
-    def add_latlonalt(self, obj, pos_com, height, imagesize):
-        pos, rot = pos_com[0:3], pos_com[3:6]
+    def add_latlonalt(self, obj, rot, height, imagesize, loc_to_glo):
         local_vec_streched = self.get_local_offset(obj, rot, height, imagesize)
 
-        obj["latlonalt"] = mh.local_to_global(
-            pos[0], pos[1], local_vec_streched[0], local_vec_streched[1])
+        obj["latlonalt"] = loc_to_glo(
+            local_vec_streched[0], local_vec_streched[1])
         return local_vec_streched

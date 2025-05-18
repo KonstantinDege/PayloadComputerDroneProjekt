@@ -21,7 +21,7 @@ def rotation_matrix(rot):
     return R.from_euler('zyx', rot[::-1], degrees=True).as_matrix()
 
 
-def local_to_global(initial_global_lat, initial_global_lon, nord_loc, ost_loc):
+def local_to_global(initial_global_lat, initial_global_lon):
     origin_lat = initial_global_lat
     origin_lon = initial_global_lon
 
@@ -36,9 +36,6 @@ def local_to_global(initial_global_lat, initial_global_lon, nord_loc, ost_loc):
 
     to_global = Transformer.from_crs(crs_local, crs_global, always_xy=True)
 
-    x_local = ost_loc
-    y_local = nord_loc
-
-    # Umwandlung in GPS
-    lon, lat = to_global.transform(x_local, y_local)
-    return lon, lat
+    def loc_to_glo(x, y):
+        return to_global.transform(y, x)
+    return loc_to_glo
