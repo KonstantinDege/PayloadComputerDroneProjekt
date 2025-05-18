@@ -17,12 +17,15 @@ class DataHandler:
         if exists(join(self._path, FILENAME)):
             print("loading already existing data")
             with open(join(self._path, FILENAME), "r") as f:
-                if f.read(1) == "[":
-                    self._list = json.load(f)
+                content = f.read()
 
+                if content.startswith("["):
+                    self._list = json.loads(content)
                 else:
-                    for line in f.readlines():
-                        self._list.append = json.load(line)
+                    for line in content.splitlines():
+                        self._list.append(json.loads(line))
+
+        self.saved = len(self._list)
 
     def _get_new_item(self) -> DataItem:
         new_item = DataItem(self._path)
@@ -34,9 +37,10 @@ class DataHandler:
         return [item.get_dict() for item in self._list]
 
     def _save(self) -> None:
-        with open(join(self._path, FILENAME), "w+") as f:
-            for item in self.get_items()[(len(f.readlines())-1):-1]:
-                f.write(json.dumps(item))
+        with open(join(self._path, FILENAME), "a") as f:
+            for item in self.get_items()[self.saved:]:
+                f.write(json.dumps(item) + "\n")
+            self.saved = len(self._list)
 
     def __enter__(self) -> DataItem:
         return self._get_new_item()
