@@ -317,16 +317,16 @@ class Communications:
         """
         await self.drone.action.land()
 
-    def receive_mission_file():
+    async def receive_mission_file(func_on_receive):
         pass
 
-    def send_found_obj(obj: dict):
+    async def send_found_obj(obj: dict):
         pass
 
-    def send_image(path: str):
+    async def send_image(path: str):
         pass
 
-    def send_status(status: str):
+    async def send_status(status: str):
         pass
 
 

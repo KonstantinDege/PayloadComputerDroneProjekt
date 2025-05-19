@@ -12,14 +12,23 @@
                     "type": "number",
                     "description": "The height of the flight in meters.",
                     "minimum": 0,
-                    "examples": [5, 10, 15]
+                    "examples": [
+                        5,
+                        10,
+                        15
+                    ]
                 }
             },
-            "required": ["flight_height"]
+            "required": [
+                "flight_height"
+            ]
         },
         "mission_type": {
             "type": "string",
-            "enum": ["list", "mov_multiple"],
+            "enum": [
+                "list",
+                "mov_multiple"
+            ],
             "description": "Defines the type of mission."
         },
         "commands": {
@@ -29,32 +38,78 @@
             }
         }
     },
-    "required": ["parameter", "mission_type", "commands"],
+    "required": [
+        "parameter",
+        "mission_type",
+        "commands"
+    ],
     "definitions": {
         "command": {
             "type": "object",
             "properties": {
                 "action": {
                     "type": "string",
-                    "enum": ["start_camera", "stop_camera", "takeoff", "land", "delay", "list"],
+                    "enum": [
+                        "start_camera",
+                        "stop_camera",
+                        "takeoff",
+                        "land_at",
+                        "delay",
+                        "list",
+                        "mov_multiple",
+                        "forever"
+                    ],
                     "description": "The type of action for the drone."
                 },
-                "parameters": {
+                "commands": {
                     "anyOf": [
-                        { "$ref": "#/definitions/timed_action" },
-                        { "$ref": "#/definitions/movement" }
+                        {
+                            "$ref": "#/definitions/action_properties"
+                        },
+                        {
+                            "$ref": "#/definitions/movement"
+                        },
+                        {
+                            "$ref": "#/definitions/command"
+                        }
                     ]
                 }
             },
-            "required": ["action"]
+            "required": [
+                "action"
+            ]
         },
-        "timed_action": {
+        "action_properties": {
             "type": "object",
             "properties": {
-                "time": { "type": "number", "minimum": 0, "description": "Duration in seconds." },
-                "altitude": { "type": "number", "minimum": 0, "description": "Altitude in meters." },
-                "lat": { "type": "number", "description": "Latitude of the landing spot." },
-                "lon": { "type": "number", "description": "Longitude of the landing spot." }
+                "time": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Duration in seconds."
+                },
+                "altitude": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Altitude in meters."
+                },
+                "lat": {
+                    "type": "number",
+                    "description": "Latitude of the landing spot."
+                },
+                "lon": {
+                    "type": "number",
+                    "description": "Longitude of the landing spot."
+                },
+                "ips": {
+                    "type": "number",
+                    "description": "The number of images captured every second.",
+                    "examples": [
+                        1,
+                        0.5,
+                        2,
+                        5
+                    ]
+                }
             }
         },
         "movement": {
@@ -62,9 +117,27 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "lat": { "type": "number", "description": "Latitude coordinate." },
-                    "lon": { "type": "number", "description": "Longitude coordinate." }
-                }
+                    "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate."
+                    },
+                    "lon": {
+                        "type": "number",
+                        "description": "Longitude coordinate."
+                    },
+                    "height": {
+                        "type": "number",
+                        "description": "Height of the target position over ground"
+                    },
+                    "yaw": {
+                        "type": "number",
+                        "description": "Heading"
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lon"
+                ]
             }
         }
     }

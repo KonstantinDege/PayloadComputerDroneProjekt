@@ -96,11 +96,11 @@ class ImageAnalysis:
             return False
         return True
 
-    def _take_image(self):
+    async def _take_image(self):
         if not self._camera.is_active:
             self._camera.start_camera()
-            asyncio.sleep(2)
-        self.image_loop()
+            await asyncio.sleep(2)
+        await self.image_loop()
 
     async def _async_analysis(self, ips: float):
         """
@@ -389,7 +389,7 @@ class ImageAnalysis:
         """
         if not self._camera.is_active:
             self._camera.start_camera()
-            asyncio.sleep(2)
+            await asyncio.sleep(2)
         pos = self._comms.get_position_xyz()
         dh = self._comms.get_relative_height()
         img = self._camera.get_current_frame()

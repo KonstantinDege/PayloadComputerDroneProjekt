@@ -3,49 +3,6 @@ from payloadcomputerdroneprojekt.camera.raspi2 import RaspiCamera
 import argparse
 import os
 import json
-import asyncio
-
-
-async def run_cam(computer: MissionComputer):
-    await computer._comms.connect()
-    computer._image.start_cam()
-    while True:
-        await asyncio.sleep(2)
-
-
-async def flight_raspi_hover(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    await con.start(0.5)
-    print("start checkpoint")
-    await con.land()
-    print("checkpoint reached")
-    while True:
-        await asyncio.sleep(2)
-
-
-async def fligh(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    await con.start(2)
-    print("start checkpoint")
-    await con.mov_by_xyz([0, -5, 0])
-    print("first checkpoint")
-    await con.mov_to_xyz([0, 0, -2])
-    await con.land()
-
-
-async def fligh_cam(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    computer._image.start_cam()
-    await con.start()
-    print("start checkpoint")
-    await con.mov_by_xyz([0, -30, 0])
-    print("first checkpoint")
-    await con.mov_to_xyz([0, 0, -5])
-    await con.land()
-    computer._image.stop_cam()
 
 
 def main(config, mission):
@@ -53,22 +10,14 @@ def main(config, mission):
         config = json.load(f)
     port = "serial:///dev/ttyAMA0:57600"
     computer = MissionComputer(config=config, camera=RaspiCamera, port=port)
-    if mission == "demo_cam":
-        asyncio.run(run_cam(computer))
-    elif mission == "fligh":
-        asyncio.run(fligh(computer))
-    elif mission == "fligh_low_ris":
-        asyncio.run(flight_raspi_hover(computer))
-    elif mission == "fligh_cam":
-        asyncio.run(fligh_cam(computer))
-    else:
-        computer.start(mission)
+    computer.start(mission)
 
 
 def args():
     parser = argparse.ArgumentParser(
         description="This is the start script for the Raspberry Pi 5 with PX4")
-    parser.add_argument("mission", type=str, help="Path to the mission file")
+    parser.add_argument("mission", type=str, help="Path to the mission file",
+                        default="")
     parser.add_argument("--config", type=str,
                         help="Path to the config file",
                         default=os.path.join(os.path.dirname(__file__),
