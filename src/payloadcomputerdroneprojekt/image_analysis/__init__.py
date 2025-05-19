@@ -7,6 +7,7 @@ from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
 from scipy.cluster.hierarchy import fclusterdata
+import itertools
 
 
 class ImageAnalysis:
@@ -544,3 +545,24 @@ class ImageAnalysis:
         obj["latlonalt"] = mh.local_to_global(
             pos[0], pos[1], local_vec_streched[0], local_vec_streched[1])
         return local_vec_streched
+
+    def mission2(self, points):
+        """
+        points: [(), (), ()]
+        TODO: Implement in other function
+        """
+        for p1, p2, p3 in itertools.permutations(points, 3):
+            v1 = np.array(p2) - np.array(p1)
+            v2 = np.array(p3) - np.array(p1)
+                
+            if np.isclose(np.dot(v1, v2), 0):
+                p4 = np.array(p2) + np.array(p3) - np.array(p1)
+                points.append(p4)
+
+        for (a, b), (c, d) in itertools.combinations(itertools.combinations(points, 2), 2):
+
+            m1 = (np.array(a) + np.array(b)) / 2
+            m2 = (np.array(c) + np.array(d)) / 2
+
+            if np.allclose(m1, m2):
+                return tuple(m1)
