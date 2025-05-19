@@ -129,7 +129,7 @@ class MissionComputer():
 
     async def execute(self, action: dict):
         self.running = True
-        a = action["mission_type"]
+        a = action["action"]
         if a not in self.none_counting_tasks:
             self.progress += 1
         if a not in self.actions.keys():
@@ -213,36 +213,36 @@ class MissionComputer():
 
 
 def count_actions(actions):
-    if actions["mission_type"] == "list":
+    if actions["action"] == "list":
         c = 0
         for item in actions["commands"]:
             c += count_actions(item)
         return c
-    elif actions["mission_type"] == "mov_multiple":
+    elif actions["action"] == "mov_multiple":
         return len(actions["commands"])
     return 1
 
 
-def action_with_count(plan, count: int) -> any[int, dict]:
-    if plan["mission_type"] == "list":
+def action_with_count(plan, count: int):
+    if plan["action"] == "list":
         for i, item in enumerate(plan["commands"]):
             ret = action_with_count(item, count)
             if not isinstance(ret, int):
                 return {
-                    "mission_type": "list",
+                    "action": "list",
                     "commands": [ret] + plan["commands"][i+1:]
                 }
             count = ret
-    elif plan["mission_type"] == "mov_multiple":
+    elif plan["action"] == "mov_multiple":
         if count < len(plan["commands"]):
             return {
-                "mission_type": "mov_multiple",
+                "action": "mov_multiple",
                 "commands": plan["commands"][count:]
             }
         else:
             return count - len(plan["commands"])
 
-    if count == 1:
+    if count == 0:
         return plan
     return count - 1
 
