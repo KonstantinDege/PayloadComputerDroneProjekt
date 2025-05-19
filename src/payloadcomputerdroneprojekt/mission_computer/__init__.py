@@ -37,9 +37,12 @@ class MissionComputer():
         self._image = image_analysis(
             config=config.get("image", {}), camera=camera(
                 config.get("camera", None)), comms=self._comms)
+        # always starting camera for better performance
+        self._image._camera.start_camera()
         self.config = config
 
         self.current_mission_plan = {}
+        self.current_mission_plan.setdefault("parameter", {})
         self.progress = 0
         self.max_progress = -1
         self.running = False
@@ -69,6 +72,7 @@ class MissionComputer():
             with open(missionfile, "r") as f:
                 mission = json.load(f)
                 self.current_mission_plan = mission
+                self.current_mission_plan.setdefault("parameter", {})
 
         if not mission:
             self.progress = 0
@@ -111,7 +115,7 @@ class MissionComputer():
         def fb(_):
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")
-        await self.actions.get([a], fb)(action["commands"])
+        await self.actions.get([a], fb)(action.get("commands", {}))
 
     def start(self):
         if len(dict.keys()) > 0:
@@ -151,13 +155,18 @@ class MissionComputer():
         }
 
     async def start_camera(self, options: dict):
-        pass
+        sp("Starting Camera")
+        self._image.start_cam(options.get("ips", 1))
 
     async def stop_camera(self, options: dict):
-        pass
+        sp("Stopping Camera")
+        self._image.stop_cam(options.get("ips", 1))
 
     async def takeoff(self, options: dict):
-        pass
+        sp("Stopping Camera")
+        self._comms.start(options.get(
+            "height", self.current_mission_plan["parameter"].get(
+                "flight_height", 5)))
 
     async def land(self, options: dict):
         pass
@@ -182,7 +191,9 @@ class MissionComputer():
         else:
             h = self.current_mission_plan.get["parameter", {}].get("height", 5)
         pos = [options['lat'], options['lon'], h]
-        self._comms.mov_to_lat_lon_alt(pos, yaw)
+        if not await self._comms.is_flighing:
+            self._comms.start(h)
+        await self._comms.mov_to_lat_lon_alt(pos, yaw)
 
     async def forever(self, options: dict):
         sp("Running Until Forever")
