@@ -41,14 +41,31 @@ class MissionComputer():
         self._image._camera.start_camera()
         self.config = config
 
+        self.setup()
+
+        asyncio.create_task(self.save_progress())
+
+    def setup(self):
         self.current_mission_plan = {}
         self.current_mission_plan.setdefault("parameter", {})
         self.progress = 0
         self.max_progress = -1
         self.running = False
         self.main_programm = None
-
-        asyncio.create_task(self.save_progress())
+        self.actions = {
+            "start_camera": self.start_camera,
+            "stop_camera": self.stop_camera,
+            "takeoff": self.takeoff,
+            "land_at": self.land,
+            "delay": self.delay,
+            "list": self.execute_list,
+            "mov_multiple": self.mov_multiple,
+            "forever": self.forever,
+            "mov": self.mov
+        }
+        self.none_counting_tasks = [
+            "list", "mov_multiple"
+        ]
 
     def initiate(self, missionfile=""):
         """
@@ -71,6 +88,7 @@ class MissionComputer():
         if os.path.exists(MISSION_PATH):
             with open(missionfile, "r") as f:
                 mission = json.load(f)
+                rec_serialize(mission)
                 self.current_mission_plan = mission
                 self.current_mission_plan.setdefault("parameter", {})
 
@@ -110,14 +128,16 @@ class MissionComputer():
             await asyncio.sleep(0.5)
 
     async def execute(self, action: dict):
+        self.running = True
         a = action["mission_type"]
-
-        def fb(_):
+        if a not in self.none_counting_tasks:
+            self.progress += 1
+        if a not in self.actions.keys():
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")
-        self.running = True
+            return
         try:
-            await self.actions.get([a], fb)(action.get("commands", {}))
+            await self.actions[a](action.get("commands", {}))
         except Exception as e:
             sp(f"Error in {a} ({self.progress} / {self.max_progress}): {e}")
         self.running = False
@@ -145,43 +165,24 @@ class MissionComputer():
         asyncio.create_task(self._comms.receive_mission_file(self.new_mission))
         self.start()
 
-    @getattr
-    def actions(self) -> dict:
-        return {
-            "start_camera": self.start_camera,
-            "stop_camera": self.stop_camera,
-            "takeoff": self.takeoff,
-            "land_at": self.land,
-            "delay": self.delay,
-            "list": self.execute_list,
-            "mov_multiple": self.mov_multiple,
-            "forever": self.forever,
-            "mov": self.mov
-        }
-
     async def start_camera(self, options: dict):
-        self.progress += 1
         sp("Starting Camera")
         self._image.start_cam(options.get("ips", 1))
 
     async def stop_camera(self, options: dict):
-        self.progress += 1
         sp("Stopping Camera")
         self._image.stop_cam(options.get("ips", 1))
 
     async def takeoff(self, options: dict):
-        self.progress += 1
         sp("Stopping Camera")
         self._comms.start(options.get(
             "height", self.current_mission_plan["parameter"].get(
                 "flight_height", 5)))
 
     async def land(self, options: dict):
-        self.progress += 1
         pass
 
     async def delay(self, options: dict):
-        self.progress += 1
         await asyncio.sleep(options.get())
 
     async def execute_list(self, options: list[dict]):
@@ -194,7 +195,6 @@ class MissionComputer():
             await self.mov(item)
 
     async def mov(self, options: dict):
-        self.progress += 1
         sp(f"Moving to {options['lat']:.2f} {options['lon']:.2f}")
         yaw = options.get("yaw")
         if "height" in options.keys():
@@ -207,7 +207,6 @@ class MissionComputer():
         await self._comms.mov_to_lat_lon_alt(pos, yaw)
 
     async def forever(self, options: dict):
-        self.progress += 1
         sp("Running Until Forever")
         while True:
             await asyncio.sleep(2)
@@ -246,3 +245,18 @@ def action_with_count(plan, count: int) -> any[int, dict]:
     if count == 1:
         return plan
     return count - 1
+
+
+def rec_serialize(obj):
+    if isinstance(obj, dict):
+        if "src" in obj.keys():
+            if os.path.exists(obj["src"]):
+                with open(obj["src"], "r") as f:
+                    subobj = json.load(f)
+                    obj["action"] = subobj["action"]
+                    obj["commands"] = subobj["commands"]
+                    rec_serialize(subobj["commands"])
+            else:
+                sp(f"File {obj['src']} not found")
+    elif isinstance(obj, list):
+        [rec_serialize(i) for i in obj]
