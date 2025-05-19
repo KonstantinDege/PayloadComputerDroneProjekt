@@ -155,23 +155,28 @@ class MissionComputer():
         }
 
     async def start_camera(self, options: dict):
+        self.progress += 1
         sp("Starting Camera")
         self._image.start_cam(options.get("ips", 1))
 
     async def stop_camera(self, options: dict):
+        self.progress += 1
         sp("Stopping Camera")
         self._image.stop_cam(options.get("ips", 1))
 
     async def takeoff(self, options: dict):
+        self.progress += 1
         sp("Stopping Camera")
         self._comms.start(options.get(
             "height", self.current_mission_plan["parameter"].get(
                 "flight_height", 5)))
 
     async def land(self, options: dict):
+        self.progress += 1
         pass
 
     async def delay(self, options: dict):
+        self.progress += 1
         await asyncio.sleep(options.get())
 
     async def execute_list(self, options: list[dict]):
@@ -184,6 +189,7 @@ class MissionComputer():
             await self.mov(item)
 
     async def mov(self, options: dict):
+        self.progress += 1
         sp(f"Moving to {options['lat']:.2f} {options['lon']:.2f}")
         yaw = options.get("yaw")
         if "height" in options.keys():
@@ -196,6 +202,7 @@ class MissionComputer():
         await self._comms.mov_to_lat_lon_alt(pos, yaw)
 
     async def forever(self, options: dict):
+        self.progress += 1
         sp("Running Until Forever")
         while True:
             await asyncio.sleep(2)
