@@ -115,7 +115,12 @@ class MissionComputer():
         def fb(_):
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")
-        await self.actions.get([a], fb)(action.get("commands", {}))
+        self.running = True
+        try:
+            await self.actions.get([a], fb)(action.get("commands", {}))
+        except Exception as e:
+            sp(f"Error in {a} ({self.progress} / {self.max_progress}): {e}")
+        self.running = False
 
     def start(self):
         if len(dict.keys()) > 0:
