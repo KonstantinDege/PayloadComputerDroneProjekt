@@ -66,6 +66,9 @@ class MissionComputer():
         self.none_counting_tasks = [
             "list", "mov_multiple"
         ]
+        self.cancel_list = [
+            self._image.stop_cam
+        ]
 
     def initiate(self, missionfile=""):
         """
@@ -160,6 +163,11 @@ class MissionComputer():
     async def new_mission(self, plan: str):
         if self.main_programm:
             self.main_programm.cancel()
+            for task in self.cancel_list:
+                try:
+                    task()
+                except Exception as e:
+                    sp(f"Error in canceling: {e}")
         self.running = False
         self.initiate(plan)
         asyncio.create_task(self._comms.receive_mission_file(self.new_mission))
