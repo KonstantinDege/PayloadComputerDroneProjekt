@@ -188,8 +188,8 @@ class MissionComputer():
         self._image.stop_cam()
 
     async def takeoff(self, options: dict):
-        sp("Stopping Camera")
-        self._comms.start(options.get(
+        sp("Taking Off")
+        await self._comms.start(options.get(
             "height", self.current_mission_plan["parameter"].get(
                 "flight_height", 5)))
 
@@ -217,7 +217,7 @@ class MissionComputer():
             h = self.current_mission_plan.get["parameter", {}].get("height", 5)
         pos = [options['lat'], options['lon'], h]
         if not await self._comms.is_flighing:
-            self._comms.start(h)
+            await self._comms.start(h)
         await self._comms.mov_to_lat_lon_alt(pos, yaw)
 
     async def forever(self, options: dict):

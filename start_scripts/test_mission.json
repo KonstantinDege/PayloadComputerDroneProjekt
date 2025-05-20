@@ -1,6 +1,9 @@
 {
     "$schema": "../configs/mission_schema.json",
     "action": "list",
+    "parameter": {
+        "flight_height": 5
+    },
     "commands": [
         {
             "action": "start_camera"
@@ -10,6 +13,9 @@
             "commands": {
                 "time": 2
             }
+        },
+        {
+            "action": "takeoff"
         },
         {
             "action": "delay",

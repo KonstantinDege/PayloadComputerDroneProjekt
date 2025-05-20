@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation as R
 from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed, \
     Position, EulerAngle
 import asyncio
+from payloadcomputerdroneprojekt.helper import smart_print as print
 
 
 def save_execute(msg):
@@ -82,6 +83,7 @@ class Communications:
                 await self.drone.action.arm()
             except Exception as e:
                 print(f"self arming failed waiting for manuel: {e}")
+        print("Awaiting arming")
         await wait_for(self.drone.telemetry.armed(), lambda x: x)
         print("Drone armed")
 
