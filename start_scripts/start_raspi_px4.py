@@ -6,6 +6,7 @@ import json
 
 
 def main(config, mission):
+    mission = os.path.abspath(mission)
     with open(config) as f:
         config = json.load(f)
     port = "serial:///dev/ttyAMA0:57600"

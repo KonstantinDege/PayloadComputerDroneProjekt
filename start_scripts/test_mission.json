@@ -1,0 +1,24 @@
+{
+    "$schema": "../configs/mission_schema.json",
+    "action": "list",
+    "commands": [
+        {
+            "action": "start_camera"
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        },
+        {
+            "action": "stop_camera"
+        }
+    ]
+}

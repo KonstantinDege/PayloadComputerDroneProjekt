@@ -6,6 +6,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed, \
     Position, EulerAngle
+import asyncio
 
 
 def save_execute(msg):
@@ -317,7 +318,9 @@ class Communications:
         """
         await self.drone.action.land()
 
-    async def receive_mission_file(func_on_receive):
+    async def receive_mission_file(self, func_on_receive):
+        while True:
+            await asyncio.sleep(2)
         pass
 
     async def send_found_obj(obj: dict):

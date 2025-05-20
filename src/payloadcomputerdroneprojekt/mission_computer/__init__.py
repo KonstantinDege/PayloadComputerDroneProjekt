@@ -18,6 +18,7 @@ class MissionComputer():
     def __init__(self, config: dict, port: str, camera: Camera,
                  communications=Communications, image_analysis=ImageAnalysis):
         self._comms = communications(port, config.get("communications", {}))
+        error = None
         try:
             path = config.get("mission_storage", "mission_storage")
             os.makedirs(path, exist_ok=True)
@@ -30,7 +31,7 @@ class MissionComputer():
         os.chdir(path)
         logging.basicConfig(filename="flight.log",
                             format='%(asctime)s %(message)s',
-                            filemode='w')
+                            level=logging.INFO)
         if error:
             logging.info(error)
 
@@ -38,12 +39,11 @@ class MissionComputer():
             config=config.get("image", {}), camera=camera(
                 config.get("camera", None)), comms=self._comms)
         # always starting camera for better performance
+        asyncio.run(self._comms.connect())
         self._image._camera.start_camera()
         self.config = config
 
         self.setup()
-
-        asyncio.create_task(self.save_progress())
 
     def setup(self):
         self.current_mission_plan = {}
@@ -83,13 +83,11 @@ class MissionComputer():
         mission: dict = None
         if os.path.exists(missionfile):
             shutil.copyfile(missionfile, MISSION_PATH)
-            try:
+            if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
-            except Exception:
-                pass
 
         if os.path.exists(MISSION_PATH):
-            with open(missionfile, "r") as f:
+            with open(MISSION_PATH, "r") as f:
                 mission = json.load(f)
                 rec_serialize(mission)
                 self.current_mission_plan = mission
@@ -98,14 +96,12 @@ class MissionComputer():
         if not mission:
             self.progress = 0
             self.max_progress = -1
-            try:
+            if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
-            except Exception:
-                pass
             return
 
         if os.path.exists(MISSION_PROGRESS):
-            with open(missionfile, "r") as f:
+            with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
 
             if abs(progress["time"] - time.time()
@@ -120,15 +116,19 @@ class MissionComputer():
 
     async def save_progress(self):
         while True:
-            if self.running:
-                obj = {
-                    "progress": self.progress,
-                    "max_progress": self.max_progress,
-                    "time": time.time()
-                }
-                with open(MISSION_PROGRESS) as f:
-                    json.dump(obj, f)
-            await asyncio.sleep(0.5)
+            await self._save_progress()
+            await asyncio.sleep(0.1)
+
+    async def _save_progress(self):
+        if self.running:
+            obj = {
+                "progress": self.progress,
+                "max_progress": self.max_progress,
+                "time": time.time()
+            }
+            with open(MISSION_PROGRESS, "w") as f:
+                json.dump(obj, f)
+        sp(f"({self.progress}), {self.running}")
 
     async def execute(self, action: dict):
         self.running = True
@@ -143,22 +143,28 @@ class MissionComputer():
             sp(f"Error in {a} ({self.progress} / {self.max_progress}): {e}")
         if a not in self.none_counting_tasks:
             self.progress += 1
+
+        await self._save_progress()
         self.running = False
 
     def start(self):
-        if len(dict.keys()) > 0:
+        asyncio.run(self._start())
+
+    async def _start(self):
+        asyncio.create_task(self.save_progress())
+        if len(self.current_mission_plan.keys()) > 0:
             self.running = True
-            if self.progress == 0:
-                self.main_programm = asyncio.create_task(
-                    self.execute(self.current_mission_plan))
-            else:
-                self.main_programm = asyncio.create_task(
-                    self.execute(action_with_count(
-                        self.current_mission_plan, self.progress)))
+            plan = self.current_mission_plan
+            if self.progress > 0:
+                plan = action_with_count(
+                    self.current_mission_plan, self.progress)
+
+            self.main_programm = asyncio.create_task(
+                self.execute(plan))
         else:
             sp("No Valid Mision")
             sp("Waiting for Networking connection")
-            asyncio.run(self._comms.receive_mission_file(self.new_mission))
+        await self._comms.receive_mission_file(self.new_mission)
 
     async def new_mission(self, plan: str):
         if self.main_programm:
@@ -179,7 +185,7 @@ class MissionComputer():
 
     async def stop_camera(self, options: dict):
         sp("Stopping Camera")
-        self._image.stop_cam(options.get("ips", 1))
+        self._image.stop_cam()
 
     async def takeoff(self, options: dict):
         sp("Stopping Camera")
@@ -191,7 +197,7 @@ class MissionComputer():
         pass
 
     async def delay(self, options: dict):
-        await asyncio.sleep(options.get())
+        await asyncio.sleep(options.get("time", 1))
 
     async def execute_list(self, options: list[dict]):
         for item in options:

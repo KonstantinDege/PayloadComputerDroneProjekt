@@ -7,6 +7,7 @@ from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
 from scipy.cluster.hierarchy import fclusterdata
+from payloadcomputerdroneprojekt.helper import smart_print as print
 
 
 class ImageAnalysis:
