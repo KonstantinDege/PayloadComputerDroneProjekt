@@ -216,6 +216,7 @@ class MissionComputer():
         sp(f"Moving Multiple {len(options)}")
         for item in options:
             await self.mov(item)
+            self.progress += 1
 
     async def mov(self, options: dict):
         sp(f"Moving to {options['lat']:.2f} {options['lon']:.2f}")
