@@ -22,10 +22,10 @@ class TestImage(unittest.TestCase):
             "y_center": 230
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert np.linalg.norm(np.array(pos) - np.array([0, 0, 1])) == 0
 
     def test_local_coords_pos_x_positive(self):
@@ -40,10 +40,10 @@ class TestImage(unittest.TestCase):
             "y_center": 0
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert pos[0] > 0
         assert pos[1] == 0
 
@@ -59,10 +59,10 @@ class TestImage(unittest.TestCase):
             "y_center": 230
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert pos[1] > 0
         assert pos[0] == 0
 
@@ -78,10 +78,10 @@ class TestImage(unittest.TestCase):
             "y_center": 400
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert pos[0] < 0
         assert pos[1] == 0
 
@@ -97,10 +97,10 @@ class TestImage(unittest.TestCase):
             "y_center": 230
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert pos[1] < 0
         assert pos[0] == 0
 
@@ -116,10 +116,10 @@ class TestImage(unittest.TestCase):
             "y_center": 2592/2+700
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[1], 0)
         assert pos[0] > 0
 
@@ -135,10 +135,10 @@ class TestImage(unittest.TestCase):
             "y_center": 230
         }
         pos_com = [
-            0, 0, 0, 0, 10, 0
+            0, 10, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
 
         assert pos[0] > 0
         assert pos[1] == 0
@@ -155,10 +155,10 @@ class TestImage(unittest.TestCase):
             "y_center": 230
         }
         pos_com = [
-            0, 0, 0, 5, 0, 0
+            5, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (460, 650))
+        pos = ia.get_local_offset(obj, pos_com, height, (460, 650))
         assert pos[0] == 0
         assert pos[1] < 0
 
@@ -174,10 +174,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1922
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.120, places=1)
         self.assertAlmostEqual(pos[1], 0, places=1)
 
@@ -193,10 +193,10 @@ class TestImage(unittest.TestCase):
             "y_center": 916
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.080, places=0)
         self.assertAlmostEqual(pos[1], 0, places=2)
 
@@ -212,10 +212,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1343
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0, places=1)
         self.assertAlmostEqual(pos[1], 0.050, places=2)
 
@@ -231,10 +231,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1353
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0, places=1)
         self.assertAlmostEqual(pos[1], -0.070, places=2)
 
@@ -250,10 +250,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1683
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.070, places=1)
         self.assertAlmostEqual(pos[1], 0.020, places=1)
 
@@ -269,10 +269,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1547
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.040, places=1)
         self.assertAlmostEqual(pos[1], -0.070, places=1)
 
@@ -288,10 +288,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1015
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
         self.assertAlmostEqual(pos[1], -0.040, places=2)
 
@@ -307,10 +307,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1223
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.025, places=1)
         self.assertAlmostEqual(pos[1], 0.055, places=2)
 
@@ -326,10 +326,10 @@ class TestImage(unittest.TestCase):
             "y_center": 2563
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.240, places=1)
         self.assertAlmostEqual(pos[1], 0, places=2)
 
@@ -345,10 +345,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1371
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0, places=1)
         self.assertAlmostEqual(pos[1], 0.460, places=1)
 
@@ -364,10 +364,10 @@ class TestImage(unittest.TestCase):
             "y_center": 2554
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.240, places=1)
         self.assertAlmostEqual(pos[1], 0.460, places=1)
 
@@ -383,10 +383,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1964
         }
         pos_com = [
-            0, 0, 0, 0, -15.5, 0
+            0, -15.5, 0
         ]
         height = 0.740
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
         self.assertAlmostEqual(pos[1], 0.040, places=2)
 
@@ -402,10 +402,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1521
         }
         pos_com = [
-            0, 0, 0, 0, -8, 0
+            0, -8, 0
         ]
         height = 0.725
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.070, places=1)
         self.assertAlmostEqual(pos[1], 0.040, places=2)
 
@@ -421,10 +421,10 @@ class TestImage(unittest.TestCase):
             "y_center": 198
         }
         pos_com = [
-            0, 0, 0, 0, -15.5, 0
+            0, -15.5, 0
         ]
         height = 0.712
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], -0.510, places=1)
         self.assertAlmostEqual(pos[1], -0.500, places=1)
 
@@ -441,10 +441,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1296
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 1
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.05, places=3)
         self.assertAlmostEqual(pos[1], 0, places=2)
 
@@ -461,10 +461,10 @@ class TestImage(unittest.TestCase):
             "y_center": 1296
         }
         pos_com = [
-            0, 0, 0, 0, 0, 0
+            0, 0, 0
         ]
         height = 0.5
-        pos = ia.add_latlonalt(obj, pos_com, height, (2592, 4608))
+        pos = ia.get_local_offset(obj, pos_com, height, (2592, 4608))
         self.assertAlmostEqual(pos[0], 0.05, places=3)
         self.assertAlmostEqual(pos[1], 0, places=2)
 

@@ -550,4 +550,3 @@ class ImageAnalysis:
 
         obj["latlonalt"] = loc_to_glo(
             local_vec_streched[0], local_vec_streched[1])
-        return local_vec_streched
