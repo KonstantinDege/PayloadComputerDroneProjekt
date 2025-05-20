@@ -9,55 +9,55 @@
         ]
     },
     "image": {
-        "path": "data/images/spazieren",
+        "path": "data/images",
         "colors": [
             {
                 "name": "blue",
                 "lower": [
-                    100,
-                    100,
-                    100
+                    200,
+                    30,
+                    3
                 ],
                 "upper": [
-                    140,
-                    255,
-                    255
+                    280,
+                    101,
+                    101
                 ]
             },
             {
-                "name": "rot",
+                "name": "red",
                 "lower_0": [
                     0,
-                    50,
-                    50
+                    20,
+                    20
                 ],
                 "upper_0": [
-                    10,
-                    255,
-                    255
+                    20,
+                    101,
+                    101
                 ],
                 "lower_1": [
-                    160,
-                    50,
-                    50
+                    320,
+                    20,
+                    20
                 ],
                 "upper_1": [
-                    179,
-                    255,
-                    255
+                    360,
+                    101,
+                    101
                 ]
             },
             {
-                "name": "gelb",
+                "name": "yellow",
                 "lower": [
-                    20,
-                    10,
-                    100
+                    40,
+                    30,
+                    30
                 ],
                 "upper": [
-                    60,
-                    255,
-                    255
+                    80,
+                    101,
+                    101
                 ]
             }
         ],
@@ -68,13 +68,12 @@
                 0
             ],
             "upper": [
-                180,
-                255,
+                360,
+                101,
                 30
             ]
         },
         "min_diagonal": 50,
-        "threashold": -1,
-        "min_diagonal_shape": 2
+        "threashold": -1
     }
 }

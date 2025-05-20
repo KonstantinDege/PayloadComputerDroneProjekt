@@ -23,7 +23,7 @@
                 ]
             },
             {
-                "name": "rot",
+                "name": "red",
                 "lower_0": [
                     0,
                     20,
@@ -46,7 +46,7 @@
                 ]
             },
             {
-                "name": "gelb",
+                "name": "yellow",
                 "lower": [
                     40,
                     30,

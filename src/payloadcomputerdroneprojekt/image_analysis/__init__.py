@@ -20,29 +20,33 @@ class ImageAnalysis:
         self._dh = DataHandler(config.setdefault(
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
+        def conhsv(val):
+            return np.array([int(val[0] / 2),
+                             int(val[1] * 2.55),
+                             int(val[2] * 2.55)])
         self.colors: dict = {}
         for color in config["colors"]:
             if "upper_1" in color.keys():
                 self.colors[color["name"]] = [
                     {
-                        "lower": np.array(color["lower_0"]),
-                        "upper": np.array(color["upper_0"])
+                        "lower": conhsv(color["lower_0"]),
+                        "upper": conhsv(color["upper_0"])
                     },
                     {
-                        "lower": np.array(color["lower_1"]),
-                        "upper": np.array(color["upper_1"])
+                        "lower": conhsv(color["lower_1"]),
+                        "upper": conhsv(color["upper_1"])
                     }
                 ]
 
             else:
                 self.colors[color["name"]] = {
-                    "lower": np.array(color["lower"]),
-                    "upper": np.array(color["upper"])
+                    "lower": conhsv(color["lower"]),
+                    "upper": conhsv(color["upper"])
                 }
 
         self.shape_color = {
-            "lower": np.array([config["shape_color"]["lower"]]),
-            "upper": np.array([config["shape_color"]["upper"]])
+            "lower": conhsv(config["shape_color"]["lower"]),
+            "upper": conhsv(config["shape_color"]["upper"])
         }
 
     def start_cam(self, ips: float = 1.0) -> bool:
@@ -552,4 +556,3 @@ class ImageAnalysis:
 
         obj["latlonalt"] = loc_to_glo(
             local_vec_streched[0], local_vec_streched[1])
-        return local_vec_streched

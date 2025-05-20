@@ -45,7 +45,10 @@ class TestImage(unittest.TestCase):
 
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, TestCommunications(""))
-        assert ia.start_cam()
+
+        async def com():
+            assert ia.start_cam()
+        asyncio.run(com())
 
     def test_color(self):
         """
@@ -87,7 +90,7 @@ class TestImage(unittest.TestCase):
 
         obj, _ = ia.compute_image(image)
 
-        assert len(obj) == 4
+        assert len(obj) == 3
 
         ia.get_filtered_objs()
 

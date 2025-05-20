@@ -136,15 +136,36 @@
             "type": "array",
             "minLength": 3,
             "maxLength": 3,
-            "items": {
-                "anyOf": [
-                    {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 255
-                    }
+            "examples": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    360,
+                    101,
+                    101
                 ]
-            }
+            ],
+            "description": "A color value in HSV format",
+            "items": [
+                {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 360
+                },
+                {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 101
+                },
+                {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 101
+                }
+            ]
         }
     },
     "required": [
