@@ -45,7 +45,10 @@ class TestImage(unittest.TestCase):
 
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, TestCommunications(""))
-        assert ia.start_cam()
+
+        async def com():
+            assert ia.start_cam()
+        asyncio.run(com())
 
     def test_color(self):
         """
