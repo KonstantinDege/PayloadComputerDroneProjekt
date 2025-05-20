@@ -133,8 +133,6 @@ class MissionComputer():
     async def execute(self, action: dict):
         self.running = True
         a = action["action"]
-        if a not in self.none_counting_tasks:
-            self.progress += 1
         if a not in self.actions.keys():
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")
@@ -143,6 +141,8 @@ class MissionComputer():
             await self.actions[a](action.get("commands", {}))
         except Exception as e:
             sp(f"Error in {a} ({self.progress} / {self.max_progress}): {e}")
+        if a not in self.none_counting_tasks:
+            self.progress += 1
         self.running = False
 
     def start(self):
