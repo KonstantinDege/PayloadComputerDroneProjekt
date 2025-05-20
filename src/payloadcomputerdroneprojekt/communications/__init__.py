@@ -6,6 +6,9 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed, \
     Position, EulerAngle
+import asyncio
+import socket
+import os
 
 
 def save_execute(msg):
@@ -323,8 +326,58 @@ class Communications:
     def send_found_obj(obj: dict):
         pass
 
-    def send_image(path: str):
-        pass
+    @save_execute("Send Image")
+    async def send_image(self, path: str) -> bool:
+        """
+        Send an image file to the laptop over WiFi using TCP sockets.
+
+        Parameters:
+            path (str): File path to the image on the Raspberry Pi.
+
+        Returns:
+            bool: True if the image was sent successfully, False otherwise.
+        """
+        # Validate file existence and accessibility
+        if not os.path.isfile(path):
+            print(f"Error: Image file not found at {path}")
+            return False
+
+        # Get laptop IP and port from config, with defaults
+        laptop_ip = self.config.get("laptop_ip", "192.168.1.100")
+        laptop_port = self.config.get("laptop_port", 5000)
+
+        try:
+            # Get file size
+            file_size = os.path.getsize(path)
+
+            # Create TCP socket
+            reader, writer = await asyncio.open_connection(laptop_ip, laptop_port)
+
+            # Send file size first (8 bytes, big-endian)
+            writer.write(file_size.to_bytes(8, byteorder='big'))
+            await writer.drain()
+
+            # Send image data in chunks
+            with open(path, 'rb') as f:
+                while True:
+                    chunk = f.read(4096)  # 4KB chunks
+                    if not chunk:
+                        break
+                    writer.write(chunk)
+                    await writer.drain()
+
+            # Close connection
+            writer.close()
+            await writer.wait_closed()
+            print(f"Image sent successfully: {path}")
+            return True
+
+        except (socket.gaierror, ConnectionRefusedError, OSError) as e:
+            print(f"Network error while sending image: {e}")
+            return False
+        except Exception as e:
+            print(f"Error sending image: {e}")
+            return False
 
     def send_status(status: str):
         pass
