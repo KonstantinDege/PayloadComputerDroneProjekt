@@ -39,7 +39,6 @@ class MissionComputer():
             config=config.get("image", {}), camera=camera(
                 config.get("camera", None)), comms=self._comms)
         # always starting camera for better performance
-        asyncio.run(self._comms.connect())
         self._image._camera.start_camera()
         self.config = config
 
@@ -52,6 +51,7 @@ class MissionComputer():
         self.max_progress = -1
         self.running = False
         self.main_programm = None
+        self.wait_plan = None
         self.actions = {
             "start_camera": self.start_camera,
             "stop_camera": self.stop_camera,
@@ -116,10 +116,10 @@ class MissionComputer():
 
     async def save_progress(self):
         while True:
-            await self._save_progress()
+            self._save_progress()
             await asyncio.sleep(0.1)
 
-    async def _save_progress(self):
+    def _save_progress(self):
         if self.running:
             obj = {
                 "progress": self.progress,
@@ -128,7 +128,6 @@ class MissionComputer():
             }
             with open(MISSION_PROGRESS, "w") as f:
                 json.dump(obj, f)
-        sp(f"({self.progress}), {self.running}")
 
     async def execute(self, action: dict):
         self.running = True
@@ -144,13 +143,15 @@ class MissionComputer():
         if a not in self.none_counting_tasks:
             self.progress += 1
 
-        await self._save_progress()
+        self._save_progress()
         self.running = False
 
     def start(self):
         asyncio.run(self._start())
 
     async def _start(self):
+        await self._comms.connect()
+
         asyncio.create_task(self.save_progress())
         if len(self.current_mission_plan.keys()) > 0:
             self.running = True
@@ -164,7 +165,14 @@ class MissionComputer():
         else:
             sp("No Valid Mision")
             sp("Waiting for Networking connection")
-        await self._comms.receive_mission_file(self.new_mission)
+        self.wait_plan = asyncio.create_task(
+            self._comms.receive_mission_file(self.new_mission))
+        if self.main_programm:
+            await self.main_programm
+        if self.wait_plan:
+            await self.wait_plan
+        while True:
+            asyncio.sleep(10)
 
     async def new_mission(self, plan: str):
         if self.main_programm:
@@ -176,7 +184,6 @@ class MissionComputer():
                     sp(f"Error in canceling: {e}")
         self.running = False
         self.initiate(plan)
-        asyncio.create_task(self._comms.receive_mission_file(self.new_mission))
         self.start()
 
     async def start_camera(self, options: dict):
@@ -188,15 +195,17 @@ class MissionComputer():
         self._image.stop_cam()
 
     async def takeoff(self, options: dict):
-        sp("Taking Off")
-        await self._comms.start(options.get(
+        h = options.get(
             "height", self.current_mission_plan["parameter"].get(
-                "flight_height", 5)))
+                "flight_height", 5))
+        sp(f"Taking Off to height {h}")
+        await self._comms.start(h)
 
     async def land(self, options: dict):
         pass
 
     async def delay(self, options: dict):
+        sp(f"Delay: {options.get('time', 1)}")
         await asyncio.sleep(options.get("time", 1))
 
     async def execute_list(self, options: list[dict]):

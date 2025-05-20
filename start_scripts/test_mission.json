@@ -20,7 +20,7 @@
         {
             "action": "delay",
             "commands": {
-                "time": 2
+                "time": 10
             }
         },
         {
