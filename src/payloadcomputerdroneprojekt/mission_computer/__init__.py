@@ -138,7 +138,6 @@ class MissionComputer():
         # await self._comms.drone.telemetry.set_rate_position(100)
         # await self._comms.drone.telemetry.set_rate_in_air(100)
 
-
         if a not in self.actions.keys():
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")
