@@ -9,7 +9,6 @@ import json
 import shutil
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import asyncio
-from payloadcomputerdroneprojekt.mission_computer.filter import smooth
 
 MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"

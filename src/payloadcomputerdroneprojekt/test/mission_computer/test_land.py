@@ -35,7 +35,8 @@ async def mission():
     await computer.takeoff({})
     await computer._comms.mov_by_xyz([8, 2, 0])
     pos = await computer._comms.get_position_lat_lon_alt()
-    await computer.land({"lat": pos[0], "lon": pos[1], "shape": "", "color": ""})
+    await computer.land({"lat": pos[0], "lon": pos[1],
+                         "shape": "", "color": ""})
 
 
 class TestLand(unittest.TestCase):
