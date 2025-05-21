@@ -368,7 +368,8 @@ class ImageAnalysis:
         else:
             return cv2.bitwise_and(image, image, mask=mask)
 
-    async def get_current_offset_closest(self, color, shape, yaw_0=True):
+    async def get_current_offset_closest(self, color: str,
+                                         shape: str, yaw_0=True):
         """
         What does the function do?
             Returns the offset from the drone to the object.
@@ -554,12 +555,13 @@ class ImageAnalysis:
         for p1, p2, p3 in itertools.permutations(points, 3):
             v1 = np.array(p2) - np.array(p1)
             v2 = np.array(p3) - np.array(p1)
-                
+
             if np.isclose(np.dot(v1, v2), 0):
                 p4 = np.array(p2) + np.array(p3) - np.array(p1)
                 points.append(p4)
 
-        for (a, b), (c, d) in itertools.combinations(itertools.combinations(points, 2), 2):
+        for (a, b), (c, d) in itertools.combinations(
+                itertools.combinations(points, 2), 2):
 
             m1 = (np.array(a) + np.array(b)) / 2
             m2 = (np.array(c) + np.array(d)) / 2
