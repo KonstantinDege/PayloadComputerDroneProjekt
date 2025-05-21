@@ -101,7 +101,8 @@
                                 "takeoff",
                                 "land_at",
                                 "delay",
-                                "forever"
+                                "forever",
+                                "mov_to_objects_cap_pic"
                             ],
                             "description": "The type of action for the drone."
                         },
@@ -135,6 +136,11 @@
                     "type": "number",
                     "minimum": 0,
                     "description": "Duration in seconds."
+                },
+                "delay": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Delay in seconds."
                 },
                 "altitude": {
                     "type": "number",
