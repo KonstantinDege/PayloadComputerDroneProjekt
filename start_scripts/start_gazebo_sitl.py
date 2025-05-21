@@ -3,66 +3,16 @@ from payloadcomputerdroneprojekt.test.image_analysis import TestCamera
 import argparse
 import os
 import json
-import asyncio
-
-
-async def run_cam(computer: MissionComputer):
-    await computer._comms.connect()
-    computer._image.start_cam()
-    while True:
-        await asyncio.sleep(2)
-
-
-async def flight_raspi_hover(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    await con.start(0.5)
-    print("start checkpoint")
-    await con.mov_by_xyz([0, -5, 0])
-    print("checkpoint reached")
-    while True:
-        await asyncio.sleep(2)
-
-
-async def fligh(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    await con.start()
-    print("start checkpoint")
-    await con.mov_by_xyz([0, -15, 0])
-    print("first checkpoint")
-    await con.mov_to_xyz([0, 0, -5])
-    await con.land()
-
-
-async def fligh_cam(computer: MissionComputer):
-    con = computer._comms
-    await con.connect()
-    computer._image.start_cam()
-    await con.start()
-    print("start checkpoint")
-    await con.mov_by_xyz([0, -15, 0])
-    print("first checkpoint")
-    await con.mov_to_xyz([0, 0, -5])
-    await con.land()
-    computer._image.stop_cam()
 
 
 def main(config, mission):
+    mission = os.path.abspath(mission)
     with open(config) as f:
         config = json.load(f)
     port = "udp://:14540"
     computer = MissionComputer(config=config, camera=TestCamera, port=port)
-    if mission == "demo_cam":
-        asyncio.run(run_cam(computer))
-    elif mission == "fligh":
-        asyncio.run(fligh(computer))
-    elif mission == "fligh_low_ris":
-        asyncio.run(flight_raspi_hover(computer))
-    elif mission == "fligh_cam":
-        asyncio.run(fligh_cam(computer))
-    else:
-        computer.start(mission)
+    computer.initiate(mission)
+    computer.start()
 
 
 def args():

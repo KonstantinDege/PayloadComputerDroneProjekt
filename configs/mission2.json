@@ -1,4 +1,33 @@
 {
     "$schema": "mission_schema.json",
-    "path": "/tmp/mission2"
+    "parameter": {
+        "flight_height": 10
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "height": 10
+            }
+        },
+        {
+            "action": "start_camera"
+        },
+        {
+            "action": "mov_multiple",
+            "commands":[
+                {
+                    "lat": 0,
+                    "lon": 0
+                }
+            ]
+        },
+        {
+            "action": "stop_camera"
+        },
+        {
+            "action": "land_at"
+        }
+    ]
 }

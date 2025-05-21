@@ -34,7 +34,11 @@ class DataHandler:
         return new_item
 
     def get_items(self):
-        return [item.get_dict() for item in self._list]
+        def get_item(item):
+            if isinstance(item, DataItem):
+                return item.get_dict()
+            return item
+        return [get_item(item) for item in self._list]
 
     def _save(self) -> None:
         with open(join(self._path, FILENAME), "a") as f:

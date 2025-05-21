@@ -7,6 +7,8 @@ from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
 from scipy.cluster.hierarchy import fclusterdata
+from payloadcomputerdroneprojekt.helper import smart_print as sp
+import time
 
 
 class ImageAnalysis:
@@ -66,10 +68,11 @@ class ImageAnalysis:
         """
         self._camera.start_camera()
         try:
+            sp(f"starting camera with {ips}")
             self._task = asyncio.create_task(self._async_analysis(ips))
             return True
         except Exception as e:
-            print(f"Error starting the capture: {e}")
+            sp(f"Error starting the capture: {e}")
             return False
 
     def stop_cam(self) -> bool:
@@ -89,22 +92,22 @@ class ImageAnalysis:
             self._task.cancel()
             return True
         except Exception as e:  # TODO: try finding correct Exception Type
-            print(f"Error stopping the capture: {e}")
+            sp(f"Error stopping the capture: {e}")
             return False
 
-    def take_image(self):
+    async def take_image(self):
         try:
-            asyncio.run(self._take_image())
+            await self._take_image()
         except Exception as e:
-            print(f"Take image failed {e}")
+            sp(f"Take image failed {e}")
             return False
         return True
 
-    def _take_image(self):
+    async def _take_image(self):
         if not self._camera.is_active:
             self._camera.start_camera()
-            asyncio.sleep(2)
-        self.image_loop()
+            await asyncio.sleep(2)
+        await self.image_loop()
 
     async def _async_analysis(self, ips: float):
         """
@@ -122,31 +125,34 @@ class ImageAnalysis:
         try:
             ips = float(ips)
         except Exception as e:
-            print(f"Could not convert ips to float, using Standard ips=1; {e}")
+            sp(f"Could not convert ips to float, using Standard ips=1; {e}")
             ips = 1.0
         interval = 1.0 / ips
         count = 0
 
         try:
             while True:
-                print(f"Current amount of images: {count}")
+                sp(f"Current amount of images: {count}")
                 count += 1
                 try:
                     await self.image_loop()
                 except Exception as e:
-                    print(f"Error {e} on Image with count: {count}")
+                    sp(f"Error {e} on Image with count: {count}")
                 await asyncio.sleep(interval)
         except asyncio.CancelledError:
-            print("Capturing stopped.")
+            sp("Capturing stopped.")
 
     async def image_loop(self) -> None:
         """
         Wraps the logik that runs the analysis each frame.
         """
+        st = time.time()
         image = self._camera.get_current_frame()
         pos_com = await self._comms.get_position_lat_lon_alt()
-        height = await self._comms.get_relative_height()
-        self._image_sub_routine(image, pos_com, height)
+        if st - time.time() < 0.25:
+            self._image_sub_routine(image, pos_com, pos_com[2])
+        else:
+            sp("skipped image")
 
     def _image_sub_routine(self, image, pos_com, height):
         with self._dh as item:
@@ -155,7 +161,7 @@ class ImageAnalysis:
             item.add_height(height)
             if (quality := self.quality_of_image(
                     image)) < self.config["threashold"]:
-                print("Skipped Image; Quality to low")
+                sp("Skipped Image; Quality to low")
                 item.add_quality(quality)
                 return
             if pos_com[0] == 0:
@@ -393,7 +399,7 @@ class ImageAnalysis:
         """
         if not self._camera.is_active:
             self._camera.start_camera()
-            asyncio.sleep(2)
+            await asyncio.sleep(2)
         pos = self._comms.get_position_xyz()
         dh = self._comms.get_relative_height()
         img = self._camera.get_current_frame()
@@ -480,7 +486,6 @@ class ImageAnalysis:
         # TODO: add sorting for distance for each shape, and add all to each of
         # those runs so that all elements under deltapos < same_obj_distance
         # are in one list
-        print(output)
 
     def get_matching_objects(self, color: str, shape: str = None
                              ) -> list[dict]:

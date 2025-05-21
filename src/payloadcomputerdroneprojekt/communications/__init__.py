@@ -1,3 +1,4 @@
+import asyncio.selector_events
 import math
 from mavsdk import System
 from mavsdk.offboard \
@@ -7,6 +8,7 @@ from scipy.spatial.transform import Rotation as R
 from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed, \
     Position, EulerAngle
 import asyncio
+from payloadcomputerdroneprojekt.helper import smart_print as sp
 import socket
 import os
 
@@ -17,7 +19,7 @@ def save_execute(msg):
             try:
                 return f(*args, **kwargs)
             except Exception as e:
-                print(f"{msg}, Error: {e}")
+                sp(f"{msg}, Error: {e}")
         return wrap
     return wrapper
 
@@ -48,14 +50,17 @@ class Communications:
         """
         if self.drone is None:
             self.drone = System()
-            print("-- System initialized")
+            sp("-- System initialized")
 
-        print(f"Connecting to drone at {self.address} ...")
+        sp(f"Connecting to drone at {self.address} ...")
+        if "action" not in self.drone._plugins or \
+                not (await get_data(self.drone.core.connection_state())
+                     ).is_connected:
+            await self.drone.connect(system_address=self.address)
+            await wait_for(self.drone.core.connection_state(),
+                           lambda x: x.is_connected)
 
-        await self.drone.connect(system_address=self.address)
-        await wait_for(self.drone.core.connection_state(),
-                       lambda x: x.is_connected)
-        print("-- Connection established successfully")
+        sp("-- Connection established successfully")
 
     async def check_health(self) -> bool:
         """Return if GPS Position is Okay
@@ -83,9 +88,10 @@ class Communications:
             try:
                 await self.drone.action.arm()
             except Exception as e:
-                print(f"self arming failed waiting for manuel: {e}")
+                sp(f"self arming failed waiting for manuel: {e}")
+        sp("Awaiting arming")
         await wait_for(self.drone.telemetry.armed(), lambda x: x)
-        print("Drone armed")
+        sp("Drone armed")
 
     @save_execute("Disarm")
     async def await_disarm(self):
@@ -96,21 +102,22 @@ class Communications:
             try:
                 await self.drone.action.disarm()
             except Exception as e:
-                print(f"self arming failed waiting for manuel: {e}")
+                sp(f"self arming failed waiting for manuel: {e}")
         await wait_for(self.drone.telemetry.armed(), lambda x: not x)
-        print("Drone disarmed")
+        sp("Drone disarmed")
 
     @save_execute("Ensure Offboard")
     async def _ensure_offboard(self):
         mode = await get_data(self.drone.telemetry.flight_mode())
         if mode == "OFFBOARD":
-            print("-- Already in offboard mode")
+            sp("-- Already in offboard mode")
         else:
+            pos = await self.get_position_xyz()
             await self.drone.offboard.set_position_ned(
-                PositionNedYaw(0.0, 0.0, 0.0, 0.0))
+                PositionNedYaw(*pos[:4]))
             if self.config.get("allowed_mode_switch", True):
                 # check if this would work
-                print("-- Starting offboard")
+                sp("-- Starting offboard")
                 await self.drone.offboard.start()
             else:
                 await wait_for(self.drone.telemetry.flight_mode(),
@@ -122,9 +129,6 @@ class Communications:
         Returns:
             _type_: _description_
         """
-        if not await self.check_health():
-            print("Telemetry not ready")
-            return -5.
         return (await get_data(self.drone.telemetry.position()
                                )).relative_altitude_m
 
@@ -150,24 +154,21 @@ class Communications:
             _type_: _description_
         """
         await self.await_arm()
-        if await self.get_relative_height() >= height:
-            return True
         await self.check_health()
         await self._ensure_offboard()
+        if await self.get_relative_height() >= height:
+            return True
         h = await self.get_relative_height()
         await self.mov_by_xyz([0, 0, -height-h], 0)
 
     async def _get_attitude(self):
         # Timspektion
-        if not await self.check_health():
-            print("Telemetry not ready")
-            return [0, 0, 0]
         res: EulerAngle = await get_data(self.drone.telemetry.attitude_euler())
         return [res.roll_deg, res.pitch_deg, res.yaw_deg]
 
     async def _get_yaw(self):
         if not await self.check_health():
-            print("Telemetry not ready")
+            sp("Telemetry not ready")
             return [0, 0, 0]
         return (await get_data(self.drone.telemetry.attitude_euler())).yaw_deg
 
@@ -179,9 +180,6 @@ class Communications:
         Returns:
             list[float]: x, y, z, roll, pitch, yaw
         """
-        if not await self.check_health():
-            print("Telemetry not ready")
-            return [0, 0, 0, 0, 0, 0]
         state: PositionVelocityNed = await get_data(
             self.drone.telemetry.position_velocity_ned())
         return get_pos_vec(state) + await self._get_attitude()
@@ -192,13 +190,10 @@ class Communications:
         return zeros but not wait until it is ready.
         [m, degree]
         Returns:
-            list[float]: lat, lon, alt, roll, pitch, yaw
+            list[float]: lat, lon, alt_rel, roll, pitch, yaw
         """
-        if not await self.check_health():
-            print("Telemetry not ready")
-            return [0, 0, 0, 0, 0, 0]
         res: Position = await get_data(self.drone.telemetry.position())
-        return [res.latitude_deg, res.longitude_deg, res.absolute_altitude_m
+        return [res.latitude_deg, res.longitude_deg, res.relative_altitude_m
                 ] + await self._get_attitude()
 
     @save_execute("Move to XYZ")
@@ -305,7 +300,7 @@ class Communications:
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.longitude_deg - pos[1]
                         ) < self.config.get("degree_error", 0.00001) and
-                    abs(state.absolute_altitude_m - pos[2]
+                    abs(state.relative_altitude_m - pos[2]
                         ) < self.config.get("pos_error", 0.75))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
@@ -320,10 +315,12 @@ class Communications:
         """
         await self.drone.action.land()
 
-    def receive_mission_file():
+    async def receive_mission_file(self, func_on_receive):
+        while True:
+            await asyncio.sleep(2)
         pass
 
-    def send_found_obj(obj: dict):
+    async def send_found_obj(obj: dict):
         pass
 
     @save_execute("Send Image")
@@ -379,7 +376,7 @@ class Communications:
             print(f"Error sending image: {e}")
             return False
 
-    def send_status(status: str):
+    async def send_status(status: str):
         pass
 
 
