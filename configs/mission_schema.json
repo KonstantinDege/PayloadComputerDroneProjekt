@@ -34,62 +34,94 @@
         "commands": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/command"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/command"
+                    },
+                    {
+                        "$ref": "#/definitions/movement"
+                    }
+                ]
             }
         }
     },
     "required": [
         "parameter",
-        "mission_type",
         "commands"
     ],
     "definitions": {
         "command": {
-            "type": "object",
-            "properties": {
-                "src": {
-                    "type": "string",
-                    "description": "The source of the command."
-                },
-                "action": {
-                    "type": "string",
-                    "enum": [
-                        "start_camera",
-                        "stop_camera",
-                        "takeoff",
-                        "land_at",
-                        "delay",
-                        "list",
-                        "mov_multiple",
-                        "forever"
-                    ],
-                    "description": "The type of action for the drone."
-                },
-                "commands": {
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/action_properties"
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "list"
+                            ],
+                            "description": "The type of action for the drone."
                         },
-                        {
-                            "$ref": "#/definitions/movement"
-                        },
-                        {
+                        "commands": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/command"
                             },
                             "description": "A list of commands for 'list' or 'mov_multiple' actions."
                         }
-                    ]
-                }
-            },
-            "anyOf": [
+                    }
+                },
                 {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "mov_multiple"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/movement"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "start_camera",
+                                "stop_camera",
+                                "takeoff",
+                                "land_at",
+                                "delay",
+                                "forever"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/action_properties"
+                                }
+                            ]
+                        }
+                    },
                     "required": [
                         "action"
                     ]
                 },
                 {
+                    "src": {
+                        "type": "string",
+                        "description": "The source of the command."
+                    },
                     "required": [
                         "src"
                     ]
