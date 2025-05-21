@@ -8,6 +8,7 @@ import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
 from scipy.cluster.hierarchy import fclusterdata
 from payloadcomputerdroneprojekt.helper import smart_print as sp
+import time
 
 
 class ImageAnalysis:
@@ -145,15 +146,13 @@ class ImageAnalysis:
         """
         Wraps the logik that runs the analysis each frame.
         """
-        sp("start_img")
+        st = time.time()
         image = self._camera.get_current_frame()
-        sp("image cap")
         pos_com = await self._comms.get_position_lat_lon_alt()
-        sp("got pos")
-        height = await self._comms.get_relative_height()
-        sp("got height")
-        self._image_sub_routine(image, pos_com, height)
-        spg("compute")
+        if st - time.time() < 0.25:
+            self._image_sub_routine(image, pos_com, pos_com[2])
+        else:
+            sp("skipped image")
 
     def _image_sub_routine(self, image, pos_com, height):
         with self._dh as item:

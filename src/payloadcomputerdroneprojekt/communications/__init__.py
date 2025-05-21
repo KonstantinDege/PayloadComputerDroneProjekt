@@ -129,9 +129,6 @@ class Communications:
         Returns:
             _type_: _description_
         """
-        if not await self.check_health():
-            sp("Telemetry not ready")
-            return -5.
         return (await get_data(self.drone.telemetry.position()
                                )).relative_altitude_m
 
@@ -166,9 +163,6 @@ class Communications:
 
     async def _get_attitude(self):
         # Timspektion
-        if not await self.check_health():
-            sp("Telemetry not ready")
-            return [0, 0, 0]
         res: EulerAngle = await get_data(self.drone.telemetry.attitude_euler())
         return [res.roll_deg, res.pitch_deg, res.yaw_deg]
 
@@ -186,9 +180,6 @@ class Communications:
         Returns:
             list[float]: x, y, z, roll, pitch, yaw
         """
-        if not await self.check_health():
-            sp("Telemetry not ready")
-            return [0, 0, 0, 0, 0, 0]
         state: PositionVelocityNed = await get_data(
             self.drone.telemetry.position_velocity_ned())
         return get_pos_vec(state) + await self._get_attitude()
@@ -199,13 +190,10 @@ class Communications:
         return zeros but not wait until it is ready.
         [m, degree]
         Returns:
-            list[float]: lat, lon, alt, roll, pitch, yaw
+            list[float]: lat, lon, alt_rel, roll, pitch, yaw
         """
-        if not await self.check_health():
-            sp("Telemetry not ready")
-            return [0, 0, 0, 0, 0, 0]
         res: Position = await get_data(self.drone.telemetry.position())
-        return [res.latitude_deg, res.longitude_deg, res.absolute_altitude_m
+        return [res.latitude_deg, res.longitude_deg, res.relative_altitude_m
                 ] + await self._get_attitude()
 
     @save_execute("Move to XYZ")
@@ -312,7 +300,7 @@ class Communications:
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.longitude_deg - pos[1]
                         ) < self.config.get("degree_error", 0.00001) and
-                    abs(state.absolute_altitude_m - pos[2]
+                    abs(state.relative_altitude_m - pos[2]
                         ) < self.config.get("pos_error", 0.75))
 
         await wait_for(self.drone.telemetry.position(), reach_func)

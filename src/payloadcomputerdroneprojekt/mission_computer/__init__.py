@@ -21,6 +21,7 @@ class MissionComputer():
         error = None
         try:
             path = config.get("mission_storage", "mission_storage")
+            print(path)
             os.makedirs(path, exist_ok=True)
         except Exception as e:
             error = e
@@ -132,6 +133,12 @@ class MissionComputer():
     async def execute(self, action: dict):
         self.running = True
         a = action["action"]
+        # await self._comms.drone.telemetry.set_rate_attitude_euler(100)
+        # await self._comms.drone.telemetry.set_rate_position_velocity_ned(100)
+        # await self._comms.drone.telemetry.set_rate_position(100)
+        # await self._comms.drone.telemetry.set_rate_in_air(100)
+
+
         if a not in self.actions.keys():
             sp(f"Action not found {a} at exectuion"
                f" {self.progress} / {self.max_progress}")

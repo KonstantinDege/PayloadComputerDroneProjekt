@@ -1,6 +1,6 @@
 {
     "$schema": "../configs/config_schema.json",
-    "workingdir": "mission_storage",
+    "mission_storage": "/media/aviator/BOOTFS/mission_storage",
     "camera": {
         "format": "XRGB8888",
         "size": [
