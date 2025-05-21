@@ -351,7 +351,8 @@ class Communications:
             file_size = os.path.getsize(path)
 
             # Create TCP socket
-            reader, writer = await asyncio.open_connection(laptop_ip, laptop_port)
+            reader, writer = await asyncio.open_connection(laptop_ip,
+                                                           laptop_port)
 
             # Send file size first (8 bytes, big-endian)
             writer.write(file_size.to_bytes(8, byteorder='big'))

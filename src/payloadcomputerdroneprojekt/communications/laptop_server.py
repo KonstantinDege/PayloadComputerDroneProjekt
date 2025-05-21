@@ -3,6 +3,7 @@ import os
 import socket
 from datetime import datetime
 
+
 async def handle_client(reader, writer):
     """
     Handle a client connection, receiving an image file over TCP.
@@ -20,14 +21,15 @@ async def handle_client(reader, writer):
         output_dir = "./received_images"
         os.makedirs(output_dir, exist_ok=True)
         filename = os.path.join(output_dir, f"image_{timestamp}.jpg")
-        
+
         # Receive and write image data
         received = 0
         with open(filename, 'wb') as f:
             while received < file_size:
                 chunk = await reader.read(4096)  # Match client's chunk size
                 if not chunk:
-                    print("Error receiving image: Connection closed prematurely")
+                    print("Error receiving image: ",
+                          "Connection closed prematurely")
                     return
                 f.write(chunk)
                 received += len(chunk)
@@ -36,8 +38,10 @@ async def handle_client(reader, writer):
         if received == file_size:
             print(f"Image received successfully: {filename}")
         else:
-            print(f"Error receiving image: Incomplete data, received {received}/{file_size} bytes")
-        
+            print(
+                "Error receiving image: Incomplete data, ",
+                f"received {received}/{file_size} bytes")
+
     except (socket.error, asyncio.IncompleteReadError) as e:
         print(f"Network error receiving image: {e}")
     except Exception as e:
@@ -45,6 +49,7 @@ async def handle_client(reader, writer):
     finally:
         writer.close()
         await writer.wait_closed()
+
 
 async def run_server(host: str = "0.0.0.0", port: int = 5000):
     """
