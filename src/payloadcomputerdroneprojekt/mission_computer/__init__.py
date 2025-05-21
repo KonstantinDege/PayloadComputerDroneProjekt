@@ -9,6 +9,7 @@ import json
 import shutil
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import asyncio
+from payloadcomputerdroneprojekt.mission_computer.filter import smooth
 
 MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"
@@ -215,35 +216,36 @@ class MissionComputer():
         })
         if "color" not in objective.keys() or "type" not in objective.keys():
             sp("No color or type given")
-            self._comms.mov_by_vel([0, 0, -self.config.get("land_speed", 2)])
+            await self._comms.mov_by_vel(
+                [0, 0, -self.config.get("land_speed", 2)])
             return
 
         sp(f"Suche Objekt vom Typ '{objective['type']}' mit Farbe '{objective[
             'color']}'")
 
-        current_alt = flight_height
-        min_alt = 0.5
+        min_alt = 1
+        detected_alt = await self._comms.get_relative_height()
 
-        while current_alt > min_alt:
-            offset, detected_alt, yaw = self._image.get_current_offset_closest(
-                objective["color"], objective["type"]
-            )
+        while detected_alt > min_alt:
+            offset, detected_alt, yaw = \
+                await self._image.get_current_offset_closest(
+                    objective["color"], objective["type"])
 
             if offset is None:
-                sp("Objekt nicht gefunden. Suche erneut...")
-                await asyncio.sleep(0.5)
-                continue
+                sp("Objekt nicht gefunden.")
+                break
 
-            await self._comms.mov_by_xyz([offset[0], offset[1], 0], yaw)
+            vel = 1 / diag(offset[0], offset[1])
+            if vel/2 > detected_alt:
+                vel = detected_alt / 2
 
-            current_alt -= 0.3
-            sp(f"Sinke auf Höhe {current_alt:.2f} m – Korrektur um {offset}")
-            await self._comms.mov_by_xyz([0, 0, -0.3])
+            await self._comms.mov_by_vel(
+                smooth(offset[0], offset[1], vel), yaw)
 
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
         sp("Landeposition erreicht. Drohne landet.")
-        await self._comms.land()
+        await self._comms.mov_by_vel([0, 0, 0.5], 0)
 
     async def delay(self, options: dict):
         sp(f"Delay: {options.get('time', 1)}")
@@ -285,19 +287,12 @@ class MissionComputer():
             h = options["height"]
         else:
             h = self.current_mission_plan.get["parameter", {}].get("height", 5)
-        pos = [options['lat'], options['lon'], h]
+
         for i, item in enumerate(path):
             sp(f"Moving to {i+1}/{len(path)}: {item}")
             await self.mov({"lat": item[0], "lon": item[1], "height": h})
             await asyncio.sleep(options.get("delay", 0.5))
             await self._image.take_image()
-
-
-def smooth(x, y, z):
-    """
-    smoothes the input values
-    """
-    return [x, y, z]
 
 
 def find_shortest_path(objs: list[dict], start: list[float]):
@@ -361,3 +356,7 @@ def rec_serialize(obj):
                 sp(f"File {obj['src']} not found")
     elif isinstance(obj, list):
         [rec_serialize(i) for i in obj]
+
+
+def diag(x, y):
+    return (x**2 + y**2)**0.5
