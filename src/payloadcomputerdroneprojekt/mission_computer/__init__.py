@@ -40,7 +40,7 @@ class MissionComputer():
                 config.get("camera", None)), comms=self._comms)
         # always starting camera for better performance
         self._image._camera.start_camera()
-        self.config = config
+        self.config = config.get("mission_computer", {})
 
         self.setup()
 
@@ -61,7 +61,8 @@ class MissionComputer():
             "list": self.execute_list,
             "mov_multiple": self.mov_multiple,
             "forever": self.forever,
-            "mov": self.mov
+            "mov": self.mov,
+            "mov_to_objects_cap_pic": self.mov_to_objects_cap_pic,
         }
         self.none_counting_tasks = [
             "list", "mov_multiple"
@@ -201,8 +202,48 @@ class MissionComputer():
         sp(f"Taking Off to height {h}")
         await self._comms.start(h)
 
-    async def land(self, options: dict):
-        pass
+    async def land(self, objective: dict):
+        sp(f"Landing at {objective['lat']:.2f} {objective['lon']:.2f}")
+        await self.mov(options=objective)
+
+        flight_height = self.current_mission_plan.get("parameter", {}).get(
+            "flight_height", 10)
+        await self.mov({
+            "lat": objective["lat"],
+            "lon": objective["lon"],
+            "height": flight_height
+        })
+        if "color" not in objective.keys() or "type" not in objective.keys():
+            sp("No color or type given")
+            self._comms.mov_by_vel([0, 0, -self.config.get("land_speed", 2)])
+            return
+
+        sp(f"Suche Objekt vom Typ '{objective['type']}' mit Farbe '{objective[
+            'color']}'")
+
+        current_alt = flight_height
+        min_alt = 0.5
+
+        while current_alt > min_alt:
+            offset, detected_alt, yaw = self._image.get_current_offset_closest(
+                objective["color"], objective["type"]
+            )
+
+            if offset is None:
+                sp("Objekt nicht gefunden. Suche erneut...")
+                await asyncio.sleep(0.5)
+                continue
+
+            await self._comms.mov_by_xyz([offset[0], offset[1], 0], yaw)
+
+            current_alt -= 0.3
+            sp(f"Sinke auf Höhe {current_alt:.2f} m – Korrektur um {offset}")
+            await self._comms.mov_by_xyz([0, 0, -0.3])
+
+            await asyncio.sleep(0.5)
+
+        sp("Landeposition erreicht. Drohne landet.")
+        await self._comms.land()
 
     async def delay(self, options: dict):
         sp(f"Delay: {options.get('time', 1)}")
@@ -234,6 +275,42 @@ class MissionComputer():
         sp("Running Until Forever")
         while True:
             await asyncio.sleep(2)
+
+    async def mov_to_objects_cap_pic(self, options: dict):
+        sp("Moving to objects and taking picture")
+        obj: list[dict] = self._image.get_filtered_objs()
+        path = find_shortest_path(
+            obj, await self._comms.get_position_lat_lon_alt())
+        if "height" in options.keys():
+            h = options["height"]
+        else:
+            h = self.current_mission_plan.get["parameter", {}].get("height", 5)
+        pos = [options['lat'], options['lon'], h]
+        for i, item in enumerate(path):
+            sp(f"Moving to {i+1}/{len(path)}: {item}")
+            await self.mov({"lat": item[0], "lon": item[1], "height": h})
+            await asyncio.sleep(options.get("delay", 0.5))
+            await self._image.take_image()
+
+
+def smooth(x, y, z):
+    """
+    smoothes the input values
+    """
+    return [x, y, z]
+
+
+def find_shortest_path(objs: list[dict], start: list[float]):
+    """
+    find the shortest path to all objects
+    """
+    if len(objs) == 0:
+        return []
+    path = []
+    for obj in objs:
+        path.append(obj["pos"])
+    path.sort(key=lambda x: abs(x[0] - start[0]) + abs(x[1] - start[1]))
+    return path
 
 
 def count_actions(actions):

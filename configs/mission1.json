@@ -6,64 +6,57 @@
     "parameter": {
         "flight_height": 15
     },
-    "values": [
+    "commands": [
+       
         {
-            "type": "start_camera"
-        },
+            "action": "takeoff",
+            "commands": {
+                "altitude": 15
+            }
+        }, 
         {
-            "type": "mov_multiple",
-            "values": [
-                {
-                    "lat": 0,
-                    "lon": 0
-                },
-                {
-                    "lat": 1,
-                    "lon": 1
-                }
-            ]
-        },
-        {
-            "type": "retake_obj_pictures",
-            "values": {
-                "height": 7
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
             }
         },
         {
-            "type": "stop_camera"
-        },
-        {
-            "type": "list",
-            "values": [
+            "action": "mov_multiple",
+            "commands": [
                 {
-                    "type": "land",
-                    "values": {
-                        "lat": 0,
-                        "lon": 0
-                    }
+                    "lat": 0,
+                    "lon": 0,
+                    "yaw": 0  
                 },
                 {
-                    "type": "delay",
-                    "values": {
-                        "time": 5
-                    }
-                },
-                {
-                    "type": "takeoff",
-                    "values": {
-                        "altitude": 15
-                    }
-                },
-                {
-                    "type": "land",
-                    "values": {
-                        "lat": 0,
-                        "lon": 0,
-                        "color": "blau",
-                        "shape": "easy_code"
-                    }
+                    "lat": 4,
+                    "lon": 4,
+                    "yaw": 0
                 }
             ]
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
+        },
+        {
+            "action": "stop_camera"
+        },
+        {
+            "action": "mov_to_objects_cap_pic",
+            "commands": {
+                "height": 5,
+                "delay": 2
+            }
+        },
+        {
+            "type": "land_at",
+            "values": {
+                "lat": 0,
+                "lon": 0
+            }
         }
     ]
 }
