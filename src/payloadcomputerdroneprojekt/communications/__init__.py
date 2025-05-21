@@ -60,6 +60,8 @@ class Communications:
             await wait_for(self.drone.core.connection_state(),
                            lambda x: x.is_connected)
 
+            await self.set_data_rates()
+
         sp("-- Connection established successfully")
 
     async def check_health(self) -> bool:
@@ -70,6 +72,12 @@ class Communications:
         """
         return (await get_data(self.drone.telemetry.health())
                 ).is_global_position_ok
+
+    async def set_data_rates(self):
+        await self.drone.telemetry.set_rate_attitude_euler(1000)
+        await self.drone.telemetry.set_rate_position_velocity_ned(1000)
+        await self.drone.telemetry.set_rate_position(1000)
+        await self.drone.telemetry.set_rate_in_air(1000)
 
     async def wait_for_health(self):
         """
@@ -153,9 +161,9 @@ class Communications:
         Returns:
             _type_: _description_
         """
+        await self._ensure_offboard()
         await self.await_arm()
         await self.check_health()
-        await self._ensure_offboard()
         if await self.get_relative_height() >= height:
             return True
         h = await self.get_relative_height()
@@ -306,7 +314,7 @@ class Communications:
         await wait_for(self.drone.telemetry.position(), reach_func)
         await wait_for(self.drone.telemetry.position_velocity_ned(),
                        lambda x: abs_vel(
-                           get_pos_vec(x)) < self.config.get("vel_error", 0.5))
+                           get_vel_vec(x)) < self.config.get("vel_error", 0.5))
 
     @save_execute("Land")
     async def land(self):
@@ -348,7 +356,8 @@ class Communications:
             file_size = os.path.getsize(path)
 
             # Create TCP socket
-            reader, writer = await asyncio.open_connection(laptop_ip, laptop_port)
+            reader, writer = await asyncio.open_connection(
+                laptop_ip, laptop_port)
 
             # Send file size first (8 bytes, big-endian)
             writer.write(file_size.to_bytes(8, byteorder='big'))

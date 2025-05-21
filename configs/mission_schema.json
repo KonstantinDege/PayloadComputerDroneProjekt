@@ -164,6 +164,12 @@
                         2,
                         5
                     ]
+                },
+                "color": {
+                    "type": "string"
+                },
+                "shape": {
+                    "type": "string"
                 }
             }
         },

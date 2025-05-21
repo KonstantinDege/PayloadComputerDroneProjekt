@@ -135,10 +135,6 @@ class MissionComputer():
     async def execute(self, action: dict):
         self.running = True
         a = action["action"]
-        # await self._comms.drone.telemetry.set_rate_attitude_euler(100)
-        # await self._comms.drone.telemetry.set_rate_position_velocity_ned(100)
-        # await self._comms.drone.telemetry.set_rate_position(100)
-        # await self._comms.drone.telemetry.set_rate_in_air(100)
 
         if a not in self.actions.keys():
             sp(f"Action not found {a} at exectuion"
@@ -210,24 +206,17 @@ class MissionComputer():
         await self._comms.start(h)
 
     async def land(self, objective: dict):
-        sp(f"Landing at {objective['lat']:.2f} {objective['lon']:.2f}")
+        sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
         await self.mov(options=objective)
 
-        flight_height = self.current_mission_plan.get("parameter", {}).get(
-            "flight_height", 10)
-        await self.mov({
-            "lat": objective["lat"],
-            "lon": objective["lon"],
-            "height": flight_height
-        })
-        if "color" not in objective.keys() or "type" not in objective.keys():
+        if "color" not in objective.keys() or "shape" not in objective.keys():
             sp("No color or type given")
             await self._comms.mov_by_vel(
                 [0, 0, -self.config.get("land_speed", 2)])
             return
 
-        sp(f"Suche Objekt vom Typ '{objective['type']}' mit Farbe '{objective[
-            'color']}'")
+        sp(f"Suche Objekt vom Typ '{objective['shape']}' "
+           f"mit Farbe '{objective['color']}'")
 
         min_alt = 1
         detected_alt = await self._comms.get_relative_height()
@@ -235,23 +224,22 @@ class MissionComputer():
         while detected_alt > min_alt:
             offset, detected_alt, yaw = \
                 await self._image.get_current_offset_closest(
-                    objective["color"], objective["type"])
+                    objective["color"], objective["shape"])
 
             if offset is None:
                 sp("Objekt nicht gefunden.")
                 break
 
-            vel = 1 / diag(offset[0], offset[1])
-            if vel/2 > detected_alt:
-                vel = detected_alt / 2
-
+            vel_ver = 0.1 / diag(offset[0], offset[1])
+            if vel_ver/2 > detected_alt:
+                vel_ver = detected_alt / 2
             await self._comms.mov_by_vel(
-                smooth(offset[0], offset[1], vel), yaw)
+                [offset[0]/10, offset[1]/10, vel_ver/10], yaw)
 
             await asyncio.sleep(0.1)
 
         sp("Landeposition erreicht. Drohne landet.")
-        await self._comms.mov_by_vel([0, 0, 0.5], 0)
+        await self._comms.mov_by_vel([0, 0, 1.5], 0)
 
     async def delay(self, options: dict):
         sp(f"Delay: {options.get('time', 1)}")
@@ -268,15 +256,16 @@ class MissionComputer():
             self.progress += 1
 
     async def mov(self, options: dict):
-        sp(f"Moving to {options['lat']:.2f} {options['lon']:.2f}")
+        sp(f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
         yaw = options.get("yaw")
         if "height" in options.keys():
             h = options["height"]
         else:
-            h = self.current_mission_plan.get["parameter", {}].get("height", 5)
+            h = self.current_mission_plan.get("parameter", {}).get("height", 5)
         pos = [options['lat'], options['lon'], h]
-        if not await self._comms.is_flighing:
+        if not await self._comms.is_flighing():
             await self._comms.start(h)
+
         await self._comms.mov_to_lat_lon_alt(pos, yaw)
 
     async def forever(self, options: dict):
