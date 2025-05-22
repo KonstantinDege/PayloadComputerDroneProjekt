@@ -98,7 +98,7 @@ class MissionComputer():
                 self.current_mission_plan = mission
                 self.current_mission_plan.setdefault("parameter", {})
 
-        if not mission:
+        if mission is None:
             self.progress = 0
             self.max_progress = -1
             if os.path.exists(MISSION_PROGRESS):
@@ -157,10 +157,11 @@ class MissionComputer():
 
     async def _start(self):
         await self._comms.connect()
-        await self.status("Test")
+        await self.status("Mission Computer Started")
 
         asyncio.create_task(self.save_progress())
-        if len(self.current_mission_plan.keys()) > 0:
+        await self.status(f"Starting with Progress: {self.progress}")
+        if "action" in self.current_mission_plan.keys():
             self.running = True
             plan = self.current_mission_plan
             if self.progress > 0:
@@ -179,7 +180,7 @@ class MissionComputer():
         if self.wait_plan:
             await self.wait_plan
         while True:
-            asyncio.sleep(10)
+            await asyncio.sleep(10)
 
     async def new_mission(self, plan: str):
         if self.main_programm:
