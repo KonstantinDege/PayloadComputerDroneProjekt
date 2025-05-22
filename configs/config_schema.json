@@ -256,27 +256,27 @@
                     0
                 ],
                 [
-                    360,
-                    101,
-                    101
+                    100,
+                    128,
+                    128
                 ]
             ],
             "description": "A color value in HSV format",
             "items": [
                 {
                     "type": "integer",
-                    "minimum": 0,
-                    "maximum": 360
+                    "minimum": -5,
+                    "maximum": 100
                 },
                 {
                     "type": "integer",
-                    "minimum": 0,
-                    "maximum": 101
+                    "minimum": -128,
+                    "maximum": 128
                 },
                 {
                     "type": "integer",
-                    "minimum": 0,
-                    "maximum": 101
+                    "minimum": -128,
+                    "maximum": 128
                 }
             ]
         }
