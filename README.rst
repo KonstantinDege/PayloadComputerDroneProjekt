@@ -65,3 +65,32 @@ Helper
     crontab -e
 
     @reboot start_raspi_script.sh
+
+3. Systemd
+
+
+    mkdir -p ~/.config/systemd/user
+    
+    code ~/.config/systemd/user/start_droneos.service
+
+    [Unit]
+    Description=Start Drone Computer
+    After=multi-user.target
+
+    [Service]
+    ExecStart=/usr/bin/bash /home/aviator/PayloadComputerDroneProjekt/start_raspi_script.sh
+    Type=simple
+
+    [Install]
+    WantedBy=multi-user.target
+    
+    systemctl --user daemon-reload
+    systemctl --userenable start_droneos.service
+    systemctl --user start start_droneos.service
+
+    
+    systemctl --user status start_droneos.service
+
+    
+    journalctl -u start_droneos.service
+
