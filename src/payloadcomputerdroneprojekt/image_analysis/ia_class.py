@@ -22,9 +22,7 @@ class ImageAnalysis:
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
         def conhsv(val):
-            return np.array([int(val[0] / 2),
-                             int(val[1] * 2.55),
-                             int(val[2] * 2.55)])
+            return np.array([val[0] * 2.55, val[1] + 128, val[2] + 128])
         self.colors: dict = {}
         for color in config["colors"]:
             if "upper_1" in color.keys():
@@ -336,7 +334,7 @@ class ImageAnalysis:
             shape_image: image filtered for shape_color (f.E. black or white)
         """
         image_show = []
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         shape_mask = self._filter_color(
             hsv, self.shape_color)
         for name, elements in self.colors.items():
@@ -348,7 +346,7 @@ class ImageAnalysis:
         return image_show, shape_mask
 
     def filter_shape_color(self, image):
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         return self._filter_color(
             hsv, self.shape_color)
 
@@ -367,29 +365,29 @@ class ImageAnalysis:
         if color not in self.colors.keys():
             raise IndexError(
                 f"the color {color} is not defined in the color list")
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if shape_mask is not None:
             shape_mask = self._filter_color(
                 hsv, self.shape_color)
         return self._filter_color(hsv, self.colors[color],
                                   shape_mask=shape_mask)
 
-    def _filter_color(self, hsv, elements: dict,
-                      shape_mask=None):
+    def _filter_color(self, lab, elements: dict, shape_mask=None):
         if isinstance(elements, list):
             masks = []
             for elem in elements:
                 masks.append(cv2.inRange(
-                    hsv, elem["lower"], elem["upper"]))
+                    lab, elem["lower"], elem["upper"]))
 
             mask = cv2.bitwise_or(masks[0], masks[1])
         else:
-            mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
+            mask = cv2.inRange(lab, elements["lower"], elements["upper"])
 
         if shape_mask is None:
-            return mask
-        else:
-            return cv2.bitwise_or(mask, shape_mask)
+            return cv2.GaussianBlur(mask, (5, 5), 0)
+
+        # mask = cv2.bitwise_or(mask, shape_mask)
+        return cv2.GaussianBlur(mask, (7, 7), 0)
 
     async def get_current_offset_closest(self, color: str,
                                          shape: str, yaw_0: bool = True):

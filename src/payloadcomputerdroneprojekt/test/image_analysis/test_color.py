@@ -11,7 +11,7 @@ from payloadcomputerdroneprojekt.test.image_analysis.helper \
 class TestImage(unittest.TestCase):
     def test_compute_image(self):
         path = tempfile.mkdtemp(prefix="image_analysis")
-        with open(os.path.join(FILE_PATH, "test_config_2.json")) as json_data:
+        with open(os.path.join(FILE_PATH, "test_config.json")) as json_data:
             config = json.load(json_data)["image"]
 
         config["path"] = path
