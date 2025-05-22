@@ -33,11 +33,11 @@ Setup
 
 2. run simulation
 
-.. code-block:: bash 
+    .. code-block:: bash 
 
-    cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
+        cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
 
-    ip addr | grep eth0
+        ip addr | grep eth0
 
 3. clone this repo and install this package inside of your wsl instance
 
@@ -52,9 +52,20 @@ Setup
 
     clone this repo also in the same folder as the PX4-Autopilot
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
-    cp -r ./PX4-Autopilot_PATCH/* ~/PX4-Autopilot/
+        cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
+        cp -r ./PX4-Autopilot_PATCH/* ~/PX4-Autopilot/
 
 5. https://www.geeksforgeeks.org/using-github-with-ssh-secure-shell/
+
+
+====
+Helper
+====
+
+1. PowerToys Color Picker
+
+    .. code-block::
+
+        LAB(L = %Lc, A = %Ca, B = %Cb)
