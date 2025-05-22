@@ -156,6 +156,7 @@ class MissionComputer():
 
     async def _start(self):
         await self._comms.connect()
+        await self.status("Test")
 
         asyncio.create_task(self.save_progress())
         if len(self.current_mission_plan.keys()) > 0:
@@ -168,7 +169,7 @@ class MissionComputer():
             self.main_programm = asyncio.create_task(
                 self.execute(plan))
         else:
-            sp("No Valid Mision")
+            await self.status("No Valid Mision")
             sp("Waiting for Networking connection")
         self.wait_plan = asyncio.create_task(
             self._comms.receive_mission_file(self.new_mission))
@@ -192,18 +193,18 @@ class MissionComputer():
         self.start()
 
     async def start_camera(self, options: dict):
-        sp("Starting Camera")
+        await self.status("Starting Camera")
         self._image.start_cam(options.get("ips", 1))
 
     async def stop_camera(self, options: dict):
-        sp("Stopping Camera")
+        await self.status("Stopping Camera")
         self._image.stop_cam()
 
     async def takeoff(self, options: dict):
         h = options.get(
             "height", self.current_mission_plan["parameter"].get(
                 "flight_height", 5))
-        sp(f"Taking Off to height {h}")
+        await self.status(f"Taking Off to height {h}")
         await self._comms.start(h)
 
     async def land(self, objective: dict):
@@ -228,7 +229,7 @@ class MissionComputer():
                     objective["color"], objective["shape"])
 
             if offset is None:
-                sp("Objekt nicht gefunden.")
+                await self.status("Objekt nicht gefunden.")
                 break
 
             vel_ver = 0.1 / diag(offset[0], offset[1])
@@ -239,7 +240,7 @@ class MissionComputer():
 
             await asyncio.sleep(0.1)
 
-        sp("Landeposition erreicht. Drohne landet.")
+        await self.status("Landeposition erreicht. Drohne landet.")
         await self._comms.mov_by_vel(
             [0, 0, self.config.get("land_speed", 2)])
 
@@ -252,13 +253,14 @@ class MissionComputer():
             await self.execute(item)
 
     async def mov_multiple(self, options: list[dict]):
-        sp(f"Moving Multiple {len(options)}")
+        await self.status(f"Moving Multiple {len(options)}")
         for item in options:
             await self.mov(item)
             self.progress += 1
 
     async def mov(self, options: dict):
-        sp(f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
+        await self.status(
+            f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
         yaw = options.get("yaw")
         if "height" in options.keys():
             h = options["height"]
@@ -290,3 +292,7 @@ class MissionComputer():
             await self.mov({"lat": item[0], "lon": item[1], "height": h})
             await asyncio.sleep(options.get("delay", 0.5))
             await self._image.take_image()
+
+    async def status(self, msg: str):
+        sp(msg)
+        await self._comms.send_status(msg)

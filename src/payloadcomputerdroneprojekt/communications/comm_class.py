@@ -10,6 +10,9 @@ import os
 from payloadcomputerdroneprojekt.communications.helper import\
     get_data, wait_for, save_execute, get_pos_vec, reached_pos, \
     rotation_matrix_yaw, abs_vel, get_vel_vec
+from mavsdk.server_utility import StatusTextType
+
+StatusTextType.INFO
 
 
 class Communications:
@@ -373,5 +376,6 @@ class Communications:
             print(f"Error sending image: {e}")
             return False
 
-    async def send_status(status: str):
-        pass
+    async def send_status(self, status: str):
+        await self.drone.server_utility.send_status_text(
+            StatusTextType.INFO, status)
