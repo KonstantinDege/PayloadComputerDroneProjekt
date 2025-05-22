@@ -69,3 +69,12 @@ Helper
     .. code-block::
 
         LAB(L = %Lc, A = %Ca, B = %Cb)
+
+
+2. Cron Tab
+
+    echo 'export PATH="$HOME/PayloadComputerDroneProjekt:$PATH"' >> ~/.bashrc
+
+    crontab -e
+
+    @reboot start_raspi_script.sh

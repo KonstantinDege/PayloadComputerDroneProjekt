@@ -490,7 +490,7 @@ class ImageAnalysis:
 
         objects: list[dict] = []
         self.detect_obj(objects, computed_image)
-        
+
         cv2.imwrite("Image Window2.png", shape_image)
         if shape in self.shape_funcs:
             relevant_obj = self.shape_funcs["Code"](
