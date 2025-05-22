@@ -6,7 +6,6 @@ from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
-from scipy.cluster.hierarchy import fclusterdata
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import time
 import itertools
@@ -176,7 +175,7 @@ class ImageAnalysis:
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                self.add_latlonalt(
+                self.add_lat_lon(
                     obj, pos_com[3:6], height, shape_image.shape[:2],
                     loc_to_glo)
                 cv2.circle(
@@ -459,36 +458,14 @@ class ImageAnalysis:
                 relevant_obj.append(obj)
         return relevant_obj
 
-    def get_filtered_objs(self) -> list[dict]:
+    def get_filtered_objs(self):
         """
         Returns a list of all filtered obj
 
         Returns:
             dict[str, dict[str, list]]: _description_
         """
-        object_store = self._get_obj_tree()
-
-        output = {}
-        for color, shapes in object_store.items():
-            output[color] = {}
-            array = []
-            if "all" in shapes.keys():
-                array = shapes["all"].copy()
-
-            for shape, objs in shapes.items():
-                if shape == "all":
-                    continue
-                output[color][shape] = {}
-                a = array.copy() + objs
-                a_list = np.array([np.array(o["latlonalt"]) for o in a])
-                labels = fclusterdata(
-                    a_list, t=self.config.get("distance_objs", 5))
-                for i, o in enumerate(a):
-                    output[color][shape].setdefault(labels[i], []).append(o)
-
-        # TODO: add sorting for distance for each shape, and add all to each of
-        # those runs so that all elements under deltapos < same_obj_distance
-        # are in one list
+        return self._dh.get_filterd_items(self.config.get("distance_objs", 5))
 
     def get_matching_objects(self, color: str, shape: str = None
                              ) -> list[dict]:
@@ -503,16 +480,23 @@ class ImageAnalysis:
             list[dict]: Obj dictionaries
         """
 
-    def _get_obj_tree(self) -> dict[str, dict[str, list[dict]]]:
-        object_store: dict[str, dict] = {}
-        for items in self._dh.get_items():
-            for obj in items["found_objs"]:
-                d = object_store.setdefault(obj["color"], {})
-                if obj.get("shape", False):
-                    d.setdefault(obj["shape"], []).append(obj)
-                else:
-                    d.setdefault("all", []).append(obj)
-        return object_store
+        return self.get_filtered_objs().get(color, {}).get(shape, [])
+
+    def get_color_obj_list(self, color: str) -> list[dict]:
+        out = []
+        for shape, obj in self.get_filtered_objs().get(color, {}).items():
+            obj["shape"] = shape
+            out.append(obj)
+        return out
+
+    def get_all_obj_list(self) -> list[dict]:
+        out = []
+        for color, objs in self.get_filtered_objs().items():
+            for shape, obj in objs.items():
+                obj["color"] = color
+                obj["shape"] = shape
+                out.append(obj)
+        return out
 
     @staticmethod
     def quality_of_image(image: np.array) -> float:  # finished
@@ -553,10 +537,10 @@ class ImageAnalysis:
         local_vec_streched = local_vec * height / local_vec[2]
         return local_vec_streched + rot_mat @ offset
 
-    def add_latlonalt(self, obj, rot, height, imagesize, loc_to_glo):
+    def add_lat_lon(self, obj, rot, height, imagesize, loc_to_glo):
         local_vec_streched = self.get_local_offset(obj, rot, height, imagesize)
 
-        obj["latlonalt"] = loc_to_glo(
+        obj["lat_lon"] = loc_to_glo(
             local_vec_streched[0], local_vec_streched[1])
 
     def mission2(self, points):
