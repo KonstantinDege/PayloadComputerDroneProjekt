@@ -1,5 +1,5 @@
 {
-    "$schema": "mission_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
     "name": "Mission 1",
     "description": "This is the first mission.",
     "type": "list",

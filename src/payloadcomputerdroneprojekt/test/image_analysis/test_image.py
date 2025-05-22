@@ -5,7 +5,7 @@ import os
 import cv2
 import tempfile
 import json
-from payloadcomputerdroneprojekt.test.image_analysis \
+from payloadcomputerdroneprojekt.test.image_analysis.helper \
     import TestCommunications, TestCamera, FILE_PATH
 import asyncio
 

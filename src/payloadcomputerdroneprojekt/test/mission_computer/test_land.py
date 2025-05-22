@@ -1,8 +1,9 @@
 from payloadcomputerdroneprojekt.mission_computer import MissionComputer
 from payloadcomputerdroneprojekt.camera.gazebo_sitl import GazeboCamera
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
-from payloadcomputerdroneprojekt.communications import rotation_matrix_yaw
-from payloadcomputerdroneprojekt.test.image_analysis import FILE_PATH
+from payloadcomputerdroneprojekt.communications.helper \
+    import rotation_matrix_yaw
+from payloadcomputerdroneprojekt.test.image_analysis.helper import FILE_PATH
 import numpy as np
 import json
 import os

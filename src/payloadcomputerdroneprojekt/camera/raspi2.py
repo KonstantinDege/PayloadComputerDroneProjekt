@@ -1,8 +1,9 @@
-import payloadcomputerdroneprojekt.camera as cam
+import payloadcomputerdroneprojekt.camera.abstract_class as cam
 from picamera2 import Picamera2
+from libcamera import Transform
 
 
-class RaspiCamera(cam.Camera):
+class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
         if not self._config:
@@ -24,7 +25,8 @@ class RaspiCamera(cam.Camera):
             self._camera.create_video_configuration(
                 main=self._config["main"],
                 sensor={'output_size': self.mode['size'],
-                        'bit_depth': self.mode['bit_depth']})
+                        'bit_depth': self.mode['bit_depth']},
+                transform=Transform(hflip=1, vflip=1))
         )
         self._camera.set_controls(
             self._config.get("control", {"ExposureTime": 50}))

@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../../configs/mission_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
     "action": "list",
     "commands": [
         {

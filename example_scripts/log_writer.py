@@ -1,5 +1,5 @@
-from payloadcomputerdroneprojekt.communications import Communications
-from payloadcomputerdroneprojekt.camera.gazebo_sitl import GazeboCamera
+from payloadcomputerdroneprojekt.communications.comm_class import Communications
+from payloadcomputerdroneprojekt.camera.gazebo_sitl.gazebo_cam import GazeboCamera
 import tempfile
 import time
 from os.path import join
