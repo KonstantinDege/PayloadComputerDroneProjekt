@@ -71,71 +71,176 @@
                 },
                 "threashold": {
                     "type": "number",
-                    "minimum": -1
+                    "minimum": -1,
+                    "default": -1
+                },
+                "min_diagonal_code_element": {
+                    "type": "number",
+                    "minimum": -1,
+                    "default": 1
+                },
+                "min_diagonal_shape": {
+                    "type": "number",
+                    "minimum": -1,
+                    "default": 1
+                },
+                "min_diagonal": {
+                    "type": "number",
+                    "minimum": -1,
+                    "default": 10
+                },
+                "camera_offset": {
+                    "type": "array",
+                    "maxItems": 3,
+                    "minItems": 3,
+                    "description": "offset of the camera [m]",
+                    "items": {
+                        "type": "number",
+                        "default": 0
+                    }
+                },
+                "rotation_offset": {
+                    "type": "array",
+                    "maxItems": 3,
+                    "minItems": 3,
+                    "description": "offset of the camera int rotation [degree]",
+                    "items": {
+                        "type": "number",
+                        "minimum": -360,
+                        "maximum": 360,
+                        "default": 0
+                    }
+                },
+                "distance_objs": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 5,
+                    "description": "The distance [m] in which a object is considered the same"
                 }
             },
             "min_diagonal": {
                 "type": "number",
                 "minimum": 0
             },
-            "required": ["colors", "shape_color", "min_diagonal", "threashold"]
+            "required": [
+                "colors",
+                "shape_color",
+                "min_diagonal",
+                "threashold"
+            ]
         },
         "camera": {
             "description": "Parameters for camera analysis",
             "type": "object",
             "properties": {
-                "port": {
-                    "type": "integer",
-                    "examples": [
-                        5600
-                    ]
+                "main": {
+                    "type": "object",
+                    "properties": {
+                        "format": {
+                            "type": "string",
+                            "examples": [
+                                "XRGB8888"
+                            ]
+                        },
+                        "size": {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    }
+                                ]
+                            },
+                            "minLength": 2,
+                            "maxLength": 2,
+                            "examples": [
+                                [
+                                    640,
+                                    480
+                                ]
+                            ]
+                        }
+                    }
                 },
-                "format": {
-                    "type": "string",
-                    "examples": [
-                        "XRGB8888"
-                    ]
-                },
-                "size": {
-                    "type": "array",
-                    "items": {
-                        "anyOf": [
-                            {
-                                "type": "integer",
-                                "minimum": 0
-                            }
-                        ]
-                    },
-                    "minLength": 2,
-                    "maxLength": 2,
-                    "examples": [
-                        [
-                            640,
-                            480
-                        ]
-                    ]
+                "control": {
+                    "type": "object",
+                    "properties": {
+                        "ExposureTime": {
+                            "type": "integer",
+                            "minimum": 30,
+                            "examples": [
+                                50
+                            ]
+                        }
+                    }
                 }
             },
-            "oneOf": [
-                {
-                    "required": [
-                        "port"
-                    ]
-                },
-                {
-                    "required": [
-                        "format",
-                        "size"
-                    ]
-                }
+            "required": [
+                "main",
+                "control"
             ]
+        },
+        "mission_computer": {
+            "type": "object",
+            "properties": {
+                "recouver_time": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 10,
+                    "description": "The amount of time the mission computers has to try to recover from a crash until the mission is aborted"
+                },
+                "land_speed": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "description": "The speed the drones land with",
+                    "default": 2
+                }
+            }
+        },
+        "communications": {
+            "type": "object",
+            "properties": {
+                "allowed_arm": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "allowed_disarm": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "allowed_mode_switch": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "pos_error": {
+                    "type": "number",
+                    "default": 0.75
+                },
+                "vel_error": {
+                    "type": "number",
+                    "default": 0.5
+                },
+                "degree_error": {
+                    "type": "number",
+                    "default": 0.5
+                }
+            }
+        },
+        "mission_storage": {
+            "type": "string",
+            "description": "working directory of the mission computer",
+            "examples": [
+                "mission_storage"
+            ],
+            "default": "mission_storage"
         }
     },
     "definitions": {
         "color_val": {
             "type": "array",
-            "minLength": 3,
-            "maxLength": 3,
+            "minItems": 3,
+            "maxItems": 3,
             "examples": [
                 [
                     0,
@@ -170,6 +275,9 @@
     },
     "required": [
         "image",
-        "camera"
+        "camera",
+        "mission_computer",
+        "mission_storage",
+        "communications"
     ]
 }

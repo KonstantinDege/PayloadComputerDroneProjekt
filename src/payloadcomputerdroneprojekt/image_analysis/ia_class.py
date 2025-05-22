@@ -161,7 +161,7 @@ class ImageAnalysis:
             item.add_raw_image(image)
             item.add_height(height)
             if (quality := self.quality_of_image(
-                    image)) < self.config["threashold"]:
+                    image)) < self.config.get("threashold", -1):
                 sp("Skipped Image; Quality to low")
                 item.add_quality(quality)
                 return
@@ -231,7 +231,7 @@ class ImageAnalysis:
             approx = cv2.approxPolyDP(
                 contour, 0.04 * cv2.arcLength(contour, True), True)
             x, y, w, h = cv2.boundingRect(approx)
-            if (w**2 + h**2) < self.config["min_diagonal"]**2:
+            if (w**2 + h**2) < self.config.get("min_diagonal", 10)**2:
                 continue
             if len(approx) == 4:
                 x_mittel = x + (w // 2)
