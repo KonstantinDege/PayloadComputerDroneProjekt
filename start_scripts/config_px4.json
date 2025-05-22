@@ -1,5 +1,5 @@
 {
-    "$schema": "../configs/config_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
     "mission_storage": "/media/aviator/BOOTFS/mission_storage",
     "camera": {
         "format": "XRGB8888",

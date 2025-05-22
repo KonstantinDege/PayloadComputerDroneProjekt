@@ -1,8 +1,8 @@
-import payloadcomputerdroneprojekt.camera as cam
+import payloadcomputerdroneprojekt.camera.abstract_class as cam
 from picamera2 import Picamera2
 
 
-class RaspiCamera(cam.Camera):
+class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
         if not self._config:

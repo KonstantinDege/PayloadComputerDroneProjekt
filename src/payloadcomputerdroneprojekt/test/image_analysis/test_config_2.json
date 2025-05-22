@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../../configs/config_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
     "camera": {
         "format": "XRGB8888",
         "size": [

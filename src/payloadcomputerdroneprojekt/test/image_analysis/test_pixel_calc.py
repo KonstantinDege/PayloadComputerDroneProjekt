@@ -1,10 +1,9 @@
-import unittest.async_case
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
 import unittest
 import os
 import json
 import numpy as np
-from payloadcomputerdroneprojekt.test.image_analysis import FILE_PATH
+from payloadcomputerdroneprojekt.test.image_analysis.helper import FILE_PATH
 
 
 class TestImage(unittest.TestCase):

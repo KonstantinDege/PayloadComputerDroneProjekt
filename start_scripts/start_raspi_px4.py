@@ -1,5 +1,5 @@
-from payloadcomputerdroneprojekt.mission_computer import MissionComputer
-from payloadcomputerdroneprojekt.camera.raspi2 import RaspiCamera
+from payloadcomputerdroneprojekt import MissionComputer
+from payloadcomputerdroneprojekt.camera import RaspiCamera
 import argparse
 import os
 import json
