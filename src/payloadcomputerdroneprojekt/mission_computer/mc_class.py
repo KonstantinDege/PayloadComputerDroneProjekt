@@ -31,6 +31,7 @@ class MissionComputer():
                 "Working directory not accesable, "
                 "switching to 'mission_storage'")
             path = "mission_storage"
+            os.makedirs(path, exist_ok=True)
         os.chdir(path)
         logging.basicConfig(filename="flight.log",
                             format='%(asctime)s %(message)s',
@@ -199,6 +200,7 @@ class MissionComputer():
     async def stop_camera(self, options: dict):
         await self.status("Stopping Camera")
         self._image.stop_cam()
+        self._image.get_filtered_objs()
 
     async def takeoff(self, options: dict):
         h = options.get(

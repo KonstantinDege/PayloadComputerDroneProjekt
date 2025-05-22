@@ -1,5 +1,5 @@
 from payloadcomputerdroneprojekt import MissionComputer
-from payloadcomputerdroneprojekt.camera import GazeboCamera
+from payloadcomputerdroneprojekt.test.image_analysis.helper import TestCamera
 import argparse
 import os
 import json
@@ -10,7 +10,7 @@ def main(config, mission):
     with open(config) as f:
         config = json.load(f)
     port = "udp://:14540"
-    computer = MissionComputer(config=config, camera=GazeboCamera, port=port)
+    computer = MissionComputer(config=config, camera=TestCamera, port=port)
     computer.initiate(mission)
     computer.start()
 
