@@ -24,7 +24,6 @@ class TestImage(unittest.TestCase):
         ia._image_sub_routine(image, [1, 1, 1, 1, 1, 1], 1)
 
         item = ia._dh.list[0].get_dict()["found_objs"]
-
         assert len(item) == 3
         red = 0
         yellow = 0

@@ -10,6 +10,19 @@
     "image": {
         "colors": [
             {
+                "name": "orange",
+                "lower": [
+                    20,
+                    70,
+                    70
+                ],
+                "upper": [
+                    30,
+                    88,
+                    88
+                ]
+            },
+            {
                 "name": "blue",
                 "lower": [
                     200,

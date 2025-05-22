@@ -332,7 +332,7 @@ class Communications:
         """
         # Validate file existence and accessibility
         if not os.path.isfile(path):
-            print(f"Error: Image file not found at {path}")
+            sp(f"Error: Image file not found at {path}")
             return False
 
         # Get laptop IP and port from config, with defaults
@@ -363,14 +363,14 @@ class Communications:
             # Close connection
             writer.close()
             await writer.wait_closed()
-            print(f"Image sent successfully: {path}")
+            sp(f"Image sent successfully: {path}")
             return True
 
         except (socket.gaierror, ConnectionRefusedError, OSError) as e:
-            print(f"Network error while sending image: {e}")
+            sp(f"Network error while sending image: {e}")
             return False
         except Exception as e:
-            print(f"Error sending image: {e}")
+            sp(f"Error sending image: {e}")
             return False
 
     async def send_status(status: str):

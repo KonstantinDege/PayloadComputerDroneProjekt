@@ -122,6 +122,14 @@
                 "type": "number",
                 "minimum": 0
             },
+            "length_code_side": {
+                "type": "number",
+                "default": 0.5
+            },
+            "length_box_short_side": {
+                "type": "number",
+                "default": 0.5
+            },
             "required": [
                 "colors",
                 "shape_color",

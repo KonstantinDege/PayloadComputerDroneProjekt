@@ -1,4 +1,5 @@
 from payloadcomputerdroneprojekt.image_analysis.data_item import DataItem
+from payloadcomputerdroneprojekt.helper import smart_print as sp
 import json
 from os.path import exists, join
 from os import makedirs
@@ -14,11 +15,11 @@ class DataHandler:
         if not exists(path):
             makedirs(path)
         self._path = path
-        print(f"Mission Path: {path}")
+        sp(f"Mission Path: {path}")
         self.list: list[DataItem] = []
 
         if exists(join(self._path, FILENAME)):
-            print("loading already existing data")
+            sp("loading already existing data")
             with open(join(self._path, FILENAME), "r") as f:
                 content = f.read()
 
@@ -50,7 +51,6 @@ class DataHandler:
                      ] = get_mean(sorted_list)
         with open(self.get_filtered_storage(), "w") as f:
             json.dump(output, f)
-        print(self.get_filtered_storage())
         return output
 
     def get_filtered_storage(self):
@@ -95,11 +95,17 @@ def sort_list(object_store: dict[str, dict[str, list[dict]]], dis: float):
             sorted_list[color][shape] = {}
             a = array.copy() + objs
             a_list = np.array([np.array(o["lat_lon"]) for o in a])
+
+            if len(a_list) == 1:
+                sorted_list[color][shape][0] = [a[0]]
+                continue
+
             labels = fclusterdata(
                 a_list, t=dis)
             for i, o in enumerate(a):
                 sorted_list[color][shape].setdefault(
                     int(labels[i]), []).append(o)
+
     return sorted_list
 
 
