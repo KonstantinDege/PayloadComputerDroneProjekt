@@ -6,7 +6,6 @@ from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
-from scipy.cluster.hierarchy import fclusterdata
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import time
 
@@ -23,9 +22,7 @@ class ImageAnalysis:
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
         def conhsv(val):
-            return np.array([int(val[0] / 2),
-                             int(val[1] * 2.55),
-                             int(val[2] * 2.55)])
+            return np.array([val[0] * 2.55, val[1] + 128, val[2] + 128])
         self.colors: dict = {}
         for color in config["colors"]:
             if "upper_1" in color.keys():
@@ -49,6 +46,10 @@ class ImageAnalysis:
         self.shape_color = {
             "lower": conhsv(config["shape_color"]["lower"]),
             "upper": conhsv(config["shape_color"]["upper"])
+        }
+
+        self.shape_funcs = {
+            "Code": self._get_closest_code
         }
 
     def start_cam(self, ips: float = 1.0) -> bool:
@@ -175,7 +176,7 @@ class ImageAnalysis:
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
                 # TODO: add FOV to config
-                self.add_latlonalt(
+                self.add_lat_lon(
                     obj, pos_com[3:6], height, shape_image.shape[:2],
                     loc_to_glo)
                 cv2.circle(
@@ -219,8 +220,7 @@ class ImageAnalysis:
         Returns:
             None
         """
-        gray = cv2.cvtColor(
-            filtered_image["filtered_image"], cv2.COLOR_BGR2GRAY)
+        gray = filtered_image["filtered_image"]
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
@@ -251,7 +251,7 @@ class ImageAnalysis:
                 "y_center": y_mittel
             })
 
-    def get_shape(self, obj: dict, shape_image: np.array):
+    def get_shape(self, obj: dict, shape_image: np.array, save_contour=False):
         """
         Returns the first plossible shape that is inside the object boundaries
 
@@ -267,7 +267,7 @@ class ImageAnalysis:
         subframe = shape_image[bound_box["y_start"]:bound_box["y_stop"],
                                bound_box["x_start"]:bound_box["x_stop"]]
 
-        gray = cv2.cvtColor(subframe, cv2.COLOR_BGR2GRAY)
+        gray = subframe
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
@@ -295,7 +295,7 @@ class ImageAnalysis:
         subframe = shape_image[bound_box["y_start"]:bound_box["y_stop"],
                                bound_box["x_start"]:bound_box["x_stop"]]
 
-        gray = cv2.cvtColor(subframe, cv2.COLOR_BGR2GRAY)
+        gray = subframe
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
@@ -316,8 +316,11 @@ class ImageAnalysis:
         if len(code_elements) < 3:
             return False
         if len(code_elements) == 3:
-            return code_elements
-        return sorted(code_elements, lambda x: x["d"], reverse=True)[:3]
+            obj["code"] = code_elements
+        else:
+            obj["code"] = sorted(
+                code_elements, lambda x: x["d"], reverse=True)[:3]
+        return True
 
     def filter_colors(self, image: np.array) -> tuple[list[dict], np.array]:
         """
@@ -331,23 +334,24 @@ class ImageAnalysis:
             shape_image: image filtered for shape_color (f.E. black or white)
         """
         image_show = []
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+        shape_mask = self._filter_color(
+            hsv, self.shape_color)
         for name, elements in self.colors.items():
             image_show.append(
                 {"color": name,
-                 "filtered_image": self._filter_color(hsv, image, elements)})
+                 "filtered_image": self._filter_color(
+                     hsv, elements, shape_mask=shape_mask)})
 
-        shape_image = self._filter_color(
-            hsv, image, self.shape_color, invert=True)
-
-        return image_show, shape_image
+        return image_show, shape_mask
 
     def filter_shape_color(self, image):
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         return self._filter_color(
-            hsv, image, self.shape_color, invert=True)
+            hsv, self.shape_color)
 
-    def filter_color(self, image: np.array, color: str) -> np.array:
+    def filter_color(self, image: np.array,
+                     color: str, shape_mask=None) -> np.array:
         """
         Returns the image filtered for the specified color.
 
@@ -361,27 +365,32 @@ class ImageAnalysis:
         if color not in self.colors.keys():
             raise IndexError(
                 f"the color {color} is not defined in the color list")
-        return self._filter_color(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
-                                  image, self.colors[color])
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+        if shape_mask is not None:
+            shape_mask = self._filter_color(
+                hsv, self.shape_color)
+        return self._filter_color(hsv, self.colors[color],
+                                  shape_mask=shape_mask)
 
-    def _filter_color(self, hsv, image, elements: dict, invert: bool = False):
+    def _filter_color(self, lab, elements: dict, shape_mask=None):
         if isinstance(elements, list):
             masks = []
             for elem in elements:
                 masks.append(cv2.inRange(
-                    hsv, elem["lower"], elem["upper"]))
+                    lab, elem["lower"], elem["upper"]))
 
             mask = cv2.bitwise_or(masks[0], masks[1])
         else:
-            mask = cv2.inRange(hsv, elements["lower"], elements["upper"])
+            mask = cv2.inRange(lab, elements["lower"], elements["upper"])
 
-        if invert:
-            image = cv2.bitwise_not(image)
-            return cv2.bitwise_and(image, image, mask=mask)
-        else:
-            return cv2.bitwise_and(image, image, mask=mask)
+        if shape_mask is None:
+            return cv2.GaussianBlur(mask, (5, 5), 0)
 
-    async def get_current_offset_closest(self, color, shape, yaw_0=True):
+        # mask = cv2.bitwise_or(mask, shape_mask)
+        return cv2.GaussianBlur(mask, (7, 7), 0)
+
+    async def get_current_offset_closest(self, color: str,
+                                         shape: str, yaw_0: bool = True):
         """
         What does the function do?
             Returns the offset from the drone to the object.
@@ -404,32 +413,94 @@ class ImageAnalysis:
         pos = self._comms.get_position_xyz()
         dh = self._comms.get_relative_height()
         img = self._camera.get_current_frame()
-        closest_obj = self.get_closest_element(img, color, shape)
-        if not closest_obj:
-            return False, None, None
+        return self._get_current_offset_closest(
+            pos, dh, img, color, shape, yaw_0)
 
-        # TODO: Implement shape specific subcalculation, for height estimation
-        # and yaw offset estimation
+    def _get_current_offset_closest(
+            self, pos: list[float], dh: float, img: np.array, color: str,
+            shape: str, yaw_0: bool = True):
+
+        closest_obj = self.get_closest_element(img, color, shape)
+        if closest_obj is None:
+            return None, None, None
+
         if yaw_0:
             pos[5] = 0
-        local_vec_streched = self.get_local_offset(
+
+        if "code" in closest_obj.keys():
+            return self._get_height_estimate_yaw(
+                closest_obj, pos[3:6], dh, img.shape[:2])
+        pos = self._get_height_estimate(
             closest_obj, pos[3:6], dh, img.shape[:2])
-        return local_vec_streched[:2], local_vec_streched[2], 0
+        return [float(pos[0]), float(pos[1])], float(pos[2]), 0
 
-    def get_closest_element(self, img, color, shape):
-        color_img = self.filter_color(img, color)
+    def _get_height_estimate_yaw(self, obj, rot, h_start, shape):
+        al = self.config.get("length_code_side", 0.5)
+        h = h_start
+        t_l, b_l, t_r = mh.find_rel_position(
+            [(c["x"]+c["w"]/2, c["y"]+c["h"]/2, 0) for c in obj["code"]])
+        for i in range(3):
+            t_l_pos = self._get_local_offset(t_l[:2], rot, h, shape)
+            b_l_pos = self._get_local_offset(b_l[:2], rot, h, shape)
+            t_r_pos = self._get_local_offset(t_r[:2], rot, h, shape)
+
+            left = np.linalg.norm(np.array(b_l_pos) - np.array(t_l_pos))
+            top = np.linalg.norm(np.array(t_r_pos) - np.array(t_l_pos))
+            h = h*(al*(1/left + 1/top) / 2)
+
+        t_l_pos = self._get_local_offset(t_l[:2], rot, h, shape)
+        b_l_pos = self._get_local_offset(b_l[:2], rot, h, shape)
+        t_r_pos = self._get_local_offset(t_r[:2], rot, h, shape)
+
+        left = np.linalg.norm(np.array(b_l_pos) - np.array(t_l_pos))
+        top = np.linalg.norm(np.array(t_r_pos) - np.array(t_l_pos))
+        pos = (b_l_pos + t_r_pos)[:2]
+
+        return [float(pos[0]), float(pos[1])
+                ], float(h), -mh.compute_rotation_angle(t_l, b_l)
+
+    def _get_height_estimate(self, obj, rot, h_start, shape):
+        als = self.config.get("length_box_short_side", 0.4)
+        all = self.config.get("length_box_long_side", 0.6)
+        h = h_start
+
+        for i in range(3):
+            points = []
+            for o in obj["contour"]:
+                points.append(self._get_local_offset(o[:2], rot, h, shape))
+            short, longs = mh.find_shorts_longs(points)
+
+            c = 0
+            for s in short:
+                c += als/s
+
+            for s in longs:
+                c += all/s
+
+            h = h*c/(len(short)+len(longs))
+
+        return self._get_local_offset(
+            (obj["x_center"], obj["y_center"]), rot, h, shape)
+
+    def get_closest_element(self, img, color, shape) -> dict:
+        computed_image = {"color": color}
         shape_image = self.filter_shape_color(img)
-        objects: list[dict] = []
-        self.detect_obj(objects, color_img)
+        computed_image["filtered_image"] = self.filter_color(
+            img, color, shape_image)
 
-        if shape == "Code":
-            relevant_obj = self._get_closest_code(objects, shape_image, shape)
+        objects: list[dict] = []
+        self.detect_obj(objects, computed_image)
+        
+        cv2.imwrite("Image Window2.png", shape_image)
+        if shape in self.shape_funcs:
+            relevant_obj = self.shape_funcs["Code"](
+                objects, shape_image, shape)
         else:
-            relevant_obj = self._get_easy_closest_shape(
+            relevant_obj = self._get_correct_shape(
                 objects, shape_image, shape)
 
         if len(relevant_obj) == 0:
-            return False
+            return None
 
         if len(relevant_obj) == 1:
             return relevant_obj[0]
@@ -442,51 +513,28 @@ class ImageAnalysis:
 
         return sorted(relevant_obj, diag)[0]
 
-    def _get_easy_closest_shape(self, objects, shape_image, shape):
+    def _get_correct_shape(self, objects, shape_image, shape):
         relevant_obj = []
         for obj in objects:
-            if self.get_shape(obj, shape_image) == shape:
+            if self.get_shape(obj, shape_image, True) == shape:
                 relevant_obj.append(obj)
         return relevant_obj
 
     def _get_closest_code(self, objects, shape_image, shape):
         relevant_obj = []
         for obj in objects:
-            if c := self.find_code(obj, shape_image):
-                obj["code"] = c
+            if self.find_code(obj, shape_image):
                 relevant_obj.append(obj)
         return relevant_obj
 
-    def get_filtered_objs(self) -> list[dict]:
+    def get_filtered_objs(self):
         """
         Returns a list of all filtered obj
 
         Returns:
             dict[str, dict[str, list]]: _description_
         """
-        object_store = self._get_obj_tree()
-
-        output = {}
-        for color, shapes in object_store.items():
-            output[color] = {}
-            array = []
-            if "all" in shapes.keys():
-                array = shapes["all"].copy()
-
-            for shape, objs in shapes.items():
-                if shape == "all":
-                    continue
-                output[color][shape] = {}
-                a = array.copy() + objs
-                a_list = np.array([np.array(o["latlonalt"]) for o in a])
-                labels = fclusterdata(
-                    a_list, t=self.config.get("distance_objs", 5))
-                for i, o in enumerate(a):
-                    output[color][shape].setdefault(labels[i], []).append(o)
-
-        # TODO: add sorting for distance for each shape, and add all to each of
-        # those runs so that all elements under deltapos < same_obj_distance
-        # are in one list
+        return self._dh.get_filterd_items(self.config.get("distance_objs", 5))
 
     def get_matching_objects(self, color: str, shape: str = None
                              ) -> list[dict]:
@@ -501,16 +549,23 @@ class ImageAnalysis:
             list[dict]: Obj dictionaries
         """
 
-    def _get_obj_tree(self) -> dict[str, dict[str, list[dict]]]:
-        object_store: dict[str, dict] = {}
-        for items in self._dh.get_items():
-            for obj in items["found_objs"]:
-                d = object_store.setdefault(obj["color"], {})
-                if obj.get("shape", False):
-                    d.setdefault(obj["shape"], []).append(obj)
-                else:
-                    d.setdefault("all", []).append(obj)
-        return object_store
+        return self.get_filtered_objs().get(color, {}).get(shape, [])
+
+    def get_color_obj_list(self, color: str) -> list[dict]:
+        out = []
+        for shape, obj in self.get_filtered_objs().get(color, {}).items():
+            obj["shape"] = shape
+            out.append(obj)
+        return out
+
+    def get_all_obj_list(self) -> list[dict]:
+        out = []
+        for color, objs in self.get_filtered_objs().items():
+            for shape, obj in objs.items():
+                obj["color"] = color
+                obj["shape"] = shape
+                out.append(obj)
+        return out
 
     @staticmethod
     def quality_of_image(image: np.array) -> float:  # finished
@@ -533,12 +588,17 @@ class ImageAnalysis:
          variance: float
         """
 
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+        laplacian = cv2.Laplacian(image, cv2.CV_64F)
         return laplacian.var()
 
     def get_local_offset(self, obj, rot, height, imagesize):
-        px, py = obj["x_center"], obj["y_center"]
+        if "contour" in obj.keys():
+            return self._get_height_estimate(obj, rot, height, imagesize)
+        return self._get_local_offset(
+            (obj["x_center"], obj["y_center"]), rot, height, imagesize)
+
+    def _get_local_offset(self, pixel, rot, height, imagesize):
+        px, py = pixel
         rot_mat = mh.rotation_matrix(rot)
         rot = np.array(rot) + \
             np.array(self.config.get("rotation_offset", [0, 0, 0]))
@@ -551,8 +611,8 @@ class ImageAnalysis:
         local_vec_streched = local_vec * height / local_vec[2]
         return local_vec_streched + rot_mat @ offset
 
-    def add_latlonalt(self, obj, rot, height, imagesize, loc_to_glo):
+    def add_lat_lon(self, obj, rot, height, imagesize, loc_to_glo):
         local_vec_streched = self.get_local_offset(obj, rot, height, imagesize)
 
-        obj["latlonalt"] = loc_to_glo(
+        obj["lat_lon"] = loc_to_glo(
             local_vec_streched[0], local_vec_streched[1])
