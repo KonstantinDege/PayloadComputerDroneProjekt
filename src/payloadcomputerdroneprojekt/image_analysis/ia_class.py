@@ -93,7 +93,7 @@ class ImageAnalysis:
         try:
             self._task.cancel()
             return True
-        except Exception as e:  # TODO: try finding correct Exception Type
+        except Exception as e:
             sp(f"Error stopping the capture: {e}")
             return False
 
@@ -175,7 +175,6 @@ class ImageAnalysis:
 
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
-                # TODO: add FOV to config
                 self.add_lat_lon(
                     obj, pos_com[3:6], height, shape_image.shape[:2],
                     loc_to_glo)
