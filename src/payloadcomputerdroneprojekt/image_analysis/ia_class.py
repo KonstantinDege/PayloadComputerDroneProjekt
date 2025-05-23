@@ -439,7 +439,7 @@ class ImageAnalysis:
         h = h_start
         t_l, b_l, t_r = mh.find_rel_position(
             [(c["x"]+c["w"]/2, c["y"]+c["h"]/2, 0) for c in obj["code"]])
-        for i in range(3):
+        for i in range(5):
             t_l_pos = self._get_local_offset(t_l[:2], rot, h, shape)
             b_l_pos = self._get_local_offset(b_l[:2], rot, h, shape)
             t_r_pos = self._get_local_offset(t_r[:2], rot, h, shape)
@@ -455,6 +455,8 @@ class ImageAnalysis:
         left = np.linalg.norm(np.array(b_l_pos) - np.array(t_l_pos))
         top = np.linalg.norm(np.array(t_r_pos) - np.array(t_l_pos))
         pos = (b_l_pos + t_r_pos)[:2]
+
+        obj["h"] = h
 
         return [float(pos[0]), float(pos[1])
                 ], float(h), -mh.compute_rotation_angle(t_l, b_l)
@@ -478,6 +480,7 @@ class ImageAnalysis:
                 c += all/s
 
             h = h*c/(len(short)+len(longs))
+        obj["h"] = h
 
         return self._get_local_offset(
             (obj["x_center"], obj["y_center"]), rot, h, shape)
