@@ -214,13 +214,13 @@ class MissionComputer():
         sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
         await self.mov(options=objective)
 
-        if "color" not in objective.keys() or "shape" not in objective.keys():
-            sp("No color or type given")
+        if "color" not in objective.keys():
+            sp("No color given")
             await self._comms.mov_by_vel(
                 [0, 0, self.config.get("land_speed", 2)])
             return
 
-        sp(f"Suche Objekt vom Typ '{objective['shape']}' "
+        sp(f"Suche Objekt vom Typ '{objective.get('shape', None)}' "
            f"mit Farbe '{objective['color']}'")
 
         min_alt = 1
@@ -229,7 +229,7 @@ class MissionComputer():
         while detected_alt > min_alt:
             offset, detected_alt, yaw = \
                 await self._image.get_current_offset_closest(
-                    objective["color"], objective["shape"])
+                    objective["color"], objective.get('shape', None))
 
             if offset is None:
                 await self.status("Objekt nicht gefunden.")

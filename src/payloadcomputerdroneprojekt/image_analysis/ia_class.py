@@ -492,13 +492,15 @@ class ImageAnalysis:
 
         objects: list[dict] = []
         self.detect_obj(objects, computed_image)
-
-        if shape in self.shape_funcs:
-            relevant_obj = self.shape_funcs["Code"](
-                objects, shape_image, shape)
+        if shape is not None:
+            if shape in self.shape_funcs:
+                relevant_obj = self.shape_funcs["Code"](
+                    objects, shape_image, shape)
+            else:
+                relevant_obj = self._get_correct_shape(
+                    objects, shape_image, shape)
         else:
-            relevant_obj = self._get_correct_shape(
-                objects, shape_image, shape)
+            objects = relevant_obj
 
         if len(relevant_obj) == 0:
             return None
