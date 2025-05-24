@@ -1,16 +1,3 @@
-.. These are examples of badges you might want to add to your README:
-   please update the URLs accordingly
-
-    .. image:: https://api.cirrus-ci.com/github/<USER>/PayloadComputerDroneProjekt.svg?branch=main
-        :alt: Built Status
-        :target: https://cirrus-ci.com/github/<USER>/PayloadComputerDroneProjekt
-    .. image:: https://readthedocs.org/projects/PayloadComputerDroneProjekt/badge/?version=latest
-        :alt: ReadTheDocs
-        :target: https://PayloadComputerDroneProjekt.readthedocs.io/en/stable/
-    .. image:: https://img.shields.io/coveralls/github/<USER>/PayloadComputerDroneProjekt/main.svg
-        :alt: Coveralls
-        :target: https://coveralls.io/r/<USER>/PayloadComputerDroneProjekt
-
 ===========================
 PayloadComputerDroneProjekt
 ===========================
@@ -33,11 +20,11 @@ Setup
 
 2. run simulation
 
-.. code-block:: bash 
+    .. code-block:: bash 
 
-    cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
+        cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
 
-    ip addr | grep eth0
+        ip addr | grep eth0
 
 3. clone this repo and install this package inside of your wsl instance
 
@@ -52,9 +39,58 @@ Setup
 
     clone this repo also in the same folder as the PX4-Autopilot
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
-    cp -r ./PX4-Autopilot_PATCH/* ~/PX4-Autopilot/
+        cd ~/PX4-ROS2-Gazebo-Drone-Simulation-Template
+        cp -r ./PX4-Autopilot_PATCH/* ~/PX4-Autopilot/
 
 5. https://www.geeksforgeeks.org/using-github-with-ssh-secure-shell/
+
+
+====
+Helper
+====
+
+1. PowerToys Color Picker
+
+    .. code-block::
+
+        LAB(L = %Lc, A = %Ca, B = %Cb)
+
+
+2. Cron Tab
+
+    echo 'export PATH="$HOME/PayloadComputerDroneProjekt:$PATH"' >> ~/.bashrc
+
+    crontab -e
+
+    @reboot start_raspi_script.sh
+
+3. Systemd
+
+
+    mkdir -p ~/.config/systemd/user
+    
+    code ~/.config/systemd/user/start_droneos.service
+
+    [Unit]
+    Description=Start Drone Computer
+    After=multi-user.target
+
+    [Service]
+    ExecStart=/usr/bin/bash /home/aviator/PayloadComputerDroneProjekt/start_raspi_script.sh
+    Type=simple
+
+    [Install]
+    WantedBy=multi-user.target
+    
+    systemctl --user daemon-reload
+    systemctl --userenable start_droneos.service
+    systemctl --user start start_droneos.service
+
+    
+    systemctl --user status start_droneos.service
+
+    
+    journalctl -u start_droneos.service
+

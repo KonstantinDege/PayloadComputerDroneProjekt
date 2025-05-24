@@ -2,12 +2,204 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "blau.mission",
     "title": "DroneConfig",
-    "description": "A mission description of team Blau for the drone project",
+    "description": "Mission configuration schema for Team Blau's drone project",
     "type": "object",
     "properties": {
-        "path": {
-            "description": "Path for saving in this mission",
-            "type": "string"
+        "parameter": {
+            "type": "object",
+            "properties": {
+                "flight_height": {
+                    "type": "number",
+                    "description": "The height of the flight in meters.",
+                    "minimum": 0,
+                    "examples": [
+                        5,
+                        10,
+                        15
+                    ]
+                }
+            },
+            "required": [
+                "flight_height"
+            ]
+        },
+        "action": {
+            "type": "string",
+            "enum": [
+                "list",
+                "mov_multiple"
+            ],
+            "description": "Defines the type of mission."
+        },
+        "commands": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/command"
+                    },
+                    {
+                        "$ref": "#/definitions/movement"
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "parameter",
+        "commands"
+    ],
+    "definitions": {
+        "command": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "list"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/command"
+                            },
+                            "description": "A list of commands for 'list' or 'mov_multiple' actions."
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "mov_multiple"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/movement"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "start_camera",
+                                "stop_camera",
+                                "takeoff",
+                                "land_at",
+                                "delay",
+                                "forever",
+                                "mov_to_objects_cap_pic"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/action_properties"
+                                }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "action"
+                    ]
+                },
+                {
+                    "src": {
+                        "type": "string",
+                        "description": "The source of the command."
+                    },
+                    "required": [
+                        "src"
+                    ]
+                }
+            ]
+        },
+        "action_properties": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Duration in seconds."
+                },
+                "delay": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Delay in seconds."
+                },
+                "altitude": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Altitude in meters."
+                },
+                "lat": {
+                    "type": "number",
+                    "description": "Latitude of the landing spot."
+                },
+                "lon": {
+                    "type": "number",
+                    "description": "Longitude of the landing spot."
+                },
+                "ips": {
+                    "type": "number",
+                    "description": "The number of images captured every second.",
+                    "examples": [
+                        1,
+                        0.5,
+                        2,
+                        5
+                    ]
+                },
+                "color": {
+                    "type": "string"
+                },
+                "shape": {
+                    "type": "string"
+                }
+            }
+        },
+        "movement": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "lat": {
+                        "type": "number",
+                        "description": "Latitude coordinate."
+                    },
+                    "lon": {
+                        "type": "number",
+                        "description": "Longitude coordinate."
+                    },
+                    "height": {
+                        "type": "number",
+                        "description": "Height of the target position over ground"
+                    },
+                    "yaw": {
+                        "type": "number",
+                        "description": "Heading"
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lon"
+                ]
+            }
         }
     }
 }

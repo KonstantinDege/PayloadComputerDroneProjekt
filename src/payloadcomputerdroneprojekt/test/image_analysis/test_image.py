@@ -5,7 +5,7 @@ import os
 import cv2
 import tempfile
 import json
-from payloadcomputerdroneprojekt.test.image_analysis \
+from payloadcomputerdroneprojekt.test.image_analysis.helper \
     import TestCommunications, TestCamera, FILE_PATH
 import asyncio
 
@@ -32,7 +32,7 @@ class TestImage(unittest.TestCase):
             count += 1
         delta_time = time.time() - time_start
         print(f"Computation Time: {delta_time / count:.2f}")
-        assert delta_time / count < 0.3
+        assert delta_time / count < 0.2
 
         ia.get_filtered_objs()
 
@@ -45,7 +45,10 @@ class TestImage(unittest.TestCase):
 
         cam = TestCamera(config)
         ia = ImageAnalysis(config, cam, TestCommunications(""))
-        assert ia.start_cam()
+
+        async def com():
+            assert ia.start_cam()
+        asyncio.run(com())
 
     def test_color(self):
         """
@@ -87,7 +90,7 @@ class TestImage(unittest.TestCase):
 
         obj, _ = ia.compute_image(image)
 
-        assert len(obj) == 4
+        assert len(obj) == 3
 
         ia.get_filtered_objs()
 

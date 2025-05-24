@@ -56,6 +56,9 @@ myenv/*
 data/*
 pics/*
 test_image/*
+start_scripts/mission_storage/*
+mission_storage/*
+
 
 package.json
 package-lock.json

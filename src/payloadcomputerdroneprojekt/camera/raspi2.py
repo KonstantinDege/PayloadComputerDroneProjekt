@@ -1,29 +1,37 @@
-import payloadcomputerdroneprojekt.camera as cam
+import payloadcomputerdroneprojekt.camera.abstract_class as cam
 from picamera2 import Picamera2
+from libcamera import Transform
 
 
-class RaspiCamera(cam.Camera):
+class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
         self._camera = Picamera2()
         if not self._config:
-            self._config = {"format": 'XRGB8888', "size": (640, 480)}
-        self._config["size"] = tuple(self._config["size"])
+            self._config = {"main": {"format": 'XRGB8888', "size": (640, 480)}}
+        self._config["main"]["size"] = tuple(self._config["main"]["size"])
+        self._camera = Picamera2()
+        self.mode = self._camera.sensor_modes[0]
 
     def start_camera(self, config=None):
         if self.is_active:
             if config:
                 self._config = config
+                self._config["main"][
+                    "size"] = tuple(self._config["main"]["size"])
                 self.stop_camera()
                 self.start_camera()
             return
-        # TODO: add sensor config
-        config = self._camera.create_preview_configuration(
-            main=self._config,
-            sensor=self._camera.sensor_modes[0]
+        self._camera.configure(
+            self._camera.create_video_configuration(
+                main=self._config["main"],
+                sensor={'output_size': self.mode['size'],
+                        'bit_depth': self.mode['bit_depth']},
+                transform=Transform(hflip=1, vflip=1))
         )
-        self._camera.align_configuration(config)
-        self._camera.configure(config)
+        self._camera.set_controls(
+            self._config.get("control", {"ExposureTime": 50}))
+
         self._camera.start()
         self.is_active = True
         print("Camera started")
