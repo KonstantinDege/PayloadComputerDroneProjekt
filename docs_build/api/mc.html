@@ -1,0 +1,658 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MissionComputer &#8212; PCDP 0.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mc';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Image Analysis" href="ia.html" />
+    <link rel="prev" title="API Documentation" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PCDP 0.0.2 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">MissionComputer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ia.html">Image Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="c.html">Communications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ac.html">AbstractCamera</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Documentation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MissionComputer</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="missioncomputer">
+<h1>MissionComputer<a class="headerlink" href="#missioncomputer" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.</span></span><span class="sig-name descname"><span class="pre">MissionComputer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config:</span> <span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera:</span> <span class="pre">~payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communications=&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.communications.comm_class.Communications'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analysis=&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.image_analysis.ia_class.ImageAnalysis'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>MissionComputer is the main controller class for managing and executing drone missions.
+This class handles mission initialization, progress tracking, communication with drone hardware,
+camera/image analysis integration, and execution of mission actions such as takeoff, landing,
+movement, and image capture. It supports asynchronous execution and can recover mission progress
+after interruptions.
+.. attribute:: _comms</p>
+<blockquote>
+<div><p>Communications interface for drone control and status updates.</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer._image">
+<span class="sig-name descname"><span class="pre">_image</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer._image" title="Link to this definition">#</a></dt>
+<dd><p>ImageAnalysis instance for camera and object detection tasks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.config">
+<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.config" title="Link to this definition">#</a></dt>
+<dd><p>Configuration dictionary for mission computer parameters.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.current_mission_plan">
+<span class="sig-name descname"><span class="pre">current_mission_plan</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.current_mission_plan" title="Link to this definition">#</a></dt>
+<dd><p>Dictionary representing the current mission plan.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.progress" title="Link to this definition">#</a></dt>
+<dd><p>Current progress index in the mission plan.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.max_progress">
+<span class="sig-name descname"><span class="pre">max_progress</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.max_progress" title="Link to this definition">#</a></dt>
+<dd><p>Maximum number of actions in the mission plan.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.running">
+<span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.running" title="Link to this definition">#</a></dt>
+<dd><p>Boolean indicating if a mission is currently running.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.main_programm">
+<span class="sig-name descname"><span class="pre">main_programm</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.main_programm" title="Link to this definition">#</a></dt>
+<dd><p>Asyncio task for the main mission execution.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.wait_plan">
+<span class="sig-name descname"><span class="pre">wait_plan</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.wait_plan" title="Link to this definition">#</a></dt>
+<dd><p>Asyncio task for receiving new mission files.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.actions">
+<span class="sig-name descname"><span class="pre">actions</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.actions" title="Link to this definition">#</a></dt>
+<dd><p>Dictionary mapping action names to their corresponding methods.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks">
+<span class="sig-name descname"><span class="pre">none_counting_tasks</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks" title="Link to this definition">#</a></dt>
+<dd><p>List of action names that do not increment progress.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.cancel_list">
+<span class="sig-name descname"><span class="pre">cancel_list</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.cancel_list" title="Link to this definition">#</a></dt>
+<dd><p>List of functions to call when cancelling a mission.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.delay">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.delay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.delay" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.execute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.execute_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.forever">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forever</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.forever" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.initiate">
+<span class="sig-name descname"><span class="pre">initiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missionfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.initiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.initiate" title="Link to this definition">#</a></dt>
+<dd><p>this function starts the computer</p>
+<p>see “Ablaufdiagramm.png”</p>
+<dl class="simple">
+<dt>parms:</dt><dd><dl class="simple">
+<dt>missionfile: file descriping the mission and it’s parameters</dt><dd><p>if not given waiting for Network</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.land">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.land"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.land" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov_multiple">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_multiple" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_to_objects_cap_pic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_to_objects_cap_pic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.new_mission">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_mission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.new_mission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.new_mission" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.save_progress">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_progress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.save_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.save_progress" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.setup" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.start_camera">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start_camera" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.status">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.status" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.stop_camera">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.stop_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.stop_camera" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.takeoff">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">takeoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.takeoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.takeoff" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API Documentation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ia.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Image Analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer"><code class="docutils literal notranslate"><span class="pre">MissionComputer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer._image"><code class="docutils literal notranslate"><span class="pre">MissionComputer._image</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.config"><code class="docutils literal notranslate"><span class="pre">MissionComputer.config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.current_mission_plan"><code class="docutils literal notranslate"><span class="pre">MissionComputer.current_mission_plan</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.progress</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.max_progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.max_progress</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.running"><code class="docutils literal notranslate"><span class="pre">MissionComputer.running</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.main_programm"><code class="docutils literal notranslate"><span class="pre">MissionComputer.main_programm</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.wait_plan"><code class="docutils literal notranslate"><span class="pre">MissionComputer.wait_plan</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.actions"><code class="docutils literal notranslate"><span class="pre">MissionComputer.actions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks"><code class="docutils literal notranslate"><span class="pre">MissionComputer.none_counting_tasks</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.cancel_list"><code class="docutils literal notranslate"><span class="pre">MissionComputer.cancel_list</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.delay"><code class="docutils literal notranslate"><span class="pre">MissionComputer.delay()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.execute"><code class="docutils literal notranslate"><span class="pre">MissionComputer.execute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.execute_list"><code class="docutils literal notranslate"><span class="pre">MissionComputer.execute_list()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.forever"><code class="docutils literal notranslate"><span class="pre">MissionComputer.forever()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.initiate"><code class="docutils literal notranslate"><span class="pre">MissionComputer.initiate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.land"><code class="docutils literal notranslate"><span class="pre">MissionComputer.land()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.mov"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.mov_multiple"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_multiple()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_to_objects_cap_pic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.new_mission"><code class="docutils literal notranslate"><span class="pre">MissionComputer.new_mission()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.save_progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.save_progress()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.setup"><code class="docutils literal notranslate"><span class="pre">MissionComputer.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.start"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.start_camera"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start_camera()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.status"><code class="docutils literal notranslate"><span class="pre">MissionComputer.status()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.stop_camera"><code class="docutils literal notranslate"><span class="pre">MissionComputer.stop_camera()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.takeoff"><code class="docutils literal notranslate"><span class="pre">MissionComputer.takeoff()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/mc.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, KonstantinDege.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
