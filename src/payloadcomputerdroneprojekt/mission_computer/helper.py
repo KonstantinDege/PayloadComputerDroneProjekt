@@ -66,5 +66,5 @@ def rec_serialize(obj):
         [rec_serialize(i) for i in obj]
 
 
-def diag(x, y):
+def diag(x: float, y: float) -> float:
     return (x**2 + y**2)**0.5
