@@ -42,7 +42,6 @@ coverage.xml
 build/*
 dist/*
 sdist/*
-docs/api/*
 docs/_rst/*
 docs/_build/*
 cover/*
@@ -57,3 +56,9 @@ myenv/*
 data/*
 pics/*
 test_image/*
+
+package.json
+package-lock.json
+
+docs_build/*
+node_modules/*

@@ -4,12 +4,14 @@ PayloadComputerDroneProjekt
 
 This is the documentation of **PayloadComputerDroneProjekt**.
 
-
-
 Contents
 ========
 
 .. toctree::
    :maxdepth: 2
 
-   Overview <readme>
+   doku_installation/index
+   benutzeranleitung/index
+   api/index
+
+
