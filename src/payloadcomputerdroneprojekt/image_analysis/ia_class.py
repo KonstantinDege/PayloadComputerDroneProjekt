@@ -11,6 +11,28 @@ import time
 
 
 class ImageAnalysis:
+    """
+    ImageAnalysis class for processing and
+    analyzing images captured by a drone's camera.
+    This class provides methods for:
+    - Initializing with configuration, camera, and communication interfaces.
+    - Starting and stopping asynchronous image capture and analysis.
+    - Capturing single images asynchronously.
+    - Filtering images for specific colors and shapes.
+    - Detecting objects and their shapes within images.
+    - Estimating object positions and offsets relative to the drone.
+    - Calculating image quality.
+    - Managing and retrieving filtered and matched objects.
+    Attributes:
+        config (dict): Configuration dictionary for analysis parameters.
+        _camera (AbstractCamera): Camera interface for image capture.
+        _comms (Communications): Communications interface for drone telemetry.
+        _dh (DataHandler): Data handler for storing and managing image data.
+        colors (dict): Dictionary of color definitions for filtering.
+        shape_color (dict): Color definition for shape detection.
+        shape_funcs (dict): Mapping of shape detection functions.
+    """ # noqa
+
     def __init__(self, config: dict,
                  camera: AbstractCamera, comms: Communications):
         self._obj = []

@@ -1,23 +1,13 @@
 API Documentation
 =================
 
-.. automodule:: payloadcomputerdroneprojekt.
-    :members:
-    :undoc-members:
-    :show-inheritance:
+Dokumentation Installation
+==========================
 
+.. toctree::
+   :maxdepth: 1
 
-.. automodule:: image_analysis
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: communications
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: abstract_camera
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   mc
+   ia
+   c
+   ac

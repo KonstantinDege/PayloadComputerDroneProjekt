@@ -17,6 +17,27 @@ MISSION_PROGRESS = "__mission__.json"
 
 
 class MissionComputer():
+    """
+    MissionComputer is the main controller class for managing and executing drone missions.
+    This class handles mission initialization, progress tracking, communication with drone hardware,
+    camera/image analysis integration, and execution of mission actions such as takeoff, landing,
+    movement, and image capture. It supports asynchronous execution and can recover mission progress
+    after interruptions.
+    Attributes:
+        _comms: Communications interface for drone control and status updates.
+        _image: ImageAnalysis instance for camera and object detection tasks.
+        config: Configuration dictionary for mission computer parameters.
+        current_mission_plan: Dictionary representing the current mission plan.
+        progress: Current progress index in the mission plan.
+        max_progress: Maximum number of actions in the mission plan.
+        running: Boolean indicating if a mission is currently running.
+        main_programm: Asyncio task for the main mission execution.
+        wait_plan: Asyncio task for receiving new mission files.
+        actions: Dictionary mapping action names to their corresponding methods.
+        none_counting_tasks: List of action names that do not increment progress.
+        cancel_list: List of functions to call when cancelling a mission.
+    """  # noqa
+
     def __init__(self, config: dict, port: str, camera: AbstractCamera,
                  communications=Communications, image_analysis=ImageAnalysis):
         self._comms = communications(port, config.get("communications", {}))

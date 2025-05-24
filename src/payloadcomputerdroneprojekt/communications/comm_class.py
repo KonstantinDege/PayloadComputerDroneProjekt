@@ -16,6 +16,10 @@ StatusTextType.INFO
 
 
 class Communications:
+    """
+    Class to handle the communication with the drone.
+    It provides methods to connect, arm, disarm, move, and send images.
+    """
     def __init__(self, address, config={}):
         self.config: dict = config
         self.address = address

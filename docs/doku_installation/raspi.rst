@@ -1,7 +1,7 @@
 .. _raspi_installation:
 
 Raspberry Pi Installation Guide
-==============================
+===============================
 
 This guide provides step-by-step instructions for setting up the Raspberry Pi for the Payload Computer Drone Project.
 
