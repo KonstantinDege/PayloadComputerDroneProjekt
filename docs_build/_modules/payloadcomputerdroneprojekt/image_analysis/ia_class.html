@@ -313,6 +313,7 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.camera.abstract_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractCamera</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.communications</span><span class="w"> </span><span class="kn">import</span> <span class="n">Communications</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.image_analysis.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataHandler</span>
@@ -326,90 +327,96 @@
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageAnalysis</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ImageAnalysis class for processing and</span>
-<span class="sd">    analyzing images captured by a drone&#39;s camera.</span>
-<span class="sd">    This class provides methods for:</span>
-<span class="sd">    - Initializing with configuration, camera, and communication interfaces.</span>
-<span class="sd">    - Starting and stopping asynchronous image capture and analysis.</span>
-<span class="sd">    - Capturing single images asynchronously.</span>
-<span class="sd">    - Filtering images for specific colors and shapes.</span>
-<span class="sd">    - Detecting objects and their shapes within images.</span>
-<span class="sd">    - Estimating object positions and offsets relative to the drone.</span>
-<span class="sd">    - Calculating image quality.</span>
-<span class="sd">    - Managing and retrieving filtered and matched objects.</span>
-<span class="sd">    Attributes:</span>
-<span class="sd">        config (dict): Configuration dictionary for analysis parameters.</span>
-<span class="sd">        _camera (AbstractCamera): Camera interface for image capture.</span>
-<span class="sd">        _comms (Communications): Communications interface for drone telemetry.</span>
-<span class="sd">        _dh (DataHandler): Data handler for storing and managing image data.</span>
-<span class="sd">        colors (dict): Dictionary of color definitions for filtering.</span>
-<span class="sd">        shape_color (dict): Color definition for shape detection.</span>
-<span class="sd">        shape_funcs (dict): Mapping of shape detection functions.</span>
-<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+<span class="sd">    Handles image analysis for drone payload computer, including color and</span>
+<span class="sd">    shape detection, object localization, and image quality assessment.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-                 <span class="n">camera</span><span class="p">:</span> <span class="n">AbstractCamera</span><span class="p">,</span> <span class="n">comms</span><span class="p">:</span> <span class="n">Communications</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span> <span class="o">=</span> <span class="n">camera</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span> <span class="o">=</span> <span class="n">comms</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span> <span class="o">=</span> <span class="n">DataHandler</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+<span class="sd">    :param config: Configuration dictionary for image analysis parameters.</span>
+<span class="sd">    :type config: dict</span>
+<span class="sd">    :param camera: Camera object implementing AbstractCamera.</span>
+<span class="sd">    :type camera: AbstractCamera</span>
+<span class="sd">    :param comms: Communications object for drone telemetry.</span>
+<span class="sd">    :type comms: Communications</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">camera</span><span class="p">:</span> <span class="n">AbstractCamera</span><span class="p">,</span>
+        <span class="n">comms</span><span class="p">:</span> <span class="n">Communications</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the ImageAnalysis object.</span>
+
+<span class="sd">        :param config: Configuration dictionary.</span>
+<span class="sd">        :type config: dict</span>
+<span class="sd">        :param camera: Camera object.</span>
+<span class="sd">        :type camera: AbstractCamera</span>
+<span class="sd">        :param comms: Communications object.</span>
+<span class="sd">        :type comms: Communications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detected_objects</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="p">:</span> <span class="n">AbstractCamera</span> <span class="o">=</span> <span class="n">camera</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="p">:</span> <span class="n">Communications</span> <span class="o">=</span> <span class="n">comms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_handler</span><span class="p">:</span> <span class="n">DataHandler</span> <span class="o">=</span> <span class="n">DataHandler</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
             <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;image_analysis&quot;</span><span class="p">)))</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">conhsv</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">convert_to_lab</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Convert color value from 0-100/0-255/0-255 to LAB color space.</span>
+
+<span class="sd">            :param val: List of color values.</span>
+<span class="sd">            :type val: list</span>
+<span class="sd">            :return: Converted numpy array.</span>
+<span class="sd">            :rtype: np.array</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.55</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">128</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">128</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                                     <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="s2">&quot;upper_1&quot;</span> <span class="ow">in</span> <span class="n">color</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="p">{</span>
-                        <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower_0&quot;</span><span class="p">]),</span>
-                        <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper_0&quot;</span><span class="p">])</span>
+                        <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower_0&quot;</span><span class="p">]),</span>
+                        <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper_0&quot;</span><span class="p">])</span>
                     <span class="p">},</span>
                     <span class="p">{</span>
-                        <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower_1&quot;</span><span class="p">]),</span>
-                        <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper_1&quot;</span><span class="p">])</span>
+                        <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower_1&quot;</span><span class="p">]),</span>
+                        <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper_1&quot;</span><span class="p">])</span>
                     <span class="p">}</span>
                 <span class="p">]</span>
-
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">]),</span>
-                    <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
+                    <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">]),</span>
+                    <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
                 <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;shape_color&quot;</span><span class="p">][</span><span class="s2">&quot;lower&quot;</span><span class="p">]),</span>
-            <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">conhsv</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;shape_color&quot;</span><span class="p">][</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;lower&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;shape_color&quot;</span><span class="p">][</span><span class="s2">&quot;lower&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;upper&quot;</span><span class="p">:</span> <span class="n">convert_to_lab</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;shape_color&quot;</span><span class="p">][</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;Code&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_closest_code</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="ImageAnalysis.start_cam">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.start_cam">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start_cam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ips</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_cam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_per_second</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        finished</span>
-<span class="sd">        What does the function do?</span>
-<span class="sd">            Starts capturing and saving images.</span>
-<span class="sd">        How is the function tested?</span>
-<span class="sd">            Simulation</span>
-<span class="sd">        How will the function work?</span>
-<span class="sd">            An asynchronous task is started to capture and save images,</span>
-<span class="sd">            so the program flow is not interrupted.</span>
+<span class="sd">        Start capturing and saving images asynchronously.</span>
 
-<span class="sd">        params:</span>
-<span class="sd">            fps: Frames per second at which the camera should capture images</span>
-<span class="sd">        return:</span>
-<span class="sd">            success: bool</span>
+<span class="sd">        :param images_per_second: Images per second (frames per second).</span>
+<span class="sd">        :type images_per_second: float</span>
+<span class="sd">        :return: True if camera started successfully, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">start_camera</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting camera with </span><span class="si">{</span><span class="n">ips</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_async_analysis</span><span class="p">(</span><span class="n">ips</span><span class="p">))</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting camera with </span><span class="si">{</span><span class="n">images_per_second</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_async_analysis</span><span class="p">(</span><span class="n">images_per_second</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error starting the capture: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -420,16 +427,10 @@
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.stop_cam">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop_cam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        finished</span>
-<span class="sd">        What does the function do?</span>
-<span class="sd">            Stops capturing and saving images.</span>
-<span class="sd">        How is the function tested?</span>
-<span class="sd">            Simulation</span>
-<span class="sd">        How will the function work?</span>
-<span class="sd">            An asynchronous task is stopped.</span>
+<span class="sd">        Stop capturing and saving images.</span>
 
-<span class="sd">        return:</span>
-<span class="sd">            success: bool</span>
+<span class="sd">        :return: True if stopped successfully, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
@@ -439,49 +440,59 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">take_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageAnalysis.take_image">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.take_image">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">take_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Take a single image asynchronously.</span>
+
+<span class="sd">        :return: True if successful, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take_image</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Take image failed </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_take_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_take_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal coroutine to take a single image and process it.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">start_camera</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_loop</span><span class="p">()</span>
 
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_async_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ips</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_async_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_per_second</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        finished</span>
-<span class="sd">        What does the function do?</span>
-<span class="sd">            Captures images and saves them at the given FPS rate.</span>
-<span class="sd">        How is the function tested?</span>
-<span class="sd">            Simulation</span>
-<span class="sd">        How will the function work?</span>
-<span class="sd">            See above.</span>
+<span class="sd">        Asynchronous loop to capture and process images at a given rate.</span>
 
-<span class="sd">        params:</span>
-<span class="sd">            fps: Frames per second at which the camera should capture images</span>
+<span class="sd">        :param images_per_second: Images per second.</span>
+<span class="sd">        :type images_per_second: float</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ips</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ips</span><span class="p">)</span>
+            <span class="n">images_per_second</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">images_per_second</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not convert ips to float, using Standard ips=1; </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">ips</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">ips</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Could not convert images_per_second to float, &quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;using Standard images_per_second=1; </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">images_per_second</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">images_per_second</span>
+        <span class="n">image_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current amount of images: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current amount of images: </span><span class="si">{</span><span class="n">image_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">image_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_loop</span><span class="p">()</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> on Image with count: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> on Image with count: </span><span class="si">{</span><span class="n">image_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
             <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Capturing stopped.&quot;</span><span class="p">)</span>
@@ -490,20 +501,39 @@
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.image_loop">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">image_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Wraps the logik that runs the analysis each frame.</span>
+<span class="sd">        Main logic for per-frame image analysis.</span>
+
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
-        <span class="n">pos_com</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_lat_lon_alt</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">st</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.25</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_image_sub_routine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">start_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
+        <span class="n">position_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_lat_lon_alt</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">start_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.25</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_sub_routine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">position_data</span><span class="p">,</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;skipped image&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_image_sub_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span> <span class="k">as</span> <span class="n">item</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">add_image_position</span><span class="p">(</span><span class="n">pos_com</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_image_sub_routine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">position_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process a single image: save, check quality, detect objects, and</span>
+<span class="sd">        annotate.</span>
+
+<span class="sd">        :param image: Image array.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :param position_data: Position (lat, lon, alt, ...).</span>
+<span class="sd">        :type position_data: list</span>
+<span class="sd">        :param height: Height value.</span>
+<span class="sd">        :type height: float</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_handler</span> <span class="k">as</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">add_image_position</span><span class="p">(</span><span class="n">position_data</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_raw_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_height</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">quality</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_of_image</span><span class="p">(</span>
@@ -511,45 +541,44 @@
                 <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Skipped Image; Quality to low&quot;</span><span class="p">)</span>
                 <span class="n">item</span><span class="o">.</span><span class="n">add_quality</span><span class="p">(</span><span class="n">quality</span><span class="p">)</span>
                 <span class="k">return</span>
-            <span class="k">if</span> <span class="n">pos_com</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_objects</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span>
 
-            <span class="n">loc_to_glo</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">local_to_global</span><span class="p">(</span><span class="n">pos_com</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos_com</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">loc_to_global</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">local_to_global</span><span class="p">(</span>
+                <span class="n">position_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
             <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
                 <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_lat_lon</span><span class="p">(</span>
-                    <span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">height</span><span class="p">,</span> <span class="n">shape_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
-                    <span class="n">loc_to_glo</span><span class="p">)</span>
+                    <span class="n">obj</span><span class="p">,</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">height</span><span class="p">,</span> <span class="n">shape_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">loc_to_global</span><span class="p">)</span>
                 <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span>
                     <span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span>
                     <span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="mi">166</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">178</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">bb</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
-                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">bb</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">],</span> <span class="n">bb</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]),</span>
-                              <span class="p">(</span><span class="n">bb</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">],</span> <span class="n">bb</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span>
+                              <span class="p">(</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">],</span>
+                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]),</span>
+                              <span class="p">(</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">],</span>
+                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 
             <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.compute_image">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.compute_image">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Filters image for colors and returns all found color squares and a</span>
-<span class="sd">        total image filtered for shape color.</span>
+<span class="sd">        Filter image for defined colors and detect objects.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            image (np.array): Image to filter for colors</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            objects (list[dict]):</span>
-<span class="sd">                Returns a list of dict that contains all information of each</span>
-<span class="sd">                obj</span>
-<span class="sd">            shape_image (np.array):</span>
-<span class="sd">                A image filtered for the shape color</span>
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :return: Tuple of (list of detected objects, shape-filtered image).</span>
+<span class="sd">        :rtype: tuple[list[dict], np.array]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">filtered_images</span><span class="p">,</span> <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_colors</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">filtered_image</span> <span class="ow">in</span> <span class="n">filtered_images</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">filtered_image</span><span class="p">)</span>
@@ -558,19 +587,22 @@
 
 <div class="viewcode-block" id="ImageAnalysis.detect_obj">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.detect_obj">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-                   <span class="n">filtered_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_obj</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">filtered_image</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect objects in a filtered image and append to objects list.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            objects (list[dict]): List to append new obj</span>
-<span class="sd">            filtered_image (np.array): color filtered image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        :param objects: List to append detected objects.</span>
+<span class="sd">        :type objects: list[dict]</span>
+<span class="sd">        :param filtered_image: Dictionary with color and filtered image.</span>
+<span class="sd">        :type filtered_image: dict</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">gray</span> <span class="o">=</span> <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">]</span>
-        <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">]</span>
+        <span class="n">blurred</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">blurred</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
 
         <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span>
@@ -583,8 +615,8 @@
             <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="n">x_mittel</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">y_mittel</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">x_center</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">y_center</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
@@ -595,29 +627,33 @@
                     <span class="s2">&quot;y_start&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
                     <span class="s2">&quot;y_stop&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span>
                 <span class="p">},</span>
-                <span class="s2">&quot;contour&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">approx</span><span class="p">],</span>
-                <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="n">x_mittel</span><span class="p">,</span>
-                <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="n">y_mittel</span>
+                <span class="s2">&quot;contour&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">approx</span><span class="p">],</span>
+                <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="n">x_center</span><span class="p">,</span>
+                <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="n">y_center</span>
             <span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_shape">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_shape">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">save_contour</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the first plossible shape that is inside the object boundaries</span>
+<span class="sd">        Detect the shape inside the object boundaries.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            obj (dict): info dict of one object</span>
-<span class="sd">            shape_image (np.array):</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: The shape name inside</span>
+<span class="sd">        :param obj: Object dictionary.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param shape_image: Shape-filtered image.</span>
+<span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :return: Shape name (&quot;Dreieck&quot;, &quot;Rechteck&quot;, &quot;Kreis&quot;) or False.</span>
+<span class="sd">        :rtype: str or bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bound_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
+        <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
 
-        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
-                               <span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
+        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
+                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
 
         <span class="n">gray</span> <span class="o">=</span> <span class="n">subframe</span>
         <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
@@ -642,11 +678,27 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">find_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">):</span>
-        <span class="n">bound_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
+<div class="viewcode-block" id="ImageAnalysis.find_code">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.find_code">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_code</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find code elements (e.g., QR code-like) inside the object.</span>
 
-        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
-                               <span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bound_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
+<span class="sd">        :param obj: Object dictionary.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param shape_image: Shape-filtered image.</span>
+<span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :return: True if code found, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
+
+        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
+                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
 
         <span class="n">gray</span> <span class="o">=</span> <span class="n">subframe</span>
         <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
@@ -654,7 +706,7 @@
 
         <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span>
             <span class="n">thresh</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
-        <span class="n">code_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">code_elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
             <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span>
                 <span class="n">contour</span><span class="p">,</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
@@ -672,68 +724,106 @@
             <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">code_elements</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-                <span class="n">code_elements</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">True</span>
+                <span class="n">code_elements</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
 
 <div class="viewcode-block" id="ImageAnalysis.filter_colors">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_colors">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_colors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Filters the Image for each of the defined colors</span>
+<span class="sd">        Filter the image for each defined color and for the shape color.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            image (np.array):</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            image_show: list of dict that contain color name and filtered image</span>
-<span class="sd">            shape_image: image filtered for shape_color (f.E. black or white)</span>
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :return: Tuple of (list of color-filtered dicts, shape-filtered image).</span>
+<span class="sd">        :rtype: tuple[list[dict], np.array]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">image_show</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">hsv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
+        <span class="n">filtered_color_images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lab_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
         <span class="n">shape_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
-            <span class="n">hsv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
+            <span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">elements</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">image_show</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">filtered_color_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
                  <span class="s2">&quot;filtered_image&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
-                     <span class="n">hsv</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">shape_mask</span><span class="o">=</span><span class="n">shape_mask</span><span class="p">)})</span>
+                     <span class="n">lab_image</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">shape_mask</span><span class="o">=</span><span class="n">shape_mask</span><span class="p">)})</span>
 
-        <span class="k">return</span> <span class="n">image_show</span><span class="p">,</span> <span class="n">shape_mask</span></div>
+        <span class="k">return</span> <span class="n">filtered_color_images</span><span class="p">,</span> <span class="n">shape_mask</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_shape_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="n">hsv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
+<div class="viewcode-block" id="ImageAnalysis.filter_shape_color">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_shape_color">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_shape_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter the image for the shape color.</span>
+
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :return: Shape-filtered image.</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lab_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
-            <span class="n">hsv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
+            <span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="ImageAnalysis.filter_color">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_color">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
-                     <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_color</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shape_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the image filtered for the specified color.</span>
+<span class="sd">        Filter the image for a specific color.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            image (np.array): _description_</span>
-<span class="sd">            color (str): Color name needs to be in the list of defined colors</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            np.array: filtered image</span>
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :param color: Color name (must be in defined colors).</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param shape_mask: Optional shape mask to apply.</span>
+<span class="sd">        :type shape_mask: np.array or None</span>
+<span class="sd">        :return: Filtered image.</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        :raises IndexError: If color is not defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">color</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;the color </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2"> is not defined in the color list&quot;</span><span class="p">)</span>
-        <span class="n">hsv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
+        <span class="n">lab_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2LAB</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">shape_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
-                <span class="n">hsv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span><span class="n">hsv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">],</span>
+                <span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span><span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">],</span>
                                   <span class="n">shape_mask</span><span class="o">=</span><span class="n">shape_mask</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lab</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">shape_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_color</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lab</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]],</span>
+        <span class="n">shape_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method to filter an image in LAB color space for given color</span>
+<span class="sd">        bounds.</span>
+
+<span class="sd">        :param lab: LAB color image.</span>
+<span class="sd">        :type lab: np.array</span>
+<span class="sd">        :param elements: Color bounds (dict or list of dicts).</span>
+<span class="sd">        :type elements: dict or list</span>
+<span class="sd">        :param shape_mask: Optional shape mask.</span>
+<span class="sd">        :type shape_mask: np.array or None</span>
+<span class="sd">        :return: Filtered image.</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">masks</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
                 <span class="n">masks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span>
                     <span class="n">lab</span><span class="p">,</span> <span class="n">elem</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">],</span> <span class="n">elem</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">]))</span>
@@ -750,247 +840,457 @@
 
 <div class="viewcode-block" id="ImageAnalysis.get_current_offset_closest">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_current_offset_closest">[docs]</a>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_current_offset_closest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                         <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">yaw_0</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_current_offset_closest</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        What does the function do?</span>
-<span class="sd">            Returns the offset from the drone to the object.</span>
-<span class="sd">        How is the function tested? simulation / unit tests</span>
-<span class="sd">        How will the function work?</span>
-<span class="sd">            The object is detected using object detection,</span>
-<span class="sd">            and the offset is calculated using pixels and additional geometry.</span>
+<span class="sd">        Get the offset from the drone to the closest object of a given color</span>
+<span class="sd">        and shape.</span>
 
-<span class="sd">        params:</span>
-<span class="sd">            color: color which should be detected []</span>
-<span class="sd">            shape: pixel coordinates of object tuple (x,y)</span>
-<span class="sd">        return</span>
-<span class="sd">         (x,y) correct to closest</span>
-<span class="sd">         h height estimation</span>
-<span class="sd">         yaw offset</span>
+<span class="sd">        :param color: Color name to detect.</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param shape: Shape name to detect.</span>
+<span class="sd">        :type shape: str</span>
+<span class="sd">        :param yaw_zero: If True, set yaw to zero for calculation.</span>
+<span class="sd">        :type yaw_zero: bool</span>
+<span class="sd">        :return: Tuple (offset [x, y], height, yaw offset).</span>
+<span class="sd">        :rtype: tuple or (None, None, None) if not found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">start_camera</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
-        <span class="n">dh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+        <span class="n">relative_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_offset_closest</span><span class="p">(</span>
-            <span class="n">pos</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">yaw_0</span><span class="p">)</span></div>
+            <span class="n">position</span><span class="p">,</span> <span class="n">relative_height</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">yaw_zero</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_offset_closest</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">dh</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">yaw_0</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">relative_height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method to get offset to closest object.</span>
 
-        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+<span class="sd">        :param position: Drone position (xyz).</span>
+<span class="sd">        :type position: list[float]</span>
+<span class="sd">        :param relative_height: Relative height.</span>
+<span class="sd">        :type relative_height: float</span>
+<span class="sd">        :param image: Image array.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :param color: Color name.</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param shape: Shape name.</span>
+<span class="sd">        :type shape: str</span>
+<span class="sd">        :param yaw_zero: If True, set yaw to zero.</span>
+<span class="sd">        :type yaw_zero: bool</span>
+<span class="sd">        :return: Tuple (offset [x, y], height, yaw offset).</span>
+<span class="sd">        :rtype: tuple or (None, None, None) if not found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">closest_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="n">yaw_0</span><span class="p">:</span>
-            <span class="n">pos</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">yaw_zero</span><span class="p">:</span>
+            <span class="n">position</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="s2">&quot;code&quot;</span> <span class="ow">in</span> <span class="n">closest_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_height_estimate_yaw</span><span class="p">(</span>
-                <span class="n">closest_obj</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">dh</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_height_estimate</span><span class="p">(</span>
-            <span class="n">closest_obj</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">dh</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">0</span>
+                <span class="n">closest_obj</span><span class="p">,</span> <span class="n">position</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">relative_height</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">pos_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_height_estimate</span><span class="p">(</span>
+            <span class="n">closest_obj</span><span class="p">,</span> <span class="n">position</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">relative_height</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">pos_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos_out</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos_out</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">0</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_height_estimate_yaw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h_start</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="n">al</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_code_side&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">h_start</span>
-        <span class="n">t_l</span><span class="p">,</span> <span class="n">b_l</span><span class="p">,</span> <span class="n">t_r</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_rel_position</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_height_estimate_yaw</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">height_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimate height and yaw using code elements.</span>
+
+<span class="sd">        :param obj: Object dictionary with code.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param rotation: Rotation vector.</span>
+<span class="sd">        :type rotation: list or np.array</span>
+<span class="sd">        :param height_start: Initial height.</span>
+<span class="sd">        :type height_start: float</span>
+<span class="sd">        :param image_shape: Image shape.</span>
+<span class="sd">        :type image_shape: tuple</span>
+<span class="sd">        :return: Tuple ([x, y], height, yaw offset).</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">code_side_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_code_side&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">height_start</span>
+        <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_rel_position</span><span class="p">(</span>
             <span class="p">[(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;w&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]])</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="n">t_l_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">t_l</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-            <span class="n">b_l_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">b_l</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-            <span class="n">t_r_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">t_r</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">top_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+                <span class="n">top_left</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
+            <span class="n">bottom_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+                <span class="n">bottom_left</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
+            <span class="n">top_right_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+                <span class="n">top_right</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
-            <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b_l_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_l_pos</span><span class="p">))</span>
-            <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_r_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_l_pos</span><span class="p">))</span>
-            <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">*</span><span class="p">(</span><span class="n">al</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">code_side_length</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="n">t_l_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">t_l</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-        <span class="n">b_l_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">b_l</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-        <span class="n">t_r_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">t_r</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">top_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+            <span class="n">top_left</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
+        <span class="n">bottom_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+            <span class="n">bottom_left</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
+        <span class="n">top_right_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+            <span class="n">top_right</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
-        <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b_l_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_l_pos</span><span class="p">))</span>
-        <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_r_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t_l_pos</span><span class="p">))</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">b_l_pos</span> <span class="o">+</span> <span class="n">t_r_pos</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">bottom_left_pos</span> <span class="o">+</span> <span class="n">top_right_pos</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">height</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="o">-</span><span class="n">mh</span><span class="o">.</span><span class="n">compute_rotation_angle</span><span class="p">(</span><span class="n">t_l</span><span class="p">,</span> <span class="n">b_l</span><span class="p">)</span>
+                <span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">),</span> <span class="o">-</span><span class="n">mh</span><span class="o">.</span><span class="n">compute_rotation_angle</span><span class="p">(</span>
+                    <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_height_estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h_start</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="n">als</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_box_short_side&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
-        <span class="nb">all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_box_long_side&quot;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">h_start</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_height_estimate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">height_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimate height using object contour and known box sizes.</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]:</span>
-                <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span><span class="n">o</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">))</span>
-            <span class="n">short</span><span class="p">,</span> <span class="n">longs</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_shorts_longs</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="sd">        :param obj: Object dictionary.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param rotation: Rotation vector.</span>
+<span class="sd">        :type rotation: list or np.array</span>
+<span class="sd">        :param height_start: Initial height.</span>
+<span class="sd">        :type height_start: float</span>
+<span class="sd">        :param image_shape: Image shape.</span>
+<span class="sd">        :type image_shape: tuple</span>
+<span class="sd">        :return: Local offset [x, y, z].</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">short_side_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_box_short_side&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+        <span class="n">long_side_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_box_long_side&quot;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">height_start</span>
 
-            <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">short</span><span class="p">:</span>
-                <span class="n">c</span> <span class="o">+=</span> <span class="n">als</span><span class="o">/</span><span class="n">s</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]:</span>
+                <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+                    <span class="n">point</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">))</span>
+            <span class="n">short_sides</span><span class="p">,</span> <span class="n">long_sides</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_shorts_longs</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">longs</span><span class="p">:</span>
-                <span class="n">c</span> <span class="o">+=</span> <span class="nb">all</span><span class="o">/</span><span class="n">s</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">short_sides</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">+=</span> <span class="n">short_side_length</span><span class="o">/</span><span class="n">s</span>
 
-            <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">*</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">short</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">longs</span><span class="p">))</span>
-        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">long_sides</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">+=</span> <span class="n">long_side_length</span><span class="o">/</span><span class="n">s</span>
+
+            <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">*</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">short_sides</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">long_sides</span><span class="p">))</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">height</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span> <span class="n">rot</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_closest_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="n">computed_image</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">}</span>
-        <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_shape_color</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<div class="viewcode-block" id="ImageAnalysis.get_closest_element">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_closest_element">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_closest_element</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the closest detected object of a given color and shape.</span>
+
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :param color: Color name.</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param shape: Shape name.</span>
+<span class="sd">        :type shape: str</span>
+<span class="sd">        :return: Closest object dictionary or None.</span>
+<span class="sd">        :rtype: dict or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">computed_image</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">}</span>
+        <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_shape_color</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="n">computed_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_color</span><span class="p">(</span>
-            <span class="n">img</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
+            <span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
 
-        <span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">computed_image</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">shape</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">:</span>
-                <span class="n">relevant_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">[</span><span class="s2">&quot;Code&quot;</span><span class="p">](</span>
+                <span class="n">relevant_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">[</span><span class="s2">&quot;Code&quot;</span><span class="p">](</span>
                     <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">relevant_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_correct_shape</span><span class="p">(</span>
+                <span class="n">relevant_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_correct_shape</span><span class="p">(</span>
                     <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">objects</span> <span class="o">=</span> <span class="n">relevant_obj</span>
+            <span class="n">relevant_objects</span> <span class="o">=</span> <span class="n">objects</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relevant_obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relevant_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relevant_obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">relevant_obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relevant_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">relevant_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_size</span> <span class="o">=</span> <span class="n">shape_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">diag</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">diag</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">image_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> \
                    <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">image_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">relevant_obj</span><span class="p">,</span> <span class="n">diag</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">relevant_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">diag</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_correct_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="n">relevant_obj</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_correct_shape</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter objects by matching shape.</span>
+
+<span class="sd">        :param objects: List of objects.</span>
+<span class="sd">        :type objects: list</span>
+<span class="sd">        :param shape_image: Shape-filtered image.</span>
+<span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :param shape: Shape name.</span>
+<span class="sd">        :type shape: str</span>
+<span class="sd">        :return: List of objects with matching shape.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">relevant_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
-                <span class="n">relevant_obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">relevant_obj</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
+                <span class="n">relevant_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">relevant_objects</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_closest_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="n">relevant_obj</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_closest_code</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter objects by presence of code.</span>
+
+<span class="sd">        :param objects: List of objects.</span>
+<span class="sd">        :type objects: list</span>
+<span class="sd">        :param shape_image: Shape-filtered image.</span>
+<span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :param shape: Shape name (unused).</span>
+<span class="sd">        :type shape: str</span>
+<span class="sd">        :return: List of objects with code detected.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">relevant_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_code</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">):</span>
-                <span class="n">relevant_obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">relevant_obj</span>
+                <span class="n">relevant_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">relevant_objects</span>
 
 <div class="viewcode-block" id="ImageAnalysis.get_filtered_objs">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_filtered_objs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_objs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_objs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a list of all filtered obj</span>
+<span class="sd">        Get a dictionary of all filtered objects.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            dict[str, dict[str, list]]: _description_</span>
+<span class="sd">        :return: Dictionary of filtered objects by color and shape.</span>
+<span class="sd">        :rtype: dict[str, dict[str, list]]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span><span class="o">.</span><span class="n">get_filterd_items</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;distance_objs&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_handler</span><span class="o">.</span><span class="n">get_filterd_items</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;distance_objs&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_matching_objects">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_matching_objects">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_matching_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_matching_objects</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns all matching filtered objects</span>
+<span class="sd">        Get all matching filtered objects for a color and optional shape.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            color (str): name of the color</span>
-<span class="sd">            shape (str, optional): name of the shape. Defaults to None.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list[dict]: Obj dictionaries</span>
+<span class="sd">        :param color: Color name.</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param shape: Shape name (optional).</span>
+<span class="sd">        :type shape: str or None</span>
+<span class="sd">        :return: List of object dictionaries.</span>
+<span class="sd">        :rtype: list[dict]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_objs</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">[])</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_color_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="ImageAnalysis.get_color_obj_list">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_color_obj_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_color_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of all objects for a given color.</span>
+
+<span class="sd">        :param color: Color name.</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :return: List of object dictionaries.</span>
+<span class="sd">        :rtype: list[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">shape</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_objs</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shape</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ImageAnalysis.get_all_obj_list">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_all_obj_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of all detected objects with color and shape.</span>
+
+<span class="sd">        :return: List of object dictionaries.</span>
+<span class="sd">        :rtype: list[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">color</span><span class="p">,</span> <span class="n">objs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_objs</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">shape</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
                 <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shape</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
 
 <div class="viewcode-block" id="ImageAnalysis.quality_of_image">
 <a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.quality_of_image">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">quality_of_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>  <span class="c1"># finished</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quality_of_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        finished</span>
-<span class="sd">        capture false input</span>
-<span class="sd">        What does the function do?</span>
-<span class="sd">            Checks the quality of the image to determine</span>
-<span class="sd">            if it is suitable for evaluation.</span>
-<span class="sd">        How is the function tested?</span>
-<span class="sd">            Unit tests</span>
-<span class="sd">        How will the function work?</span>
-<span class="sd">            The Laplace variance is calculated,</span>
-<span class="sd">            and if it is below a certain value,</span>
-<span class="sd">            the image is classified as blurry/unusable.</span>
+<span class="sd">        Assess the quality of an image using Laplacian variance.</span>
 
-<span class="sd">        parms:</span>
-<span class="sd">         image: Image array</span>
-<span class="sd">        return:</span>
-<span class="sd">         variance: float</span>
+<span class="sd">        :param image: Image array.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :return: Laplacian variance (higher is sharper).</span>
+<span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">laplacian</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Laplacian</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">laplacian</span><span class="o">.</span><span class="n">var</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_local_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s2">&quot;contour&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_height_estimate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">)</span>
+<div class="viewcode-block" id="ImageAnalysis.get_local_offset">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_local_offset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_local_offset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the local offset of an object in the drone&#39;s coordinate system.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_local_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">):</span>
+<span class="sd">        :param obj: Object dictionary.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param rotation: Rotation vector.</span>
+<span class="sd">        :type rotation: list or np.array</span>
+<span class="sd">        :param height: Height value.</span>
+<span class="sd">        :type height: float</span>
+<span class="sd">        :param image_size: Image size (height, width).</span>
+<span class="sd">        :type image_size: tuple</span>
+<span class="sd">        :return: Local offset [x, y, z].</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;contour&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_height_estimate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_local_offset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pixel</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method to compute local offset from pixel coordinates.</span>
+
+<span class="sd">        :param pixel: Pixel coordinates (x, y).</span>
+<span class="sd">        :type pixel: tuple</span>
+<span class="sd">        :param rotation: Rotation vector.</span>
+<span class="sd">        :type rotation: list or np.array</span>
+<span class="sd">        :param height: Height value.</span>
+<span class="sd">        :type height: float</span>
+<span class="sd">        :param image_size: Image size (height, width).</span>
+<span class="sd">        :type image_size: tuple</span>
+<span class="sd">        :return: Local offset [x, y, z].</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">pixel</span>
-        <span class="n">rot_mat</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
-        <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span> <span class="o">+</span> \
+        <span class="n">rot_mat</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span> <span class="o">+</span> \
             <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
 
         <span class="n">fov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fov&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">66</span><span class="p">,</span> <span class="mi">41</span><span class="p">])</span>  <span class="c1"># shape is height width</span>
         <span class="c1"># offset of camera position in x and y compared to drone center</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera_offset&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
-        <span class="n">local_vec</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">compute_local</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">,</span> <span class="n">fov</span><span class="p">)</span>
+        <span class="n">camera_offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera_offset&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">local_vec</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">compute_local</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">fov</span><span class="p">)</span>
 
-        <span class="n">local_vec_streched</span> <span class="o">=</span> <span class="n">local_vec</span> <span class="o">*</span> <span class="n">height</span> <span class="o">/</span> <span class="n">local_vec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">local_vec_streched</span> <span class="o">+</span> <span class="n">rot_mat</span> <span class="o">@</span> <span class="n">offset</span>
+        <span class="n">local_vec_stretched</span> <span class="o">=</span> <span class="n">local_vec</span> <span class="o">*</span> <span class="n">height</span> <span class="o">/</span> <span class="n">local_vec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">local_vec_stretched</span> <span class="o">+</span> <span class="n">rot_mat</span> <span class="o">@</span> <span class="n">camera_offset</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">,</span> <span class="n">loc_to_glo</span><span class="p">):</span>
-        <span class="n">local_vec_streched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">imagesize</span><span class="p">)</span>
+<div class="viewcode-block" id="ImageAnalysis.add_lat_lon">
+<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.add_lat_lon">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_lat_lon</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">image_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">loc_to_global</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add latitude and longitude to an object based on its local offset.</span>
 
-        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;lat_lon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc_to_glo</span><span class="p">(</span>
-            <span class="n">local_vec_streched</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">local_vec_streched</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+<span class="sd">        :param obj: Object dictionary.</span>
+<span class="sd">        :type obj: dict</span>
+<span class="sd">        :param rotation: Rotation vector.</span>
+<span class="sd">        :type rotation: list or np.array</span>
+<span class="sd">        :param height: Height value.</span>
+<span class="sd">        :type height: float</span>
+<span class="sd">        :param image_size: Image size (height, width).</span>
+<span class="sd">        :type image_size: tuple</span>
+<span class="sd">        :param loc_to_global: Function to convert local to global coordinates.</span>
+<span class="sd">        :type loc_to_global: callable</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">local_vec_stretched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span>
+            <span class="n">obj</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;lat_lon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc_to_global</span><span class="p">(</span>
+            <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+</div>
 
 </pre></div>
 

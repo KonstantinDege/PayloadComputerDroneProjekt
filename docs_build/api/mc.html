@@ -333,176 +333,194 @@
 <h1>MissionComputer<a class="headerlink" href="#missioncomputer" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.</span></span><span class="sig-name descname"><span class="pre">MissionComputer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config:</span> <span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera:</span> <span class="pre">~payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communications=&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.communications.comm_class.Communications'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analysis=&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.image_analysis.ia_class.ImageAnalysis'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.</span></span><span class="sig-name descname"><span class="pre">MissionComputer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">config:</span> <span class="pre">dict,</span> <span class="pre">port:</span> <span class="pre">str,</span> <span class="pre">camera:</span> <span class="pre">type[~payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera],</span> <span class="pre">communications:</span> <span class="pre">type[~payloadcomputerdroneprojekt.communications.comm_class.Communications]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.communications.comm_class.Communications'&gt;,</span> <span class="pre">image_analysis:</span> <span class="pre">type[~payloadcomputerdroneprojekt.image_analysis.ia_class.ImageAnalysis]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'payloadcomputerdroneprojekt.image_analysis.ia_class.ImageAnalysis'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>MissionComputer is the main controller class for managing and executing drone missions.
-This class handles mission initialization, progress tracking, communication with drone hardware,
-camera/image analysis integration, and execution of mission actions such as takeoff, landing,
-movement, and image capture. It supports asynchronous execution and can recover mission progress
-after interruptions.
-.. attribute:: _comms</p>
-<blockquote>
-<div><p>Communications interface for drone control and status updates.</p>
-</div></blockquote>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer._image">
-<span class="sig-name descname"><span class="pre">_image</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer._image" title="Link to this definition">#</a></dt>
-<dd><p>ImageAnalysis instance for camera and object detection tasks.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.config">
-<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.config" title="Link to this definition">#</a></dt>
-<dd><p>Configuration dictionary for mission computer parameters.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.current_mission_plan">
-<span class="sig-name descname"><span class="pre">current_mission_plan</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.current_mission_plan" title="Link to this definition">#</a></dt>
-<dd><p>Dictionary representing the current mission plan.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.progress">
-<span class="sig-name descname"><span class="pre">progress</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.progress" title="Link to this definition">#</a></dt>
-<dd><p>Current progress index in the mission plan.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.max_progress">
-<span class="sig-name descname"><span class="pre">max_progress</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.max_progress" title="Link to this definition">#</a></dt>
-<dd><p>Maximum number of actions in the mission plan.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.running">
-<span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.running" title="Link to this definition">#</a></dt>
-<dd><p>Boolean indicating if a mission is currently running.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.main_programm">
-<span class="sig-name descname"><span class="pre">main_programm</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.main_programm" title="Link to this definition">#</a></dt>
-<dd><p>Asyncio task for the main mission execution.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.wait_plan">
-<span class="sig-name descname"><span class="pre">wait_plan</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.wait_plan" title="Link to this definition">#</a></dt>
-<dd><p>Asyncio task for receiving new mission files.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.actions">
-<span class="sig-name descname"><span class="pre">actions</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.actions" title="Link to this definition">#</a></dt>
-<dd><p>Dictionary mapping action names to their corresponding methods.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks">
-<span class="sig-name descname"><span class="pre">none_counting_tasks</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks" title="Link to this definition">#</a></dt>
-<dd><p>List of action names that do not increment progress.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.cancel_list">
-<span class="sig-name descname"><span class="pre">cancel_list</span></span><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.cancel_list" title="Link to this definition">#</a></dt>
-<dd><p>List of functions to call when cancelling a mission.</p>
-</dd></dl>
-
+<p>MissionComputer class for managing drone missions, communication, and image
+analysis.</p>
+<p>This class handles mission initialization, execution, progress tracking,
+and communication with the drone and its subsystems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Configuration dictionary for the mission computer and
+subsystems.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Communication port for the drone.</p></li>
+<li><p><strong>camera</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#type" title="(in Python v3.12)"><em>type</em></a><em>[</em><a class="reference internal" href="ac.html#payloadcomputerdroneprojekt.camera.AbstractCamera" title="payloadcomputerdroneprojekt.camera.AbstractCamera"><em>AbstractCamera</em></a><em>]</em>) – Camera class to be used for image analysis.</p></li>
+<li><p><strong>communications</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#type" title="(in Python v3.12)"><em>type</em></a><em>[</em><a class="reference internal" href="c.html#payloadcomputerdroneprojekt.communications.Communications" title="payloadcomputerdroneprojekt.communications.Communications"><em>Communications</em></a><em>]</em><em>, </em><em>optional</em>) – Communications class for drone communication.</p></li>
+<li><p><strong>image_analysis</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#type" title="(in Python v3.12)"><em>type</em></a><em>[</em><a class="reference internal" href="ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis" title="payloadcomputerdroneprojekt.image_analysis.ImageAnalysis"><em>ImageAnalysis</em></a><em>]</em><em>, </em><em>optional</em>) – ImageAnalysis class for image processing.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.delay">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.delay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.delay" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.delay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.delay" title="Link to this definition">#</a></dt>
+<dd><p>Delay execution for a specified amount of time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with the delay time in seconds.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.execute">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single mission action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Action dictionary containing the action type and
+commands.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.execute_list">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute_list" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.execute_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.execute_list" title="Link to this definition">#</a></dt>
+<dd><p>Execute a list of actions sequentially.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>]</em>) – List of action dictionaries.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.forever">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forever</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.forever" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forever</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.forever" title="Link to this definition">#</a></dt>
+<dd><p>Run an infinite loop (used for testing or waiting).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Options dictionary (unused).</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.initiate">
-<span class="sig-name descname"><span class="pre">initiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missionfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.initiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.initiate" title="Link to this definition">#</a></dt>
-<dd><p>this function starts the computer</p>
-<p>see “Ablaufdiagramm.png”</p>
-<dl class="simple">
-<dt>parms:</dt><dd><dl class="simple">
-<dt>missionfile: file descriping the mission and it’s parameters</dt><dd><p>if not given waiting for Network</p>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">initiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missionfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.initiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.initiate" title="Link to this definition">#</a></dt>
+<dd><p>Initialize or reset the mission plan from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>missionfile</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the mission file.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.land">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.land"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.land" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.land"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.land" title="Link to this definition">#</a></dt>
+<dd><p>Land the drone at a specified location, optionally using color/shape
+detection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>objective</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with landing coordinates and optional
+color/shape.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov" title="Link to this definition">#</a></dt>
+<dd><p>Move the drone to a specified latitude, longitude, and height.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with ‘lat’, ‘lon’, and optional ‘height’ and
+‘yaw’.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov_multiple">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_multiple" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_multiple" title="Link to this definition">#</a></dt>
+<dd><p>Move to multiple locations sequentially.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>]</em>) – List of movement command dictionaries.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_to_objects_cap_pic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_to_objects_cap_pic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_to_objects_cap_pic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_to_objects_cap_pic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic" title="Link to this definition">#</a></dt>
+<dd><p>Move to detected objects and capture images at each location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with movement and delay options.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.new_mission">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_mission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.new_mission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.new_mission" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_mission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.new_mission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.new_mission" title="Link to this definition">#</a></dt>
+<dd><p>Callback for receiving a new mission plan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plan</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Path to the new mission plan file.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.save_progress">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_progress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.save_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.save_progress" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.setup" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_progress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.save_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.save_progress" title="Link to this definition">#</a></dt>
+<dd><p>Periodically save the current mission progress to a file.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start" title="Link to this definition">#</a></dt>
+<dd><p>Start the mission computer’s main event loop.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.start_camera">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start_camera" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.start_camera" title="Link to this definition">#</a></dt>
+<dd><p>Start the camera subsystem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Options for starting the camera (e.g., images per
+second).</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.status">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.status" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.status" title="Link to this definition">#</a></dt>
+<dd><p>Send a status message to the communication subsystem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Status message to send.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.stop_camera">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.stop_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.stop_camera" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.stop_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.stop_camera" title="Link to this definition">#</a></dt>
+<dd><p>Stop the camera subsystem and process filtered objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Options for stopping the camera.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.MissionComputer.takeoff">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">takeoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.takeoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.takeoff" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">takeoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.takeoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.MissionComputer.takeoff" title="Link to this definition">#</a></dt>
+<dd><p>Command the drone to take off to a specified height.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Options containing the target height.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -556,17 +574,6 @@ after interruptions.
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer"><code class="docutils literal notranslate"><span class="pre">MissionComputer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer._image"><code class="docutils literal notranslate"><span class="pre">MissionComputer._image</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.config"><code class="docutils literal notranslate"><span class="pre">MissionComputer.config</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.current_mission_plan"><code class="docutils literal notranslate"><span class="pre">MissionComputer.current_mission_plan</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.progress</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.max_progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.max_progress</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.running"><code class="docutils literal notranslate"><span class="pre">MissionComputer.running</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.main_programm"><code class="docutils literal notranslate"><span class="pre">MissionComputer.main_programm</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.wait_plan"><code class="docutils literal notranslate"><span class="pre">MissionComputer.wait_plan</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.actions"><code class="docutils literal notranslate"><span class="pre">MissionComputer.actions</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.none_counting_tasks"><code class="docutils literal notranslate"><span class="pre">MissionComputer.none_counting_tasks</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.cancel_list"><code class="docutils literal notranslate"><span class="pre">MissionComputer.cancel_list</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.delay"><code class="docutils literal notranslate"><span class="pre">MissionComputer.delay()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.execute"><code class="docutils literal notranslate"><span class="pre">MissionComputer.execute()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.execute_list"><code class="docutils literal notranslate"><span class="pre">MissionComputer.execute_list()</span></code></a></li>
@@ -578,7 +585,6 @@ after interruptions.
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.mov_to_objects_cap_pic"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_to_objects_cap_pic()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.new_mission"><code class="docutils literal notranslate"><span class="pre">MissionComputer.new_mission()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.save_progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.save_progress()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.setup"><code class="docutils literal notranslate"><span class="pre">MissionComputer.setup()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.start"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.start_camera"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start_camera()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.MissionComputer.status"><code class="docutils literal notranslate"><span class="pre">MissionComputer.status()</span></code></a></li>

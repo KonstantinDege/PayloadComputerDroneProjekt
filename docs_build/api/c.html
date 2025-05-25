@@ -333,164 +333,209 @@
 <h1>Communications<a class="headerlink" href="#communications" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.communications.</span></span><span class="sig-name descname"><span class="pre">Communications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.communications.</span></span><span class="sig-name descname"><span class="pre">Communications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Class to handle the communication with the drone.
-It provides methods to connect, arm, disarm, move, and send images.</p>
+<p>Handles communication with the drone, including connection, arming,
+movement, telemetry, and image transfer.</p>
+<p>This class abstracts the MAVSDK API and provides high-level methods for
+controlling and monitoring the drone, as well as sending data to a ground
+station.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.await_arm">
-<span class="sig-name descname"><span class="pre">await_arm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.await_arm" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">await_arm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.await_arm" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.await_disarm">
-<span class="sig-name descname"><span class="pre">await_disarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.await_disarm" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">await_disarm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.await_disarm" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.check_health">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.check_health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.check_health" title="Link to this definition">#</a></dt>
-<dd><p>Return if GPS Position is Okay</p>
+<dd><p>Check if the drone’s global position is OK (GPS ready).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if global position is OK, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.connect">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.connect" title="Link to this definition">#</a></dt>
-<dd><p>Establish a connection to the drone. Initializes the System object,
-connects to the specified address, and verifies the connection.</p>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.connect" title="Link to this definition">#</a></dt>
+<dd><p>Establish a connection to the drone and set telemetry data rates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Connection address (e.g., serial:///dev/ttyAMA0:57600).
-Defaults to “serial:///dev/ttyAMA0:57600” if not provided.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if connection is established, False otherwise.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the connection is successfully established,
-False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
+<p>This method initializes the MAVSDK System, connects to the specified
+address, and waits until the connection is confirmed. It also sets
+telemetry data rates.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_position_lat_lon_alt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.get_position_lat_lon_alt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt" title="Link to this definition">#</a></dt>
-<dd><p>Returns list of floating point values. If the gps is not ready it will
-return zeros but not wait until it is ready.
-[m, degree]
-:returns: lat, lon, alt_rel, roll, pitch, yaw
-:rtype: list[float]</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.get_position_xyz">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_position_xyz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.get_position_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz" title="Link to this definition">#</a></dt>
-<dd><p>Returns list of floating point values. If the gps is not ready it will
-return zeros but not wait until it is ready.</p>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_position_lat_lon_alt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.get_position_lat_lon_alt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt" title="Link to this definition">#</a></dt>
+<dd><p>Get the drone’s global position and attitude.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>x, y, z, roll, pitch, yaw</p>
+<dd class="field-odd"><p>[latitude_deg, longitude_deg, relative_altitude_m, roll,
+pitch, yaw]</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)">float</a>]</p>
 </dd>
 </dl>
+<p>If GPS is not ready, returns zeros.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.get_position_xyz">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_position_xyz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.get_position_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz" title="Link to this definition">#</a></dt>
+<dd><p>Get the drone’s local position and attitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[x, y, z, roll, pitch, yaw] in meters and degrees.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)">float</a>]</p>
+</dd>
+</dl>
+<p>If GPS is not ready, returns zeros.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.get_relative_height">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_relative_height</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.get_relative_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.get_relative_height" title="Link to this definition">#</a></dt>
-<dd><p>Get height estimation to the ground
-:returns: _description_
-:rtype: _type_</p>
+<dd><p>Get the drone’s height above the ground.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Relative altitude in meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.is_flighing">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_flighing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.is_flighing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.is_flighing" title="Link to this definition">#</a></dt>
-<dd><p>Checks if drone is currently flighing</p>
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.is_flying">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_flying</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.is_flying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.is_flying" title="Link to this definition">#</a></dt>
+<dd><p>Check if the drone is currently flying (in air).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the drone is in air, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.land">
-<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.land" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.land" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_by_vel">
-<span class="sig-name descname"><span class="pre">mov_by_vel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_vel" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_by_vel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_vel" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz">
-<span class="sig-name descname"><span class="pre">mov_by_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_by_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz_old">
-<span class="sig-name descname"><span class="pre">mov_by_xyz_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz_old" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_by_xyz_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz_old" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_to_lat_lon_alt">
-<span class="sig-name descname"><span class="pre">mov_to_lat_lon_alt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_to_lat_lon_alt" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_to_lat_lon_alt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_to_lat_lon_alt" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_to_xyz">
-<span class="sig-name descname"><span class="pre">mov_to_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_to_xyz" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_to_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_to_xyz" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.mov_with_vel">
-<span class="sig-name descname"><span class="pre">mov_with_vel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_with_vel" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_with_vel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.mov_with_vel" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.receive_mission_file">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">receive_mission_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_on_receive</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.receive_mission_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.receive_mission_file" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">receive_mission_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_on_receive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.receive_mission_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.receive_mission_file" title="Link to this definition">#</a></dt>
+<dd><p>Placeholder for receiving a mission file from the ground station.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func_on_receive</strong> (<em>callable</em>) – Callback function to execute when a file is
+received.</p>
+</dd>
+</dl>
+<p>This method is not yet implemented.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.send_found_obj">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_found_obj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.send_found_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_found_obj" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_found_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">found_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.send_found_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_found_obj" title="Link to this definition">#</a></dt>
+<dd><p>Placeholder for sending information about a found object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>found_object</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary containing object information.</p>
+</dd>
+</dl>
+<p>This method is not yet implemented.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.send_image">
-<span class="sig-name descname"><span class="pre">send_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_image" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_image" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.send_status">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.send_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_status" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.send_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.send_status" title="Link to this definition">#</a></dt>
+<dd><p>Send a status text message to the ground station.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>status</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Status message to send.</p>
+</dd>
+</dl>
+<p>This method uses the MAVSDK server utility to send a status text.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.set_data_rates">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_data_rates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.set_data_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.set_data_rates" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_data_rates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.set_data_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.set_data_rates" title="Link to this definition">#</a></dt>
+<dd><p>Set telemetry data rates for attitude, position, and in-air status.</p>
+<p>This method configures the frequency at which telemetry data is
+received.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.start" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.start" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.communications.Communications.wait_for_health">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_for_health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.wait_for_health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.wait_for_health" title="Link to this definition">#</a></dt>
-<dd><p>Runs unit the home position and global position is okay.</p>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_for_health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/communications/comm_class.html#Communications.wait_for_health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.communications.Communications.wait_for_health" title="Link to this definition">#</a></dt>
+<dd><p>Wait until both the home position and global position are OK.</p>
+<p>This method blocks until the drone’s telemetry reports both positions
+as ready.</p>
 </dd></dl>
 
 </dd></dl>
@@ -552,7 +597,7 @@ return zeros but not wait until it is ready.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt"><code class="docutils literal notranslate"><span class="pre">Communications.get_position_lat_lon_alt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz"><code class="docutils literal notranslate"><span class="pre">Communications.get_position_xyz()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.get_relative_height"><code class="docutils literal notranslate"><span class="pre">Communications.get_relative_height()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.is_flighing"><code class="docutils literal notranslate"><span class="pre">Communications.is_flighing()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.is_flying"><code class="docutils literal notranslate"><span class="pre">Communications.is_flying()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.land"><code class="docutils literal notranslate"><span class="pre">Communications.land()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_vel"><code class="docutils literal notranslate"><span class="pre">Communications.mov_by_vel()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.communications.Communications.mov_by_xyz"><code class="docutils literal notranslate"><span class="pre">Communications.mov_by_xyz()</span></code></a></li>
