@@ -410,7 +410,7 @@ class ImageAnalysis:
             filtered_color_images.append(
                 {"color": name,
                  "filtered_image": self._filter_color(
-                     lab_image, elements, shape_mask=shape_mask)})
+                     lab_image, elements)})
 
         return filtered_color_images, shape_mask
 
@@ -453,14 +453,12 @@ class ImageAnalysis:
         if shape_mask is not None:
             shape_mask = self._filter_color(
                 lab_image, self.shape_color)
-        return self._filter_color(lab_image, self.colors[color],
-                                  shape_mask=shape_mask)
+        return self._filter_color(lab_image, self.colors[color])
 
     def _filter_color(
         self,
         lab: np.ndarray,
         elements: Union[Dict[str, np.ndarray], List[Dict[str, np.ndarray]]],
-        shape_mask: Optional[np.ndarray] = None
     ) -> np.ndarray:
         """
         Internal method to filter an image in LAB color space for given color
@@ -485,10 +483,6 @@ class ImageAnalysis:
         else:
             mask = cv2.inRange(lab, elements["lower"], elements["upper"])
 
-        if shape_mask is None:
-            return cv2.GaussianBlur(mask, (5, 5), 0)
-
-        # mask = cv2.bitwise_or(mask, shape_mask)
         return cv2.GaussianBlur(mask, (7, 7), 0)
 
     async def get_current_offset_closest(
@@ -583,7 +577,7 @@ class ImageAnalysis:
         """
         code_side_length = self.config.get("length_code_side", 0.5)
         height = height_start
-        top_left, bottom_left, top_right = mh.find_rel_position(
+        top_left, bottom_left, top_right = mh.find_relative_position(
             [(c["x"]+c["w"]/2, c["y"]+c["h"]/2, 0) for c in obj["code"]])
         for _ in range(5):
             top_left_pos = self._get_local_offset(
@@ -647,7 +641,7 @@ class ImageAnalysis:
             for point in obj["contour"]:
                 points.append(self._get_local_offset(
                     point[:2], rotation, height, image_shape))
-            short_sides, long_sides = mh.find_shorts_longs(points)
+            short_sides, long_sides = mh.find_shortest_longest_sides(points)
 
             c = 0.0
             for s in short_sides:

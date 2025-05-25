@@ -36,7 +36,7 @@ class MissionComputer:
     :type communications: type[Communications], optional
     :param image_analysis: ImageAnalysis class for image processing.
     :type image_analysis: type[ImageAnalysis], optional
-    """  # noqa: E501
+    """
 
     def __init__(
         self,
@@ -276,7 +276,7 @@ class MissionComputer:
         :param options: Options for starting the camera (e.g., images per
             second).
         :type options: dict
-        """  # noqa: E501
+        """
         await self.status("Starting Camera")
         self._image.start_cam(options.get("ips", 1))
 
@@ -312,7 +312,7 @@ class MissionComputer:
         :param objective: Dictionary with landing coordinates and optional
             color/shape.
         :type objective: dict
-        """  # noqa: E501
+        """
         sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
         await self.mov(options=objective)
 
@@ -389,7 +389,7 @@ class MissionComputer:
         :param options: Dictionary with 'lat', 'lon', and optional 'height' and
             'yaw'.
         :type options: dict
-        """  # noqa: E501
+        """
         await self.status(
             f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
         yaw: Optional[float] = options.get("yaw")

@@ -44,11 +44,10 @@ class DataHandler:
 
                 # Support for both JSON array and line-delimited JSON
                 if content.startswith("["):
-                    self.list = [DataItem.from_dict(
-                        item) for item in json.loads(content)]
+                    self.list = json.loads(content)
                 else:
                     for line in content.splitlines():
-                        self.list.append(DataItem.from_dict(json.loads(line)))
+                        self.list.append(json.loads(line))
 
         self.saved: int = len(self.list)
 
