@@ -11,7 +11,22 @@ FILENAME_FILTERED = "__data_filtered__.json"
 
 
 class DataHandler:
+    """
+    Handles loading, saving, and processing of DataItem objects for image
+    analysis.
+
+    :param path: Directory path where data files are stored.
+    :type path: str
+    """
+
     def __init__(self, path: str):
+        """
+        Initializes the DataHandler, loads existing data if present, and
+        prepares the storage directory.
+
+        :param path: Directory path for storing data.
+        :type path: str
+        """
         if not exists(path):
             makedirs(path)
         self._path = path
@@ -24,6 +39,7 @@ class DataHandler:
             with open(join(self._path, FILENAME), "r") as f:
                 content = f.read()
 
+                # Support for both JSON array and line-delimited JSON
                 if content.startswith("["):
                     self.list = json.loads(content)
                 else:
@@ -33,12 +49,24 @@ class DataHandler:
         self.saved = len(self.list)
 
     def _get_new_item(self) -> DataItem:
+        """
+        Creates and appends a new DataItem to the internal list.
+
+        :return: The newly created DataItem.
+        :rtype: DataItem
+        """
         new_item = DataItem(self._path)
         new_item._id = len(self.list)
         self.list.append(new_item)
         return new_item
 
     def get_items(self):
+        """
+        Returns a list of all DataItems as dictionaries.
+
+        :return: List of DataItem dictionaries.
+        :rtype: list
+        """
         def get_item(item):
             if isinstance(item, DataItem):
                 return item.get_dict()
@@ -46,6 +74,15 @@ class DataHandler:
         return [get_item(item) for item in self.list]
 
     def get_filterd_items(self, dis):
+        """
+        Filters and clusters detected objects by color and shape, then computes
+        their mean positions.
+
+        :param dis: Distance threshold for clustering.
+        :type dis: float
+        :return: Filtered and clustered object data.
+        :rtype: dict
+        """
         object_store = self._get_obj_tree()
         sorted_list = sort_list(object_store, dis)
         output: dict[str, dict[str, list[dict[str, any]]]
@@ -55,9 +92,22 @@ class DataHandler:
         return output
 
     def get_filtered_storage(self):
+        """
+        Returns the path to the filtered data storage file.
+
+        :return: Path to filtered data file.
+        :rtype: str
+        """
         return join(self._path, FILENAME_FILTERED)
 
     def _get_obj_tree(self) -> dict[str, dict[str, list[dict]]]:
+        """
+        Builds a nested dictionary of detected objects grouped by color and
+        shape.
+
+        :return: Nested dictionary of objects.
+        :rtype: dict
+        """
         object_store: dict[str, dict[str, list[dict]]] = {}
         for items in self.get_items():
             for obj in items["found_objs"]:
@@ -70,19 +120,43 @@ class DataHandler:
         return object_store
 
     def _save(self) -> None:
+        """
+        Saves new DataItems to the data file in line-delimited JSON format.
+        """
         with open(join(self._path, FILENAME), "a") as f:
             for item in self.get_items()[self.saved:]:
                 f.write(json.dumps(item) + "\n")
             self.saved = len(self.list)
 
     def __enter__(self) -> DataItem:
+        """
+        Context manager entry: creates a new DataItem.
+
+        :return: The new DataItem.
+        :rtype: DataItem
+        """
         return self._get_new_item()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Context manager exit: saves new DataItems.
+        """
         self._save()
 
 
 def sort_list(object_store: dict[str, dict[str, list[dict]]], dis: float):
+    """
+    Clusters objects by their latitude and longitude using hierarchical
+    clustering.
+
+    :param object_store: Nested dictionary of objects grouped by color and
+        shape.
+    :type object_store: dict
+    :param dis: Distance threshold for clustering.
+    :type dis: float
+    :return: Nested dictionary of clustered objects.
+    :rtype: dict
+    """
     sorted_list: dict[str, dict[str, dict[int, list]]] = {}
     for color, shapes in object_store.items():
         sorted_list[color] = {}
@@ -97,12 +171,13 @@ def sort_list(object_store: dict[str, dict[str, list[dict]]], dis: float):
             a = array.copy() + objs
             a_list = np.array([np.array(o["lat_lon"]) for o in a])
 
+            # If only one object, assign it to its own cluster
             if len(a_list) == 1:
                 sorted_list[color][shape][0] = [a[0]]
                 continue
 
-            labels = fclusterdata(
-                a_list, t=dis)
+            # Cluster objects by spatial proximity
+            labels = fclusterdata(a_list, t=dis)
             for i, o in enumerate(a):
                 sorted_list[color][shape].setdefault(
                     int(labels[i]), []).append(o)
@@ -111,6 +186,14 @@ def sort_list(object_store: dict[str, dict[str, list[dict]]], dis: float):
 
 
 def get_mean(sorted_list: dict[str, dict[str, dict[int, list]]]):
+    """
+    Computes the mean latitude and longitude for each cluster of objects.
+
+    :param sorted_list: Nested dictionary of clustered objects.
+    :type sorted_list: dict
+    :return: Nested dictionary with mean positions and associated times/IDs.
+    :rtype: dict
+    """
     output: dict[str, dict[str, list[dict[str, any]]]] = {}
     for color, shapes in sorted_list.items():
         output[color] = {}

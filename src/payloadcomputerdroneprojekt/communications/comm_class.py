@@ -1,15 +1,15 @@
 from mavsdk import System
-from mavsdk.offboard \
-    import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw
+from mavsdk.offboard import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw
 import numpy as np
 from mavsdk.telemetry import PositionVelocityNed, Position, EulerAngle
 import asyncio
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import socket
 import os
-from payloadcomputerdroneprojekt.communications.helper import\
-    get_data, wait_for, save_execute, get_pos_vec, reached_pos, \
+from payloadcomputerdroneprojekt.communications.helper import (
+    get_data, wait_for, save_execute, get_pos_vec, reached_pos,
     rotation_matrix_yaw, abs_vel, get_vel_vec
+)
 from mavsdk.server_utility import StatusTextType
 
 StatusTextType.INFO
@@ -17,10 +17,24 @@ StatusTextType.INFO
 
 class Communications:
     """
-    Class to handle the communication with the drone.
-    It provides methods to connect, arm, disarm, move, and send images.
+    Handles communication with the drone, including connection, arming,
+    movement, telemetry, and image transfer.
+
+    This class abstracts the MAVSDK API and provides high-level methods for
+    controlling and monitoring the drone, as well as sending data to a ground
+    station.
     """
+
     def __init__(self, address, config={}):
+        """
+        Initialize the Communications object.
+
+        :param address: Connection address (e.g., serial:///dev/ttyAMA0:57600).
+        :type address: str
+        :param config: Optional configuration dictionary for communication
+            settings.
+        :type config: dict
+        """
         self.config: dict = config
         self.address = address
         self.drone = None
@@ -30,18 +44,14 @@ class Communications:
 
     async def connect(self):
         """
-        Establish a connection to the drone. Initializes the System object,
-        connects to the specified address, and verifies the connection.
+        Establish a connection to the drone and set telemetry data rates.
 
-        Parameters:
-            address (str):
-                Connection address (e.g., serial:///dev/ttyAMA0:57600).
-                Defaults to "serial:///dev/ttyAMA0:57600" if not provided.
+        :returns: True if connection is established, False otherwise.
+        :rtype: bool
 
-        Returns:
-            bool:
-                True if the connection is successfully established,
-                False otherwise.
+        This method initializes the MAVSDK System, connects to the specified
+        address, and waits until the connection is confirmed. It also sets
+        telemetry data rates.
         """
         if self.drone is None:
             self.drone = System()
@@ -60,15 +70,22 @@ class Communications:
         sp("-- Connection established successfully")
 
     async def check_health(self) -> bool:
-        """Return if GPS Position is Okay
+        """
+        Check if the drone's global position is OK (GPS ready).
 
-        Returns:
-            bool:
+        :returns: True if global position is OK, False otherwise.
+        :rtype: bool
         """
         return (await get_data(self.drone.telemetry.health())
                 ).is_global_position_ok
 
     async def set_data_rates(self):
+        """
+        Set telemetry data rates for attitude, position, and in-air status.
+
+        This method configures the frequency at which telemetry data is
+        received.
+        """
         await self.drone.telemetry.set_rate_attitude_euler(1000)
         await self.drone.telemetry.set_rate_position_velocity_ned(1000)
         await self.drone.telemetry.set_rate_position(1000)
@@ -76,7 +93,10 @@ class Communications:
 
     async def wait_for_health(self):
         """
-        Runs unit the home position and global position is okay.
+        Wait until both the home position and global position are OK.
+
+        This method blocks until the drone's telemetry reports both positions
+        as ready.
         """
         await wait_for(
             self.drone.telemetry.health(),
@@ -85,7 +105,10 @@ class Communications:
     @save_execute("Arm")
     async def await_arm(self):
         """
-        Arms or wait until the drone is armed
+        Arm the drone or wait until it is armed.
+
+        If 'allowed_arm' is set in config, the drone will attempt to arm
+        itself. Otherwise, it waits for manual arming.
         """
         if self.config.get("allowed_arm", False):
             try:
@@ -99,7 +122,10 @@ class Communications:
     @save_execute("Disarm")
     async def await_disarm(self):
         """
-        Disarms or wait until the drone is disarmed
+        Disarm the drone or wait until it is disarmed.
+
+        If 'allowed_disarm' is set in config, the drone will attempt to disarm
+        itself. Otherwise, it waits for manual disarming.
         """
         if self.config.get("allowed_disarm", False):
             try:
@@ -111,6 +137,12 @@ class Communications:
 
     @save_execute("Ensure Offboard")
     async def _ensure_offboard(self):
+        """
+        Ensure the drone is in OFFBOARD mode.
+
+        If not already in OFFBOARD, set the current position and start OFFBOARD
+        mode if allowed by config. Otherwise, wait for manual mode switch.
+        """
         mode = await get_data(self.drone.telemetry.flight_mode())
         if mode == "OFFBOARD":
             sp("-- Already in offboard mode")
@@ -119,7 +151,6 @@ class Communications:
             await self.drone.offboard.set_position_ned(
                 PositionNedYaw(*pos[:4]))
             if self.config.get("allowed_mode_switch", True):
-                # check if this would work
                 sp("-- Starting offboard")
                 await self.drone.offboard.start()
             else:
@@ -128,33 +159,36 @@ class Communications:
 
     async def get_relative_height(self) -> float:
         """
-        Get height estimation to the ground
-        Returns:
-            _type_: _description_
+        Get the drone's height above the ground.
+
+        :returns: Relative altitude in meters.
+        :rtype: float
         """
         return (await get_data(self.drone.telemetry.position()
                                )).relative_altitude_m
 
     async def is_flighing(self) -> bool:
         """
-        Checks if drone is currently flighing
+        Check if the drone is currently flying (in air).
 
-        Returns:
-            bool:
+        :returns: True if the drone is in air, False otherwise.
+        :rtype: bool
         """
         return await get_data(self.drone.telemetry.in_air())
 
     @save_execute("Start")
     async def start(self, height: float = 5):
         """
-        Starts the drone and run it until it reached the target height or is
-        heigher
+        Start the drone and ascend to a target height.
 
-        Args:
-            height (float, optional): Height over the ground. Defaults to 5.
+        :param height: Target height above ground in meters.
+        :type height: float
 
-        Returns:
-            _type_: _description_
+        :returns: True if already at or above target height, otherwise None.
+        :rtype: bool or None
+
+        This method ensures OFFBOARD mode, arms the drone, checks health, and
+        commands the drone to ascend if necessary.
         """
         await self._ensure_offboard()
         await self.await_arm()
@@ -165,11 +199,22 @@ class Communications:
         await self.mov_by_xyz([0, 0, -height-h], 0)
 
     async def _get_attitude(self):
-        # Timspektion
+        """
+        Get the drone's current attitude (roll, pitch, yaw).
+
+        :returns: List of [roll_deg, pitch_deg, yaw_deg].
+        :rtype: list[float]
+        """
         res: EulerAngle = await get_data(self.drone.telemetry.attitude_euler())
         return [res.roll_deg, res.pitch_deg, res.yaw_deg]
 
     async def _get_yaw(self):
+        """
+        Get the drone's current yaw angle.
+
+        :returns: Yaw angle in degrees.
+        :rtype: float
+        """
         if not await self.check_health():
             sp("Telemetry not ready")
             return [0, 0, 0]
@@ -177,11 +222,12 @@ class Communications:
 
     async def get_position_xyz(self) -> list[float]:
         """
-        Returns list of floating point values. If the gps is not ready it will
-        return zeros but not wait until it is ready.
+        Get the drone's local position and attitude.
 
-        Returns:
-            list[float]: x, y, z, roll, pitch, yaw
+        :returns: [x, y, z, roll, pitch, yaw] in meters and degrees.
+        :rtype: list[float]
+
+        If GPS is not ready, returns zeros.
         """
         state: PositionVelocityNed = await get_data(
             self.drone.telemetry.position_velocity_ned())
@@ -189,11 +235,13 @@ class Communications:
 
     async def get_position_lat_lon_alt(self):
         """
-        Returns list of floating point values. If the gps is not ready it will
-        return zeros but not wait until it is ready.
-        [m, degree]
-        Returns:
-            list[float]: lat, lon, alt_rel, roll, pitch, yaw
+        Get the drone's global position and attitude.
+
+        :returns: [latitude_deg, longitude_deg, relative_altitude_m, roll,
+            pitch, yaw]
+        :rtype: list[float]
+
+        If GPS is not ready, returns zeros.
         """
         res: Position = await get_data(self.drone.telemetry.position())
         return [res.latitude_deg, res.longitude_deg, res.relative_altitude_m
@@ -202,12 +250,15 @@ class Communications:
     @save_execute("Move to XYZ")
     async def mov_to_xyz(self, pos: list[float], yaw: float = None):
         """
-        Move to the XYZ coordinates, XYZ is fixed to the start position and yaw
-        0 is North.
+        Move the drone to a specific XYZ position in the local NED frame.
 
-        Args:
-            pos (list[float]): XYZ [m] coordinates in local ned values
-            yaw (float, optional): target yaw [degree] in compass values
+        :param pos: Target [x, y, z] position in meters.
+        :type pos: list[float]
+        :param yaw: Target yaw in degrees (compass). If None, uses current yaw.
+        :type yaw: float, optional
+
+        This method sends a position command and waits until the drone reaches
+        the target.
         """
         if yaw is None:
             yaw = await self._get_yaw()
@@ -221,12 +272,15 @@ class Communications:
     @save_execute("Move with Velocity")
     async def mov_with_vel(self, vel: list[float], yaw: float = None):
         """
-        Move the drone with a fixed velocity in XYZ direction [m/s].
-        XYZ in global position system
+        Move the drone with a fixed velocity in the XYZ direction.
 
-        Args:
-            vel (list[float]):
-            yaw (float, optional): Realtiv to North [degree]
+        :param vel: Velocity vector [vx, vy, vz] in m/s (global frame).
+        :type vel: list[float]
+        :param yaw: Yaw angle in degrees (relative to North). If None, uses
+            current yaw.
+        :type yaw: float, optional
+
+        This method sends a velocity command to the drone.
         """
         if yaw is None:
             yaw = await self._get_yaw()
@@ -236,12 +290,15 @@ class Communications:
     @save_execute("Move by Velocity")
     async def mov_by_vel(self, vel: list[float], yaw: float = 0):
         """
-        Move the drone rotated to drone yaw coordinates
+        Move the drone with velocity relative to its current yaw orientation.
 
-        Args:
-            vel (list[float]): Velocity orientated to drone yaw
-            yaw (float, optional):  Adds the
-                yaw to the current one. Defaults to 0.
+        :param vel: Velocity vector [vx, vy, vz] in drone's yaw frame.
+        :type vel: list[float]
+        :param yaw: Additional yaw to add to current yaw (degrees).
+        :type yaw: float, optional
+
+        This method rotates the velocity vector by the current yaw and sends
+        the command.
         """
         old_yaw = await self._get_yaw()
         new_vel = rotation_matrix_yaw(old_yaw) @ np.array(vel)
@@ -250,12 +307,14 @@ class Communications:
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, pos: list[float], yaw: float = 0):
         """
-        Move the drone by XYZ in local drone yaw coordinates
+        Move the drone by a relative XYZ offset in its local yaw frame.
 
-        Args:
-            pos(list[float]):
-            yaw(float, optional): Adds the
-                yaw to the current one. Defaults to 0.
+        :param pos: Offset [dx, dy, dz] in meters (drone's yaw frame).
+        :type pos: list[float]
+        :param yaw: Additional yaw to add to current yaw (degrees).
+        :type yaw: float, optional
+
+        This method computes the new position and sends a move command.
         """
         pos = np.array(pos)
         cur_pos = await self.get_position_xyz()
@@ -268,11 +327,14 @@ class Communications:
     @save_execute("Move by XYZ old")
     async def mov_by_xyz_old(self, pos: list[float], yaw: float = 0):
         """
-        Move the drone by XYZ in local reference frame. Yaw = 0 => North
+        Move the drone by a relative XYZ offset in the local reference frame.
 
-        Args:
-            pos(g):
-            yaw(float, optional): Sets the new yaw as target. Defaults to 0.
+        :param pos: Offset [dx, dy, dz] in meters (NED frame).
+        :type pos: list[float]
+        :param yaw: Target yaw in degrees (absolute).
+        :type yaw: float, optional
+
+        This method computes the new position and sends a move command.
         """
         pos = np.array(pos)
         cur_pos = await self.get_position_xyz()
@@ -284,13 +346,15 @@ class Communications:
     @save_execute("Move to Lat Lon Alt")
     async def mov_to_lat_lon_alt(self, pos: list[float], yaw: float = None):
         """
-        Move the drone to the lat lon global coordinates with a relativ height
-        and a target yaw.
+        Move the drone to a specific latitude, longitude, and altitude.
 
-        Args:
-            pos (list[float]): [lat, lon, delta_h] [degree, degree, m]
-            yaw (float, optional): [degree]. Defaults to current.
+        :param pos: [latitude_deg, longitude_deg, relative_altitude_m].
+        :type pos: list[float]
+        :param yaw: Target yaw in degrees. If None, uses current yaw.
+        :type yaw: float, optional
 
+        This method sends a global position command and waits until the drone
+        reaches the target.
         """
         if yaw is None:
             yaw = await self._get_yaw()
@@ -314,28 +378,51 @@ class Communications:
     @save_execute("Land")
     async def land(self):
         """
-        Trigger standard land mode of the drone.
+        Land the drone using the standard land mode.
+
+        This method triggers the drone's landing procedure.
         """
         await self.drone.action.land()
 
     async def receive_mission_file(self, func_on_receive):
+        """
+        Placeholder for receiving a mission file from the ground station.
+
+        :param func_on_receive: Callback function to execute when a file is
+            received.
+        :type func_on_receive: callable
+
+        This method is not yet implemented.
+        """
         while True:
             await asyncio.sleep(2)
         pass
 
     async def send_found_obj(obj: dict):
+        """
+        Placeholder for sending information about a found object.
+
+        :param obj: Dictionary containing object information.
+        :type obj: dict
+
+        This method is not yet implemented.
+        """
         pass
 
     @save_execute("Send Image")
     async def send_image(self, path: str) -> bool:
         """
-        Send an image file to the laptop over WiFi using TCP sockets.
+        Send an image file to the ground station over WiFi using TCP sockets.
 
-        Parameters:
-            path (str): File path to the image on the Raspberry Pi.
+        :param path: File path to the image on the Raspberry Pi.
+        :type path: str
 
-        Returns:
-            bool: True if the image was sent successfully, False otherwise.
+        :returns: True if the image was sent successfully, False otherwise.
+        :rtype: bool
+
+        This method opens a TCP connection to the ground station, sends the
+        file size, and then streams the image data in chunks. Handles network
+        and file errors.
         """
         # Validate file existence and accessibility
         if not os.path.isfile(path):
@@ -381,5 +468,13 @@ class Communications:
             return False
 
     async def send_status(self, status: str):
+        """
+        Send a status text message to the ground station.
+
+        :param status: Status message to send.
+        :type status: str
+
+        This method uses the MAVSDK server utility to send a status text.
+        """
         await self.drone.server_utility.send_status_text(
             StatusTextType.INFO, status)

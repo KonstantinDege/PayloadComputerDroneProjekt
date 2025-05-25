@@ -12,29 +12,29 @@ import time
 
 class ImageAnalysis:
     """
-    ImageAnalysis class for processing and
-    analyzing images captured by a drone's camera.
-    This class provides methods for:
-    - Initializing with configuration, camera, and communication interfaces.
-    - Starting and stopping asynchronous image capture and analysis.
-    - Capturing single images asynchronously.
-    - Filtering images for specific colors and shapes.
-    - Detecting objects and their shapes within images.
-    - Estimating object positions and offsets relative to the drone.
-    - Calculating image quality.
-    - Managing and retrieving filtered and matched objects.
-    Attributes:
-        config (dict): Configuration dictionary for analysis parameters.
-        _camera (AbstractCamera): Camera interface for image capture.
-        _comms (Communications): Communications interface for drone telemetry.
-        _dh (DataHandler): Data handler for storing and managing image data.
-        colors (dict): Dictionary of color definitions for filtering.
-        shape_color (dict): Color definition for shape detection.
-        shape_funcs (dict): Mapping of shape detection functions.
-    """ # noqa
+    Handles image analysis for drone payload computer, including color and
+    shape detection, object localization, and image quality assessment.
+
+    :param config: Configuration dictionary for image analysis parameters.
+    :type config: dict
+    :param camera: Camera object implementing AbstractCamera.
+    :type camera: AbstractCamera
+    :param comms: Communications object for drone telemetry.
+    :type comms: Communications
+    """
 
     def __init__(self, config: dict,
                  camera: AbstractCamera, comms: Communications):
+        """
+        Initialize the ImageAnalysis object.
+
+        :param config: Configuration dictionary.
+        :type config: dict
+        :param camera: Camera object.
+        :type camera: AbstractCamera
+        :param comms: Communications object.
+        :type comms: Communications
+        """
         self._obj = []
         self.config = config
         self._camera = camera
@@ -44,6 +44,14 @@ class ImageAnalysis:
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
         def conhsv(val):
+            """
+            Convert color value from 0-100/0-255/0-255 to LAB color space.
+
+            :param val: List of color values.
+            :type val: list
+            :return: Converted numpy array.
+            :rtype: np.array
+            """
             return np.array([val[0] * 2.55, val[1] + 128, val[2] + 128])
         self.colors: dict = {}
         for color in config["colors"]:
@@ -76,19 +84,12 @@ class ImageAnalysis:
 
     def start_cam(self, ips: float = 1.0) -> bool:
         """
-        finished
-        What does the function do?
-            Starts capturing and saving images.
-        How is the function tested?
-            Simulation
-        How will the function work?
-            An asynchronous task is started to capture and save images,
-            so the program flow is not interrupted.
+        Start capturing and saving images asynchronously.
 
-        params:
-            fps: Frames per second at which the camera should capture images
-        return:
-            success: bool
+        :param ips: Images per second (frames per second).
+        :type ips: float
+        :return: True if camera started successfully, False otherwise.
+        :rtype: bool
         """
         self._camera.start_camera()
         try:
@@ -101,16 +102,10 @@ class ImageAnalysis:
 
     def stop_cam(self) -> bool:
         """
-        finished
-        What does the function do?
-            Stops capturing and saving images.
-        How is the function tested?
-            Simulation
-        How will the function work?
-            An asynchronous task is stopped.
+        Stop capturing and saving images.
 
-        return:
-            success: bool
+        :return: True if stopped successfully, False otherwise.
+        :rtype: bool
         """
         try:
             self._task.cancel()
@@ -120,6 +115,12 @@ class ImageAnalysis:
             return False
 
     async def take_image(self):
+        """
+        Take a single image asynchronously.
+
+        :return: True if successful, False otherwise.
+        :rtype: bool
+        """
         try:
             await self._take_image()
         except Exception as e:
@@ -128,6 +129,11 @@ class ImageAnalysis:
         return True
 
     async def _take_image(self):
+        """
+        Internal coroutine to take a single image and process it.
+
+        :return: None
+        """
         if not self._camera.is_active:
             self._camera.start_camera()
             await asyncio.sleep(2)
@@ -135,16 +141,11 @@ class ImageAnalysis:
 
     async def _async_analysis(self, ips: float):
         """
-        finished
-        What does the function do?
-            Captures images and saves them at the given FPS rate.
-        How is the function tested?
-            Simulation
-        How will the function work?
-            See above.
+        Asynchronous loop to capture and process images at a given rate.
 
-        params:
-            fps: Frames per second at which the camera should capture images
+        :param ips: Images per second.
+        :type ips: float
+        :return: None
         """
         try:
             ips = float(ips)
@@ -168,7 +169,9 @@ class ImageAnalysis:
 
     async def image_loop(self) -> None:
         """
-        Wraps the logik that runs the analysis each frame.
+        Main logic for per-frame image analysis.
+
+        :return: None
         """
         st = time.time()
         image = self._camera.get_current_frame()
@@ -179,6 +182,18 @@ class ImageAnalysis:
             sp("skipped image")
 
     def _image_sub_routine(self, image, pos_com, height):
+        """
+        Process a single image: save, check quality, detect objects, and
+        annotate.
+
+        :param image: Image array.
+        :type image: np.array
+        :param pos_com: Position (lat, lon, alt, ...).
+        :type pos_com: list
+        :param height: Height value.
+        :type height: float
+        :return: None
+        """
         with self._dh as item:
             item.add_image_position(pos_com)
             item.add_raw_image(image)
@@ -211,18 +226,12 @@ class ImageAnalysis:
 
     def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
         """
-        Filters image for colors and returns all found color squares and a
-        total image filtered for shape color.
+        Filter image for defined colors and detect objects.
 
-        Args:
-            image (np.array): Image to filter for colors
-
-        Returns:
-            objects (list[dict]):
-                Returns a list of dict that contains all information of each
-                obj
-            shape_image (np.array):
-                A image filtered for the shape color
+        :param image: Input image.
+        :type image: np.array
+        :return: Tuple of (list of detected objects, shape-filtered image).
+        :rtype: tuple[list[dict], np.array]
         """
         objects: list[dict] = []
         filtered_images, shape_image = self.filter_colors(image)
@@ -232,14 +241,14 @@ class ImageAnalysis:
 
     def detect_obj(self, objects: list[dict],
                    filtered_image: np.array) -> None:
-        """_summary_
+        """
+        Detect objects in a filtered image and append to objects list.
 
-        Args:
-            objects (list[dict]): List to append new obj
-            filtered_image (np.array): color filtered image
-
-        Returns:
-            None
+        :param objects: List to append detected objects.
+        :type objects: list[dict]
+        :param filtered_image: Dictionary with color and filtered image.
+        :type filtered_image: dict
+        :return: None
         """
         gray = filtered_image["filtered_image"]
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -274,14 +283,16 @@ class ImageAnalysis:
 
     def get_shape(self, obj: dict, shape_image: np.array, save_contour=False):
         """
-        Returns the first plossible shape that is inside the object boundaries
+        Detect the shape inside the object boundaries.
 
-        Args:
-            obj (dict): info dict of one object
-            shape_image (np.array):
-
-        Returns:
-            str: The shape name inside
+        :param obj: Object dictionary.
+        :type obj: dict
+        :param shape_image: Shape-filtered image.
+        :type shape_image: np.array
+        :param save_contour: Whether to save the contour (unused).
+        :type save_contour: bool
+        :return: Shape name ("Dreieck", "Rechteck", "Kreis") or False.
+        :rtype: str or bool
         """
         bound_box = obj["bound_box"]
 
@@ -311,6 +322,16 @@ class ImageAnalysis:
         return False
 
     def find_code(self, obj: dict, shape_image: np.array):
+        """
+        Find code elements (e.g., QR code-like) inside the object.
+
+        :param obj: Object dictionary.
+        :type obj: dict
+        :param shape_image: Shape-filtered image.
+        :type shape_image: np.array
+        :return: True if code found, False otherwise.
+        :rtype: bool
+        """
         bound_box = obj["bound_box"]
 
         subframe = shape_image[bound_box["y_start"]:bound_box["y_stop"],
@@ -345,14 +366,12 @@ class ImageAnalysis:
 
     def filter_colors(self, image: np.array) -> tuple[list[dict], np.array]:
         """
-        Filters the Image for each of the defined colors
+        Filter the image for each defined color and for the shape color.
 
-        Args:
-            image (np.array):
-
-        Returns:
-            image_show: list of dict that contain color name and filtered image
-            shape_image: image filtered for shape_color (f.E. black or white)
+        :param image: Input image.
+        :type image: np.array
+        :return: Tuple of (list of color-filtered dicts, shape-filtered image).
+        :rtype: tuple[list[dict], np.array]
         """
         image_show = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
@@ -367,6 +386,14 @@ class ImageAnalysis:
         return image_show, shape_mask
 
     def filter_shape_color(self, image):
+        """
+        Filter the image for the shape color.
+
+        :param image: Input image.
+        :type image: np.array
+        :return: Shape-filtered image.
+        :rtype: np.array
+        """
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         return self._filter_color(
             hsv, self.shape_color)
@@ -374,14 +401,17 @@ class ImageAnalysis:
     def filter_color(self, image: np.array,
                      color: str, shape_mask=None) -> np.array:
         """
-        Returns the image filtered for the specified color.
+        Filter the image for a specific color.
 
-        Args:
-            image (np.array): _description_
-            color (str): Color name needs to be in the list of defined colors
-
-        Returns:
-            np.array: filtered image
+        :param image: Input image.
+        :type image: np.array
+        :param color: Color name (must be in defined colors).
+        :type color: str
+        :param shape_mask: Optional shape mask to apply.
+        :type shape_mask: np.array or None
+        :return: Filtered image.
+        :rtype: np.array
+        :raises IndexError: If color is not defined.
         """
         if color not in self.colors.keys():
             raise IndexError(
@@ -394,6 +424,19 @@ class ImageAnalysis:
                                   shape_mask=shape_mask)
 
     def _filter_color(self, lab, elements: dict, shape_mask=None):
+        """
+        Internal method to filter an image in LAB color space for given color
+        bounds.
+
+        :param lab: LAB color image.
+        :type lab: np.array
+        :param elements: Color bounds (dict or list of dicts).
+        :type elements: dict or list
+        :param shape_mask: Optional shape mask.
+        :type shape_mask: np.array or None
+        :return: Filtered image.
+        :rtype: np.array
+        """
         if isinstance(elements, list):
             masks = []
             for elem in elements:
@@ -413,20 +456,17 @@ class ImageAnalysis:
     async def get_current_offset_closest(self, color: str,
                                          shape: str, yaw_0: bool = True):
         """
-        What does the function do?
-            Returns the offset from the drone to the object.
-        How is the function tested? simulation / unit tests
-        How will the function work?
-            The object is detected using object detection,
-            and the offset is calculated using pixels and additional geometry.
+        Get the offset from the drone to the closest object of a given color
+        and shape.
 
-        params:
-            color: color which should be detected []
-            shape: pixel coordinates of object tuple (x,y)
-        return
-         (x,y) correct to closest
-         h height estimation
-         yaw offset
+        :param color: Color name to detect.
+        :type color: str
+        :param shape: Shape name to detect.
+        :type shape: str
+        :param yaw_0: If True, set yaw to zero for calculation.
+        :type yaw_0: bool
+        :return: Tuple (offset [x, y], height, yaw offset).
+        :rtype: tuple or (None, None, None) if not found
         """
         if not self._camera.is_active:
             self._camera.start_camera()
@@ -440,7 +480,24 @@ class ImageAnalysis:
     def _get_current_offset_closest(
             self, pos: list[float], dh: float, img: np.array, color: str,
             shape: str, yaw_0: bool = True):
+        """
+        Internal method to get offset to closest object.
 
+        :param pos: Drone position (xyz).
+        :type pos: list[float]
+        :param dh: Relative height.
+        :type dh: float
+        :param img: Image array.
+        :type img: np.array
+        :param color: Color name.
+        :type color: str
+        :param shape: Shape name.
+        :type shape: str
+        :param yaw_0: If True, set yaw to zero.
+        :type yaw_0: bool
+        :return: Tuple (offset [x, y], height, yaw offset).
+        :rtype: tuple or (None, None, None) if not found
+        """
         closest_obj = self.get_closest_element(img, color, shape)
         if closest_obj is None:
             return None, None, None
@@ -456,6 +513,20 @@ class ImageAnalysis:
         return [float(pos[0]), float(pos[1])], float(pos[2]), 0
 
     def _get_height_estimate_yaw(self, obj, rot, h_start, shape):
+        """
+        Estimate height and yaw using code elements.
+
+        :param obj: Object dictionary with code.
+        :type obj: dict
+        :param rot: Rotation vector.
+        :type rot: list or np.array
+        :param h_start: Initial height.
+        :type h_start: float
+        :param shape: Image shape.
+        :type shape: tuple
+        :return: Tuple ([x, y], height, yaw offset).
+        :rtype: tuple
+        """
         al = self.config.get("length_code_side", 0.5)
         h = h_start
         t_l, b_l, t_r = mh.find_rel_position(
@@ -483,6 +554,20 @@ class ImageAnalysis:
                 ], float(h), -mh.compute_rotation_angle(t_l, b_l)
 
     def _get_height_estimate(self, obj, rot, h_start, shape):
+        """
+        Estimate height using object contour and known box sizes.
+
+        :param obj: Object dictionary.
+        :type obj: dict
+        :param rot: Rotation vector.
+        :type rot: list or np.array
+        :param h_start: Initial height.
+        :type h_start: float
+        :param shape: Image shape.
+        :type shape: tuple
+        :return: Local offset [x, y, z].
+        :rtype: np.array
+        """
         als = self.config.get("length_box_short_side", 0.4)
         all = self.config.get("length_box_long_side", 0.6)
         h = h_start
@@ -507,6 +592,18 @@ class ImageAnalysis:
             (obj["x_center"], obj["y_center"]), rot, h, shape)
 
     def get_closest_element(self, img, color, shape) -> dict:
+        """
+        Get the closest detected object of a given color and shape.
+
+        :param img: Input image.
+        :type img: np.array
+        :param color: Color name.
+        :type color: str
+        :param shape: Shape name.
+        :type shape: str
+        :return: Closest object dictionary or None.
+        :rtype: dict or None
+        """
         computed_image = {"color": color}
         shape_image = self.filter_shape_color(img)
         computed_image["filtered_image"] = self.filter_color(
@@ -539,6 +636,18 @@ class ImageAnalysis:
         return sorted(relevant_obj, diag)[0]
 
     def _get_correct_shape(self, objects, shape_image, shape):
+        """
+        Filter objects by matching shape.
+
+        :param objects: List of objects.
+        :type objects: list
+        :param shape_image: Shape-filtered image.
+        :type shape_image: np.array
+        :param shape: Shape name.
+        :type shape: str
+        :return: List of objects with matching shape.
+        :rtype: list
+        """
         relevant_obj = []
         for obj in objects:
             if self.get_shape(obj, shape_image, True) == shape:
@@ -546,6 +655,18 @@ class ImageAnalysis:
         return relevant_obj
 
     def _get_closest_code(self, objects, shape_image, shape):
+        """
+        Filter objects by presence of code.
+
+        :param objects: List of objects.
+        :type objects: list
+        :param shape_image: Shape-filtered image.
+        :type shape_image: np.array
+        :param shape: Shape name (unused).
+        :type shape: str
+        :return: List of objects with code detected.
+        :rtype: list
+        """
         relevant_obj = []
         for obj in objects:
             if self.find_code(obj, shape_image):
@@ -554,29 +675,36 @@ class ImageAnalysis:
 
     def get_filtered_objs(self):
         """
-        Returns a list of all filtered obj
+        Get a dictionary of all filtered objects.
 
-        Returns:
-            dict[str, dict[str, list]]: _description_
+        :return: Dictionary of filtered objects by color and shape.
+        :rtype: dict[str, dict[str, list]]
         """
         return self._dh.get_filterd_items(self.config.get("distance_objs", 5))
 
     def get_matching_objects(self, color: str, shape: str = None
                              ) -> list[dict]:
         """
-        Returns all matching filtered objects
+        Get all matching filtered objects for a color and optional shape.
 
-        Args:
-            color (str): name of the color
-            shape (str, optional): name of the shape. Defaults to None.
-
-        Returns:
-            list[dict]: Obj dictionaries
+        :param color: Color name.
+        :type color: str
+        :param shape: Shape name (optional).
+        :type shape: str or None
+        :return: List of object dictionaries.
+        :rtype: list[dict]
         """
-
         return self.get_filtered_objs().get(color, {}).get(shape, [])
 
     def get_color_obj_list(self, color: str) -> list[dict]:
+        """
+        Get a list of all objects for a given color.
+
+        :param color: Color name.
+        :type color: str
+        :return: List of object dictionaries.
+        :rtype: list[dict]
+        """
         out = []
         for shape, obj in self.get_filtered_objs().get(color, {}).items():
             obj["shape"] = shape
@@ -584,6 +712,12 @@ class ImageAnalysis:
         return out
 
     def get_all_obj_list(self) -> list[dict]:
+        """
+        Get a list of all detected objects with color and shape.
+
+        :return: List of object dictionaries.
+        :rtype: list[dict]
+        """
         out = []
         for color, objs in self.get_filtered_objs().items():
             for shape, obj in objs.items():
@@ -593,36 +727,53 @@ class ImageAnalysis:
         return out
 
     @staticmethod
-    def quality_of_image(image: np.array) -> float:  # finished
+    def quality_of_image(image: np.array) -> float:
         """
-        finished
-        capture false input
-        What does the function do?
-            Checks the quality of the image to determine
-            if it is suitable for evaluation.
-        How is the function tested?
-            Unit tests
-        How will the function work?
-            The Laplace variance is calculated,
-            and if it is below a certain value,
-            the image is classified as blurry/unusable.
+        Assess the quality of an image using Laplacian variance.
 
-        parms:
-         image: Image array
-        return:
-         variance: float
+        :param image: Image array.
+        :type image: np.array
+        :return: Laplacian variance (higher is sharper).
+        :rtype: float
         """
-
         laplacian = cv2.Laplacian(image, cv2.CV_64F)
         return laplacian.var()
 
     def get_local_offset(self, obj, rot, height, imagesize):
+        """
+        Get the local offset of an object in the drone's coordinate system.
+
+        :param obj: Object dictionary.
+        :type obj: dict
+        :param rot: Rotation vector.
+        :type rot: list or np.array
+        :param height: Height value.
+        :type height: float
+        :param imagesize: Image size (height, width).
+        :type imagesize: tuple
+        :return: Local offset [x, y, z].
+        :rtype: np.array
+        """
         if "contour" in obj.keys():
             return self._get_height_estimate(obj, rot, height, imagesize)
         return self._get_local_offset(
             (obj["x_center"], obj["y_center"]), rot, height, imagesize)
 
     def _get_local_offset(self, pixel, rot, height, imagesize):
+        """
+        Internal method to compute local offset from pixel coordinates.
+
+        :param pixel: Pixel coordinates (x, y).
+        :type pixel: tuple
+        :param rot: Rotation vector.
+        :type rot: list or np.array
+        :param height: Height value.
+        :type height: float
+        :param imagesize: Image size (height, width).
+        :type imagesize: tuple
+        :return: Local offset [x, y, z].
+        :rtype: np.array
+        """
         px, py = pixel
         rot_mat = mh.rotation_matrix(rot)
         rot = np.array(rot) + \
@@ -637,6 +788,21 @@ class ImageAnalysis:
         return local_vec_streched + rot_mat @ offset
 
     def add_lat_lon(self, obj, rot, height, imagesize, loc_to_glo):
+        """
+        Add latitude and longitude to an object based on its local offset.
+
+        :param obj: Object dictionary.
+        :type obj: dict
+        :param rot: Rotation vector.
+        :type rot: list or np.array
+        :param height: Height value.
+        :type height: float
+        :param imagesize: Image size (height, width).
+        :type imagesize: tuple
+        :param loc_to_glo: Function to convert local to global coordinates.
+        :type loc_to_glo: callable
+        :return: None
+        """
         local_vec_streched = self.get_local_offset(obj, rot, height, imagesize)
 
         obj["lat_lon"] = loc_to_glo(
