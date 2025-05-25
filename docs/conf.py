@@ -31,6 +31,24 @@ sys.path.insert(0, os.path.join(__location__, "../src"))
 # Additionally it helps us to avoid running apidoc manually
 
 
+try:  # for Sphinx >= 1.7
+    from sphinx.ext import apidoc
+except ImportError:
+    from sphinx import apidoc
+
+autodoc_mock_imports = [
+    "mavsdk", 
+    "picamera2",
+    "gi",
+    "libcamera",
+]
+
+output_dir = os.path.join(__location__, "internals")
+module_dir = os.path.join(__location__, "../src/payloadcomputerdroneprojekt")
+try:
+    shutil.rmtree(output_dir)
+except FileNotFoundError:
+    pass
 
 try:
     import sphinx

@@ -13,5 +13,6 @@ Contents
    doku_installation/index
    benutzeranleitung/index
    api/index
+   internals/modules
 
 

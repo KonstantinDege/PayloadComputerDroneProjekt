@@ -136,8 +136,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../api/index.html">
-    API Documentation
+  <a class="nav-link nav-internal" href="../../../internals/index.html">
+    <no title>
   </a>
 </li>
 
@@ -227,8 +227,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../api/index.html">
-    API Documentation
+  <a class="nav-link nav-internal" href="../../../internals/index.html">
+    <no title>
   </a>
 </li>
 
@@ -314,59 +314,179 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span> <span class="k">as</span> <span class="n">R</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">smart_print</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">AsyncGenerator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">save_execute</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="save_execute">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.save_execute">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_execute</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to wrap a function and catch exceptions, printing a message if an</span>
+<span class="sd">    error occurs. Works for both sync and async functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">, Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">wrap</span>
-    <span class="k">return</span> <span class="n">wrapper</span>
+        <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="k">await</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">, Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wrap</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">, Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wrap</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">reached_pos</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">error_vel</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">):</span>
+
+<div class="viewcode-block" id="reached_pos">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.reached_pos">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reached_pos</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">error_vel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PositionVelocityNed</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a function that checks if a drone has reached a target position and</span>
+<span class="sd">    is below a velocity threshold.</span>
+
+<span class="sd">    :param target: Target position as [north, east, down] in meters.</span>
+<span class="sd">    :type target: list</span>
+<span class="sd">    :param error: Allowed position error in meters.</span>
+<span class="sd">    :type error: float, optional</span>
+<span class="sd">    :param error_vel: Allowed velocity error in m/s.</span>
+<span class="sd">    :type error_vel: float, optional</span>
+<span class="sd">    :return: Function that takes PositionVelocityNed and returns True if target</span>
+<span class="sd">        is reached.</span>
+<span class="sd">    :rtype: function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">pythagoras</span><span class="p">(</span><span class="n">get_pos_vec</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="n">target</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">error</span>
                 <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">abs_vel</span><span class="p">(</span><span class="n">get_vel_vec</span><span class="p">(</span><span class="n">state</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">error_vel</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">func</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_pos_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_pos_vec">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_pos_vec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pos_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the position vector from a PositionVelocityNed object.</span>
+
+<span class="sd">    :param state: MAVSDK PositionVelocityNed object.</span>
+<span class="sd">    :type state: PositionVelocityNed</span>
+<span class="sd">    :return: Position as [north, east, down] in meters.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pos</span><span class="p">:</span> <span class="n">PositionNed</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">position</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">north_m</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">east_m</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">down_m</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">north_m</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">east_m</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">down_m</span><span class="p">]</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_vel_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">):</span>
-    <span class="n">pos</span><span class="p">:</span> <span class="n">VelocityNed</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">velocity</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">north_m_s</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">east_m_s</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">down_m_s</span><span class="p">]</span>
+
+<div class="viewcode-block" id="get_vel_vec">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_vel_vec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_vel_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the velocity vector from a PositionVelocityNed object.</span>
+
+<span class="sd">    :param state: MAVSDK PositionVelocityNed object.</span>
+<span class="sd">    :type state: PositionVelocityNed</span>
+<span class="sd">    :return: Velocity as [north, east, down] in m/s.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vel</span><span class="p">:</span> <span class="n">VelocityNed</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">velocity</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">vel</span><span class="o">.</span><span class="n">north_m_s</span><span class="p">,</span> <span class="n">vel</span><span class="o">.</span><span class="n">east_m_s</span><span class="p">,</span> <span class="n">vel</span><span class="o">.</span><span class="n">down_m_s</span><span class="p">]</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">abs_vel</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+
+<div class="viewcode-block" id="abs_vel">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.abs_vel">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">abs_vel</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the magnitude of a velocity vector.</span>
+
+<span class="sd">    :param vec: Velocity vector [vx, vy, vz].</span>
+<span class="sd">    :type vec: list</span>
+<span class="sd">    :return: Magnitude of velocity.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vec</span><span class="p">]))</span></div>
+
+
+
+<div class="viewcode-block" id="pythagoras">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.pythagoras">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pythagoras</span><span class="p">(</span><span class="n">pos_a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos_b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the Euclidean distance between two position vectors.</span>
+
+<span class="sd">    :param pos_a: First position vector [x, y, z].</span>
+<span class="sd">    :type pos_a: list</span>
+<span class="sd">    :param pos_b: Second position vector [x, y, z].</span>
+<span class="sd">    :type pos_b: list</span>
+<span class="sd">    :return: Euclidean distance.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-        <span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vec</span><span class="p">]))</span>
+        <span class="nb">sum</span><span class="p">([(</span><span class="n">pos_a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos_b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos_a</span><span class="p">))]))</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">pythagoras</span><span class="p">(</span><span class="n">pos_a</span><span class="p">,</span> <span class="n">pos_b</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-        <span class="nb">sum</span><span class="p">([(</span><span class="n">pos_a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos_b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos_a</span><span class="p">))]))</span>
 
+<div class="viewcode-block" id="get_data">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_data">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asynchronously retrieves the first result from an async generator.</span>
 
-<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="sd">    :param func: Asynchronous generator function.</span>
+<span class="sd">    :type func: async generator</span>
+<span class="sd">    :return: First result from the generator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">func</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">res</span></div>
 
 
-<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+<div class="viewcode-block" id="wait_for">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.wait_for">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                   <span class="n">b</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asynchronously waits for a condition to be met in an async generator.</span>
+
+<span class="sd">    :param func: Asynchronous generator function.</span>
+<span class="sd">    :type func: async generator</span>
+<span class="sd">    :param b: Condition function that takes a result and returns True if</span>
+<span class="sd">        condition is met.</span>
+<span class="sd">    :type b: function</span>
+<span class="sd">    :return: First result for which the condition is True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">func</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">b</span><span class="p">(</span><span class="n">res</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">res</span>
+            <span class="k">return</span> <span class="n">res</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix_yaw</span><span class="p">(</span><span class="n">rot</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">rot</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+
+<div class="viewcode-block" id="rotation_matrix_yaw">
+<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.rotation_matrix_yaw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix_yaw</span><span class="p">(</span><span class="n">rot</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a 3x3 rotation matrix for a yaw (Z-axis) rotation.</span>
+
+<span class="sd">    :param rot: Yaw rotation in degrees.</span>
+<span class="sd">    :type rot: float</span>
+<span class="sd">    :return: 3x3 rotation matrix.</span>
+<span class="sd">    :rtype: numpy.ndarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Using scipy&#39;s Rotation to create a rotation matrix for yaw (Z-axis)</span>
+    <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">rot</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span></div>
+
 </pre></div>
 
                 </article>
