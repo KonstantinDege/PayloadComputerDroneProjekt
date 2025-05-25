@@ -173,6 +173,16 @@ class Communications:
         """
         return await get_data(self.drone.telemetry.in_air())
 
+    async def landed(self) -> bool:
+        """
+        Check if the drone is currently flying (in air).
+
+        :returns: True if the drone is in air, False otherwise.
+        :rtype: bool
+        """
+        return await wait_for(self.drone.telemetry.in_air(),
+                              lambda x: not x)
+
     @save_execute("Start")
     async def start(self, height: float = 5) -> Optional[bool]:
         """

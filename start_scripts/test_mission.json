@@ -21,7 +21,13 @@
             }
         },
         {
+            "action": "takeoff"
+        },
+        {
             "action": "stop_camera"
+        },
+        {
+            "action": "land_at"
         }
     ]
 }

@@ -313,6 +313,14 @@ class MissionComputer:
             color/shape.
         :type objective: dict
         """
+        if "lat" not in objective.keys() or "lon" not in objective.keys():
+            await self.status(
+                "No landing position given, landing at current position")
+            await self._comms.mov_by_vel(
+                [0, 0, self.config.get("land_speed", 2)])
+            await self._comms.landed()
+            return
+
         sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
         if not (await self._comms.is_flying()):
             return
@@ -351,8 +359,7 @@ class MissionComputer:
         await self.status("Landeposition erreicht. Drohne landet.")
         await self._comms.mov_by_vel(
             [0, 0, self.config.get("land_speed", 2)])
-        while not (await self._comms.is_flying()):
-            print("Waiting for landing...")
+        await self._comms.landed()
 
     async def delay(self, options: dict) -> None:
         """
