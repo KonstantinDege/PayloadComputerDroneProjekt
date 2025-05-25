@@ -190,10 +190,12 @@ class Communications:
         await self._ensure_offboard()
         await self.await_arm()
         await self.check_health()
-        if await self.get_relative_height() >= height:
-            return
         current_height = await self.get_relative_height()
-        await self.mov_by_xyz([0, 0, -height-current_height], 0)
+        print(current_height)
+        print(-height-current_height)
+        if current_height <= height:
+            return
+        await self.mov_by_xyz([0, 0, -height+current_height], 0)
 
     async def _get_attitude(self) -> List[float]:
         """
@@ -262,7 +264,7 @@ class Communications:
             north_m=pos[0], east_m=pos[1], down_m=pos[2], yaw_deg=yaw))
         await wait_for(
             self.drone.telemetry.position_velocity_ned(),
-            reached_pos(pos, self.config.get("pos_error", 0.75),
+            reached_pos(pos, self.config.get("pos_error", 0.075),
                         self.config.get("vel_error", 0.5)))
 
     @save_execute("Move with Velocity")
@@ -372,7 +374,7 @@ class Communications:
                     abs(state.longitude_deg - pos[1]
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.relative_altitude_m - pos[2]
-                        ) < self.config.get("pos_error", 0.75))
+                        ) < self.config.get("pos_error", 0.075))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
         await wait_for(self.drone.telemetry.position_velocity_ned(),

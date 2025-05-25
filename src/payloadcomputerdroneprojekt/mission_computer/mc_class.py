@@ -314,7 +314,7 @@ class MissionComputer:
         :type objective: dict
         """
         sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
-        if await self._comms.is_flying():
+        if not (await self._comms.is_flying()):
             return
         await self.mov(options=objective)
 
@@ -340,17 +340,19 @@ class MissionComputer:
                 await self.status("Objekt nicht gefunden.")
                 break
 
-            vel_ver: float = 0.1 / diag(offset[0], offset[1])
+            vel_ver: float = 1 / diag(offset[0], offset[1])
             if vel_ver/2 > detected_alt:
                 vel_ver = detected_alt / 2
             await self._comms.mov_by_vel(
-                [offset[0]/10, offset[1]/10, vel_ver/10], yaw)
+                [offset[0]/10, offset[1]/10, vel_ver], yaw)
 
             await asyncio.sleep(0.1)
 
         await self.status("Landeposition erreicht. Drohne landet.")
         await self._comms.mov_by_vel(
             [0, 0, self.config.get("land_speed", 2)])
+        while not (await self._comms.is_flying()):
+            print("Waiting for landing...")
 
     async def delay(self, options: dict) -> None:
         """
