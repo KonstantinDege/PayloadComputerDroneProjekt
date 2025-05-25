@@ -1,6 +1,7 @@
 import asyncio
 import cv2
 import numpy as np
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from payloadcomputerdroneprojekt.camera.abstract_class import AbstractCamera
 from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
@@ -23,8 +24,12 @@ class ImageAnalysis:
     :type comms: Communications
     """
 
-    def __init__(self, config: dict,
-                 camera: AbstractCamera, comms: Communications):
+    def __init__(
+        self,
+        config: dict,
+        camera: AbstractCamera,
+        comms: Communications
+    ) -> None:
         """
         Initialize the ImageAnalysis object.
 
@@ -35,15 +40,15 @@ class ImageAnalysis:
         :param comms: Communications object.
         :type comms: Communications
         """
-        self._obj = []
-        self.config = config
-        self._camera = camera
-        self._comms = comms
-        self._task = None
-        self._dh = DataHandler(config.setdefault(
+        self._obj: list = []
+        self.config: dict = config
+        self._camera: AbstractCamera = camera
+        self._comms: Communications = comms
+        self._task: Optional[asyncio.Task] = None
+        self._dh: DataHandler = DataHandler(config.setdefault(
             "path", tempfile.mkdtemp(prefix="image_analysis")))
 
-        def conhsv(val):
+        def conhsv(val: list) -> np.ndarray:
             """
             Convert color value from 0-100/0-255/0-255 to LAB color space.
 
@@ -53,7 +58,8 @@ class ImageAnalysis:
             :rtype: np.array
             """
             return np.array([val[0] * 2.55, val[1] + 128, val[2] + 128])
-        self.colors: dict = {}
+        self.colors: Dict[str, Union[Dict[str, np.ndarray],
+                                     List[Dict[str, np.ndarray]]]] = {}
         for color in config["colors"]:
             if "upper_1" in color.keys():
                 self.colors[color["name"]] = [
@@ -66,19 +72,18 @@ class ImageAnalysis:
                         "upper": conhsv(color["upper_1"])
                     }
                 ]
-
             else:
                 self.colors[color["name"]] = {
                     "lower": conhsv(color["lower"]),
                     "upper": conhsv(color["upper"])
                 }
 
-        self.shape_color = {
+        self.shape_color: Dict[str, np.ndarray] = {
             "lower": conhsv(config["shape_color"]["lower"]),
             "upper": conhsv(config["shape_color"]["upper"])
         }
 
-        self.shape_funcs = {
+        self.shape_funcs: Dict[str, Callable[..., List[dict]]] = {
             "Code": self._get_closest_code
         }
 
@@ -114,7 +119,7 @@ class ImageAnalysis:
             sp(f"Error stopping the capture: {e}")
             return False
 
-    async def take_image(self):
+    async def take_image(self) -> bool:
         """
         Take a single image asynchronously.
 
@@ -128,7 +133,7 @@ class ImageAnalysis:
             return False
         return True
 
-    async def _take_image(self):
+    async def _take_image(self) -> None:
         """
         Internal coroutine to take a single image and process it.
 
@@ -139,7 +144,7 @@ class ImageAnalysis:
             await asyncio.sleep(2)
         await self.image_loop()
 
-    async def _async_analysis(self, ips: float):
+    async def _async_analysis(self, ips: float) -> None:
         """
         Asynchronous loop to capture and process images at a given rate.
 
@@ -152,8 +157,8 @@ class ImageAnalysis:
         except Exception as e:
             sp(f"Could not convert ips to float, using Standard ips=1; {e}")
             ips = 1.0
-        interval = 1.0 / ips
-        count = 0
+        interval: float = 1.0 / ips
+        count: int = 0
 
         try:
             while True:
@@ -173,15 +178,20 @@ class ImageAnalysis:
 
         :return: None
         """
-        st = time.time()
-        image = self._camera.get_current_frame()
-        pos_com = await self._comms.get_position_lat_lon_alt()
+        st: float = time.time()
+        image: np.ndarray = self._camera.get_current_frame()
+        pos_com: List[Any] = await self._comms.get_position_lat_lon_alt()
         if st - time.time() < 0.25:
             self._image_sub_routine(image, pos_com, pos_com[2])
         else:
             sp("skipped image")
 
-    def _image_sub_routine(self, image, pos_com, height):
+    def _image_sub_routine(
+        self,
+        image: np.ndarray,
+        pos_com: List[Any],
+        height: float
+    ) -> None:
         """
         Process a single image: save, check quality, detect objects, and
         annotate.
@@ -208,7 +218,8 @@ class ImageAnalysis:
             objects, shape_image = self.compute_image(image)
             item.add_objects(objects)
 
-            loc_to_glo = mh.local_to_global(pos_com[0], pos_com[1])
+            loc_to_glo: Callable[[float, float], Any] = mh.local_to_global(
+                pos_com[0], pos_com[1])
 
             for obj in objects:
                 obj["shape"] = self.get_shape(obj, shape_image)
@@ -224,7 +235,8 @@ class ImageAnalysis:
 
             item.add_computed_image(image)
 
-    def compute_image(self, image: np.array) -> tuple[list[dict], np.array]:
+    def compute_image(self, image: np.ndarray
+                      ) -> Tuple[List[dict], np.ndarray]:
         """
         Filter image for defined colors and detect objects.
 
@@ -233,14 +245,17 @@ class ImageAnalysis:
         :return: Tuple of (list of detected objects, shape-filtered image).
         :rtype: tuple[list[dict], np.array]
         """
-        objects: list[dict] = []
+        objects: List[dict] = []
         filtered_images, shape_image = self.filter_colors(image)
         for filtered_image in filtered_images:
             self.detect_obj(objects, filtered_image)
         return objects, shape_image
 
-    def detect_obj(self, objects: list[dict],
-                   filtered_image: np.array) -> None:
+    def detect_obj(
+        self,
+        objects: List[dict],
+        filtered_image: Dict[str, Any]
+    ) -> None:
         """
         Detect objects in a filtered image and append to objects list.
 
@@ -250,8 +265,8 @@ class ImageAnalysis:
         :type filtered_image: dict
         :return: None
         """
-        gray = filtered_image["filtered_image"]
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        gray: np.ndarray = filtered_image["filtered_image"]
+        blurred: np.ndarray = cv2.GaussianBlur(gray, (5, 5), 0)
         _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
         contours, _ = cv2.findContours(
@@ -281,7 +296,11 @@ class ImageAnalysis:
                 "y_center": y_mittel
             })
 
-    def get_shape(self, obj: dict, shape_image: np.array, save_contour=False):
+    def get_shape(
+        self,
+        obj: dict,
+        shape_image: np.ndarray
+    ) -> Union[str, bool]:
         """
         Detect the shape inside the object boundaries.
 
@@ -289,8 +308,6 @@ class ImageAnalysis:
         :type obj: dict
         :param shape_image: Shape-filtered image.
         :type shape_image: np.array
-        :param save_contour: Whether to save the contour (unused).
-        :type save_contour: bool
         :return: Shape name ("Dreieck", "Rechteck", "Kreis") or False.
         :rtype: str or bool
         """
@@ -321,7 +338,11 @@ class ImageAnalysis:
 
         return False
 
-    def find_code(self, obj: dict, shape_image: np.array):
+    def find_code(
+        self,
+        obj: dict,
+        shape_image: np.ndarray
+    ) -> bool:
         """
         Find code elements (e.g., QR code-like) inside the object.
 
@@ -343,7 +364,7 @@ class ImageAnalysis:
 
         contours, _ = cv2.findContours(
             thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        code_elements = []
+        code_elements: List[Dict[str, Any]] = []
         for contour in contours:
             approx = cv2.approxPolyDP(
                 contour, 0.04 * cv2.arcLength(contour, True), True)
@@ -361,10 +382,13 @@ class ImageAnalysis:
             obj["code"] = code_elements
         else:
             obj["code"] = sorted(
-                code_elements, lambda x: x["d"], reverse=True)[:3]
+                code_elements, key=lambda x: x["d"], reverse=True)[:3]
         return True
 
-    def filter_colors(self, image: np.array) -> tuple[list[dict], np.array]:
+    def filter_colors(
+        self,
+        image: np.ndarray
+    ) -> Tuple[List[Dict[str, Any]], np.ndarray]:
         """
         Filter the image for each defined color and for the shape color.
 
@@ -373,7 +397,7 @@ class ImageAnalysis:
         :return: Tuple of (list of color-filtered dicts, shape-filtered image).
         :rtype: tuple[list[dict], np.array]
         """
-        image_show = []
+        image_show: List[Dict[str, Any]] = []
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         shape_mask = self._filter_color(
             hsv, self.shape_color)
@@ -385,7 +409,7 @@ class ImageAnalysis:
 
         return image_show, shape_mask
 
-    def filter_shape_color(self, image):
+    def filter_shape_color(self, image: np.ndarray) -> np.ndarray:
         """
         Filter the image for the shape color.
 
@@ -398,8 +422,12 @@ class ImageAnalysis:
         return self._filter_color(
             hsv, self.shape_color)
 
-    def filter_color(self, image: np.array,
-                     color: str, shape_mask=None) -> np.array:
+    def filter_color(
+        self,
+        image: np.ndarray,
+        color: str,
+        shape_mask: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         """
         Filter the image for a specific color.
 
@@ -423,7 +451,12 @@ class ImageAnalysis:
         return self._filter_color(hsv, self.colors[color],
                                   shape_mask=shape_mask)
 
-    def _filter_color(self, lab, elements: dict, shape_mask=None):
+    def _filter_color(
+        self,
+        lab: np.ndarray,
+        elements: Union[Dict[str, np.ndarray], List[Dict[str, np.ndarray]]],
+        shape_mask: Optional[np.ndarray] = None
+    ) -> np.ndarray:
         """
         Internal method to filter an image in LAB color space for given color
         bounds.
@@ -438,7 +471,7 @@ class ImageAnalysis:
         :rtype: np.array
         """
         if isinstance(elements, list):
-            masks = []
+            masks: List[np.ndarray] = []
             for elem in elements:
                 masks.append(cv2.inRange(
                     lab, elem["lower"], elem["upper"]))
@@ -453,8 +486,12 @@ class ImageAnalysis:
         # mask = cv2.bitwise_or(mask, shape_mask)
         return cv2.GaussianBlur(mask, (7, 7), 0)
 
-    async def get_current_offset_closest(self, color: str,
-                                         shape: str, yaw_0: bool = True):
+    async def get_current_offset_closest(
+        self,
+        color: str,
+        shape: str,
+        yaw_0: bool = True
+    ) -> Tuple[Optional[List[float]], Optional[float], Optional[float]]:
         """
         Get the offset from the drone to the closest object of a given color
         and shape.
@@ -478,8 +515,14 @@ class ImageAnalysis:
             pos, dh, img, color, shape, yaw_0)
 
     def _get_current_offset_closest(
-            self, pos: list[float], dh: float, img: np.array, color: str,
-            shape: str, yaw_0: bool = True):
+        self,
+        pos: List[float],
+        dh: float,
+        img: np.ndarray,
+        color: str,
+        shape: str,
+        yaw_0: bool = True
+    ) -> Tuple[Optional[List[float]], Optional[float], Optional[float]]:
         """
         Internal method to get offset to closest object.
 
@@ -508,11 +551,17 @@ class ImageAnalysis:
         if "code" in closest_obj.keys():
             return self._get_height_estimate_yaw(
                 closest_obj, pos[3:6], dh, img.shape[:2])
-        pos = self._get_height_estimate(
+        pos_out = self._get_height_estimate(
             closest_obj, pos[3:6], dh, img.shape[:2])
-        return [float(pos[0]), float(pos[1])], float(pos[2]), 0
+        return [float(pos_out[0]), float(pos_out[1])], float(pos_out[2]), 0
 
-    def _get_height_estimate_yaw(self, obj, rot, h_start, shape):
+    def _get_height_estimate_yaw(
+        self,
+        obj: dict,
+        rot: Union[List[float], np.ndarray],
+        h_start: float,
+        shape: Tuple[int, int]
+    ) -> Tuple[List[float], float, float]:
         """
         Estimate height and yaw using code elements.
 
@@ -531,7 +580,7 @@ class ImageAnalysis:
         h = h_start
         t_l, b_l, t_r = mh.find_rel_position(
             [(c["x"]+c["w"]/2, c["y"]+c["h"]/2, 0) for c in obj["code"]])
-        for i in range(5):
+        for _ in range(5):
             t_l_pos = self._get_local_offset(t_l[:2], rot, h, shape)
             b_l_pos = self._get_local_offset(b_l[:2], rot, h, shape)
             t_r_pos = self._get_local_offset(t_r[:2], rot, h, shape)
@@ -553,7 +602,13 @@ class ImageAnalysis:
         return [float(pos[0]), float(pos[1])
                 ], float(h), -mh.compute_rotation_angle(t_l, b_l)
 
-    def _get_height_estimate(self, obj, rot, h_start, shape):
+    def _get_height_estimate(
+        self,
+        obj: dict,
+        rot: Union[List[float], np.ndarray],
+        h_start: float,
+        shape: Tuple[int, int]
+    ) -> np.ndarray:
         """
         Estimate height using object contour and known box sizes.
 
@@ -572,13 +627,13 @@ class ImageAnalysis:
         all = self.config.get("length_box_long_side", 0.6)
         h = h_start
 
-        for i in range(3):
-            points = []
+        for _ in range(3):
+            points: List[np.ndarray] = []
             for o in obj["contour"]:
                 points.append(self._get_local_offset(o[:2], rot, h, shape))
             short, longs = mh.find_shorts_longs(points)
 
-            c = 0
+            c = 0.0
             for s in short:
                 c += als/s
 
@@ -591,7 +646,12 @@ class ImageAnalysis:
         return self._get_local_offset(
             (obj["x_center"], obj["y_center"]), rot, h, shape)
 
-    def get_closest_element(self, img, color, shape) -> dict:
+    def get_closest_element(
+        self,
+        img: np.ndarray,
+        color: str,
+        shape: Optional[str]
+    ) -> Optional[dict]:
         """
         Get the closest detected object of a given color and shape.
 
@@ -604,12 +664,12 @@ class ImageAnalysis:
         :return: Closest object dictionary or None.
         :rtype: dict or None
         """
-        computed_image = {"color": color}
+        computed_image: Dict[str, Any] = {"color": color}
         shape_image = self.filter_shape_color(img)
         computed_image["filtered_image"] = self.filter_color(
             img, color, shape_image)
 
-        objects: list[dict] = []
+        objects: List[dict] = []
         self.detect_obj(objects, computed_image)
         if shape is not None:
             if shape in self.shape_funcs:
@@ -619,7 +679,7 @@ class ImageAnalysis:
                 relevant_obj = self._get_correct_shape(
                     objects, shape_image, shape)
         else:
-            objects = relevant_obj
+            relevant_obj = objects
 
         if len(relevant_obj) == 0:
             return None
@@ -629,13 +689,18 @@ class ImageAnalysis:
 
         image_size = shape_image.shape[:2]
 
-        def diag(obj):
+        def diag(obj: dict) -> float:
             return (obj["x_start"] - image_size[1]/2)**2 + \
                    (obj["y_start"] - image_size[1]/2)**2
 
-        return sorted(relevant_obj, diag)[0]
+        return sorted(relevant_obj, key=diag)[0]
 
-    def _get_correct_shape(self, objects, shape_image, shape):
+    def _get_correct_shape(
+        self,
+        objects: List[dict],
+        shape_image: np.ndarray,
+        shape: str
+    ) -> List[dict]:
         """
         Filter objects by matching shape.
 
@@ -648,13 +713,18 @@ class ImageAnalysis:
         :return: List of objects with matching shape.
         :rtype: list
         """
-        relevant_obj = []
+        relevant_obj: List[dict] = []
         for obj in objects:
-            if self.get_shape(obj, shape_image, True) == shape:
+            if self.get_shape(obj, shape_image) == shape:
                 relevant_obj.append(obj)
         return relevant_obj
 
-    def _get_closest_code(self, objects, shape_image, shape):
+    def _get_closest_code(
+        self,
+        objects: List[dict],
+        shape_image: np.ndarray,
+        shape: str
+    ) -> List[dict]:
         """
         Filter objects by presence of code.
 
@@ -667,13 +737,13 @@ class ImageAnalysis:
         :return: List of objects with code detected.
         :rtype: list
         """
-        relevant_obj = []
+        relevant_obj: List[dict] = []
         for obj in objects:
             if self.find_code(obj, shape_image):
                 relevant_obj.append(obj)
         return relevant_obj
 
-    def get_filtered_objs(self):
+    def get_filtered_objs(self) -> Dict[str, Dict[str, List[dict]]]:
         """
         Get a dictionary of all filtered objects.
 
@@ -682,8 +752,11 @@ class ImageAnalysis:
         """
         return self._dh.get_filterd_items(self.config.get("distance_objs", 5))
 
-    def get_matching_objects(self, color: str, shape: str = None
-                             ) -> list[dict]:
+    def get_matching_objects(
+        self,
+        color: str,
+        shape: Optional[str] = None
+    ) -> List[dict]:
         """
         Get all matching filtered objects for a color and optional shape.
 
@@ -696,7 +769,7 @@ class ImageAnalysis:
         """
         return self.get_filtered_objs().get(color, {}).get(shape, [])
 
-    def get_color_obj_list(self, color: str) -> list[dict]:
+    def get_color_obj_list(self, color: str) -> List[dict]:
         """
         Get a list of all objects for a given color.
 
@@ -705,20 +778,20 @@ class ImageAnalysis:
         :return: List of object dictionaries.
         :rtype: list[dict]
         """
-        out = []
+        out: List[dict] = []
         for shape, obj in self.get_filtered_objs().get(color, {}).items():
             obj["shape"] = shape
             out.append(obj)
         return out
 
-    def get_all_obj_list(self) -> list[dict]:
+    def get_all_obj_list(self) -> List[dict]:
         """
         Get a list of all detected objects with color and shape.
 
         :return: List of object dictionaries.
         :rtype: list[dict]
         """
-        out = []
+        out: List[dict] = []
         for color, objs in self.get_filtered_objs().items():
             for shape, obj in objs.items():
                 obj["color"] = color
@@ -727,7 +800,7 @@ class ImageAnalysis:
         return out
 
     @staticmethod
-    def quality_of_image(image: np.array) -> float:
+    def quality_of_image(image: np.ndarray) -> float:
         """
         Assess the quality of an image using Laplacian variance.
 
@@ -739,7 +812,13 @@ class ImageAnalysis:
         laplacian = cv2.Laplacian(image, cv2.CV_64F)
         return laplacian.var()
 
-    def get_local_offset(self, obj, rot, height, imagesize):
+    def get_local_offset(
+        self,
+        obj: dict,
+        rot: Union[List[float], np.ndarray],
+        height: float,
+        imagesize: Tuple[int, int]
+    ) -> np.ndarray:
         """
         Get the local offset of an object in the drone's coordinate system.
 
@@ -759,7 +838,13 @@ class ImageAnalysis:
         return self._get_local_offset(
             (obj["x_center"], obj["y_center"]), rot, height, imagesize)
 
-    def _get_local_offset(self, pixel, rot, height, imagesize):
+    def _get_local_offset(
+        self,
+        pixel: Tuple[int, int],
+        rot: Union[List[float], np.ndarray],
+        height: float,
+        imagesize: Tuple[int, int]
+    ) -> np.ndarray:
         """
         Internal method to compute local offset from pixel coordinates.
 
@@ -787,7 +872,14 @@ class ImageAnalysis:
         local_vec_streched = local_vec * height / local_vec[2]
         return local_vec_streched + rot_mat @ offset
 
-    def add_lat_lon(self, obj, rot, height, imagesize, loc_to_glo):
+    def add_lat_lon(
+        self,
+        obj: dict,
+        rot: Union[List[float], np.ndarray],
+        height: float,
+        imagesize: Tuple[int, int],
+        loc_to_glo: Callable[[float, float], Any]
+    ) -> None:
         """
         Add latitude and longitude to an object based on its local offset.
 

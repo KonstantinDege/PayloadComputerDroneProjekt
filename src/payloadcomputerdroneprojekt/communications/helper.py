@@ -2,29 +2,39 @@ from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed
 import math
 from scipy.spatial.transform import Rotation as R
 from payloadcomputerdroneprojekt.helper import smart_print as sp
+from typing import Callable, AsyncGenerator, List, TypeVar, Optional
+import numpy as np
+import asyncio
+
+T = TypeVar('T')
 
 
-def save_execute(msg):
+def save_execute(msg: str):
     """
     Decorator to wrap a function and catch exceptions, printing a message if an
-    error occurs.
-
-    :param msg: Message to print if an exception is raised.
-    :type msg: str
-    :return: Decorator function.
-    :rtype: function
+    error occurs. Works for both sync and async functions.
     """
     def wrapper(f):
-        def wrap(*args, **kwargs):
-            try:
-                return f(*args, **kwargs)
-            except Exception as e:
-                sp(f"{msg}, Error: {e}")
-        return wrap
+        if asyncio.iscoroutinefunction(f):
+            async def wrap(*args, **kwargs):
+                try:
+                    return await f(*args, **kwargs)
+                except Exception as e:
+                    sp(f"{msg}, Error: {e}")
+            return wrap
+        else:
+            def wrap(*args, **kwargs):
+                try:
+                    return f(*args, **kwargs)
+                except Exception as e:
+                    sp(f"{msg}, Error: {e}")
+            return wrap
     return wrapper
 
 
-def reached_pos(target: list, error=0.5, error_vel=0.1):
+def reached_pos(
+    target: List[float], error: float = 0.5, error_vel: float = 0.1
+) -> Callable[[PositionVelocityNed], bool]:
     """
     Returns a function that checks if a drone has reached a target position and
     is below a velocity threshold.
@@ -39,13 +49,13 @@ def reached_pos(target: list, error=0.5, error_vel=0.1):
         is reached.
     :rtype: function
     """
-    def func(state: PositionVelocityNed):
+    def func(state: PositionVelocityNed) -> bool:
         return (pythagoras(get_pos_vec(state), target) < error
                 ) and (abs_vel(get_vel_vec(state)) < error_vel)
     return func
 
 
-def get_pos_vec(state: PositionVelocityNed):
+def get_pos_vec(state: PositionVelocityNed) -> List[float]:
     """
     Extracts the position vector from a PositionVelocityNed object.
 
@@ -58,7 +68,7 @@ def get_pos_vec(state: PositionVelocityNed):
     return [pos.north_m, pos.east_m, pos.down_m]
 
 
-def get_vel_vec(state: PositionVelocityNed):
+def get_vel_vec(state: PositionVelocityNed) -> List[float]:
     """
     Extracts the velocity vector from a PositionVelocityNed object.
 
@@ -67,11 +77,11 @@ def get_vel_vec(state: PositionVelocityNed):
     :return: Velocity as [north, east, down] in m/s.
     :rtype: list
     """
-    pos: VelocityNed = state.velocity
-    return [pos.north_m_s, pos.east_m_s, pos.down_m_s]
+    vel: VelocityNed = state.velocity
+    return [vel.north_m_s, vel.east_m_s, vel.down_m_s]
 
 
-def abs_vel(vec):
+def abs_vel(vec: List[float]) -> float:
     """
     Calculates the magnitude of a velocity vector.
 
@@ -80,11 +90,10 @@ def abs_vel(vec):
     :return: Magnitude of velocity.
     :rtype: float
     """
-    return math.sqrt(
-        sum([v**2 for v in vec]))
+    return math.sqrt(sum([v**2 for v in vec]))
 
 
-def pythagoras(pos_a, pos_b):
+def pythagoras(pos_a: List[float], pos_b: List[float]) -> float:
     """
     Calculates the Euclidean distance between two position vectors.
 
@@ -99,7 +108,7 @@ def pythagoras(pos_a, pos_b):
         sum([(pos_a[i] - pos_b[i])**2 for i in range(len(pos_a))]))
 
 
-async def get_data(func):
+async def get_data(func: AsyncGenerator[T, None]) -> Optional[T]:
     """
     Asynchronously retrieves the first result from an async generator.
 
@@ -111,7 +120,8 @@ async def get_data(func):
         return res
 
 
-async def wait_for(func, b):
+async def wait_for(func: AsyncGenerator[T, None],
+                   b: Callable[[T], bool]) -> Optional[T]:
     """
     Asynchronously waits for a condition to be met in an async generator.
 
@@ -127,7 +137,7 @@ async def wait_for(func, b):
             return res
 
 
-def rotation_matrix_yaw(rot):
+def rotation_matrix_yaw(rot: float) -> np.ndarray:
     """
     Creates a 3x3 rotation matrix for a yaw (Z-axis) rotation.
 
