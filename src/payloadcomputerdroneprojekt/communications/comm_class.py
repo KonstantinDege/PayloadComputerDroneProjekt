@@ -190,12 +190,7 @@ class Communications:
         await self._ensure_offboard()
         await self.await_arm()
         await self.check_health()
-        current_height = await self.get_relative_height()
-        print(current_height)
-        print(-height-current_height)
-        if current_height <= height:
-            return
-        await self.mov_by_xyz([0, 0, -height+current_height], 0)
+        await self.mov_by_xy([0, 0, -height], 0)
 
     async def _get_attitude(self) -> List[float]:
         """
@@ -264,7 +259,7 @@ class Communications:
             north_m=pos[0], east_m=pos[1], down_m=pos[2], yaw_deg=yaw))
         await wait_for(
             self.drone.telemetry.position_velocity_ned(),
-            reached_pos(pos, self.config.get("pos_error", 0.075),
+            reached_pos(pos, self.config.get("pos_error", 0.2),
                         self.config.get("vel_error", 0.5)))
 
     @save_execute("Move with Velocity")
@@ -328,6 +323,23 @@ class Communications:
             rotation_matrix_yaw(current_yaw) @ offset_arr
         await self.mov_to_xyz(new_position[0].tolist(), total_yaw)
 
+    @save_execute("Move by XYZ")
+    async def mov_by_xy(self, offset: List[float], yaw: float = 0) -> None:
+        """
+        Move the drone by a relative XY offset in the local yaw frame.
+        :param offset: Offset [dx, dy, z] in meters (drone's yaw frame).
+        :type offset: list[float]
+        """
+        offset_arr = np.array(offset)
+        current_position = await self.get_position_xyz()
+        current_yaw = current_position[5]
+        total_yaw = yaw + current_yaw
+        current_position_arr = np.array(current_position[:3])
+        current_position_arr[2] = 0
+        new_position = current_position_arr + \
+            rotation_matrix_yaw(current_yaw) @ offset_arr
+        await self.mov_to_xyz(new_position[0].tolist(), total_yaw)
+
     @save_execute("Move by XYZ old")
     async def mov_by_xyz_old(self, offset: List[float],
                              yaw: float = 0) -> None:
@@ -374,7 +386,7 @@ class Communications:
                     abs(state.longitude_deg - pos[1]
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.relative_altitude_m - pos[2]
-                        ) < self.config.get("pos_error", 0.075))
+                        ) < self.config.get("pos_error", 0.2))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
         await wait_for(self.drone.telemetry.position_velocity_ned(),

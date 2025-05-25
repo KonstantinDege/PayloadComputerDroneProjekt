@@ -1,6 +1,7 @@
 import asyncio
 import cv2
 import numpy as np
+from numpy.linalg import norm
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from payloadcomputerdroneprojekt.camera.abstract_class import AbstractCamera
 from payloadcomputerdroneprojekt.communications import Communications
@@ -587,10 +588,9 @@ class ImageAnalysis:
             top_right_pos = self._get_local_offset(
                 top_right[:2], rotation, height, image_shape)
 
-            left = np.linalg.norm(
-                np.array(bottom_left_pos) - np.array(top_left_pos))
-            top = np.linalg.norm(
-                np.array(top_right_pos) - np.array(top_left_pos))
+            left = norm(np.array(bottom_left_pos) - np.array(top_left_pos))
+            top = norm(np.array(top_right_pos) - np.array(top_left_pos))
+
             height = height*(code_side_length*(1/left + 1/top) / 2)
 
         top_left_pos = self._get_local_offset(
@@ -600,9 +600,9 @@ class ImageAnalysis:
         top_right_pos = self._get_local_offset(
             top_right[:2], rotation, height, image_shape)
 
-        left = np.linalg.norm(
-            np.array(bottom_left_pos) - np.array(top_left_pos))
-        top = np.linalg.norm(np.array(top_right_pos) - np.array(top_left_pos))
+        left = norm(np.array(bottom_left_pos) - np.array(top_left_pos))
+        top = norm(np.array(top_right_pos) - np.array(top_left_pos))
+
         pos = (bottom_left_pos + top_right_pos)[:2]
 
         obj["h"] = height
