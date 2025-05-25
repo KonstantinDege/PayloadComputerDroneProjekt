@@ -7,7 +7,7 @@ from scipy.spatial.transform import Rotation as R
 from mavsdk.telemetry import PositionVelocityNed, PositionNed, VelocityNed, \
     Position, EulerAngle
 import asyncio
-import socket
+import aiohttp
 import os
 
 
@@ -323,13 +323,86 @@ class Communications:
     def receive_mission_file():
         pass
 
-    def send_found_obj(obj: dict):
-        pass
+    @save_execute("Send File")
+    async def send_file(self, file_path: str, endpoint: str) -> bool:
+        """
+        Send a file to the laptop over WiFi using an HTTP POST request.
+
+        Parameters:
+            file_path (str): Path to the file to send.
+            endpoint (str): Flask endpoint URL (e.g., 'http://192.168.1.100:5000/upload').
+
+        Returns:
+            bool: True if the file was sent successfully, False otherwise.
+        """
+        if not os.path.isfile(file_path):
+            print(f"Error: File not found at {file_path}")
+            return False
+        if os.path.getsize(file_path) == 0:
+            print("Error: File is empty")
+            return False
+
+        try:
+            async with asyncio.timeout(self.config.get("network_timeout", 10)):
+                async with aiohttp.ClientSession() as session:
+                    with open(file_path, 'rb') as f:
+                        # Prepare multipart form data
+                        data = aiohttp.FormData()
+                        data.add_field('file', f, filename=os.path.basename(file_path))
+
+                        # Send POST request
+                        async with session.post(endpoint, data=data) as response:
+                            if response.status == 200:
+                                print(f"File sent successfully: {file_path}")
+                                return True
+                            else:
+                                print(f"HTTP error: Status {response.status}")
+                                return False
+
+        except asyncio.TimeoutError:
+            print("Network timeout while sending file")
+            return False
+        except aiohttp.ClientError as e:
+            print(f"Network error while sending file: {e}")
+            return False
+        except Exception as e:
+            print(f"Error sending file: {e}")
+            return False
+
+    @save_execute("Send Found Objects")
+    async def send_found_objects(self, file_path: str) -> bool:
+        """
+        Send an existing file containing found objects to the laptop over WiFi by calling send_file.
+
+        Parameters:
+            file_path (str): Path to the existing file (e.g., JSON or CSV) on the Raspberry Pi.
+
+        Returns:
+            bool: True if the file was sent successfully, False otherwise.
+        """
+        # Validate file
+        if not os.path.isfile(file_path):
+            print(f"Error: Objects file not found at {file_path}")
+            return False
+        if os.path.getsize(file_path) == 0:
+            print("Error: Objects file is empty")
+            return False
+        if not file_path.lower().endswith(('.json', '.csv')):
+            print(f"Warning: File {file_path} may not be a valid objects file (expected .json or .csv)")
+
+        # Get laptop URL from config
+        laptop_url = self.config.get("laptop_url_objects", "http://192.168.1.100:5000/upload_objects")
+
+        # Delegate to send_file
+        result = await self.send_file(file_path, laptop_url)
+        if result:
+            print(f"Objects file sent successfully: {file_path}")
+        return result
 
     @save_execute("Send Image")
     async def send_image(self, path: str) -> bool:
         """
-        Send an image file to the laptop over WiFi using TCP sockets.
+        Send an image file to the laptop over WiFi by calling send_file.
 
         Parameters:
             path (str): File path to the image on the Raspberry Pi.
@@ -337,48 +410,21 @@ class Communications:
         Returns:
             bool: True if the image was sent successfully, False otherwise.
         """
-        # Validate file existence and accessibility
+        # Validate file
         if not os.path.isfile(path):
             print(f"Error: Image file not found at {path}")
             return False
-
-        # Get laptop IP and port from config, with defaults
-        laptop_ip = self.config.get("laptop_ip", "192.168.1.100")
-        laptop_port = self.config.get("laptop_port", 5000)
-
-        try:
-            # Get file size
-            file_size = os.path.getsize(path)
-
-            # Create TCP socket
-            reader, writer = await asyncio.open_connection(laptop_ip,
-                                                           laptop_port)
-
-            # Send file size first (8 bytes, big-endian)
-            writer.write(file_size.to_bytes(8, byteorder='big'))
-            await writer.drain()
-
-            # Send image data in chunks
-            with open(path, 'rb') as f:
-                while True:
-                    chunk = f.read(4096)  # 4KB chunks
-                    if not chunk:
-                        break
-                    writer.write(chunk)
-                    await writer.drain()
-
-            # Close connection
-            writer.close()
-            await writer.wait_closed()
-            print(f"Image sent successfully: {path}")
-            return True
-
-        except (socket.gaierror, ConnectionRefusedError, OSError) as e:
-            print(f"Network error while sending image: {e}")
+        if os.path.getsize(path) == 0:
+            print("Error: Image file is empty")
             return False
-        except Exception as e:
-            print(f"Error sending image: {e}")
-            return False
+        if not path.lower().endswith(('.jpg', '.jpeg', '.png')):
+            print(f"Warning: File {path} may not be a valid image (expected .jpg, .jpeg, .png)")
+
+        # Get laptop URL from config
+        laptop_url = self.config.get("laptop_url", "http://192.168.1.100:5000/upload")
+
+        # Delegate to send_file
+        return await self.send_file(path, laptop_url)
 
     def send_status(status: str):
         pass
