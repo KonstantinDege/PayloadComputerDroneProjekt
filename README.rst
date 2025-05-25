@@ -94,3 +94,16 @@ Helper
     
     journalctl -u start_droneos.service
 
+==========
+Build docs
+==========
+
+1. Install Sphinx and dependencies
+
+    .. code-block:: bash
+
+        pip install sphinx sphinx-autobuild pydata-sphinx-theme
+
+    .. code-block:: bash
+
+        sphinx-autobuild docs docs_build
