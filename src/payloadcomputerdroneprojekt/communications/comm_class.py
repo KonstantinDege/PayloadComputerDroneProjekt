@@ -113,8 +113,8 @@ class Communications:
         if self.config.get("allowed_arm", False):
             try:
                 await self.drone.action.arm()
-            except Exception as e:
-                sp(f"self arming failed waiting for manual: {e}")
+            except Exception as exc:
+                sp(f"self arming failed waiting for manual: {exc}")
         sp("Awaiting arming")
         await wait_for(self.drone.telemetry.armed(), lambda x: x)
         sp("Drone armed")
@@ -130,8 +130,8 @@ class Communications:
         if self.config.get("allowed_disarm", False):
             try:
                 await self.drone.action.disarm()
-            except Exception as e:
-                sp(f"self arming failed waiting for manual: {e}")
+            except Exception as exc:
+                sp(f"self arming failed waiting for manual: {exc}")
         await wait_for(self.drone.telemetry.armed(), lambda x: not x)
         sp("Drone disarmed")
 
@@ -143,13 +143,13 @@ class Communications:
         If not already in OFFBOARD, set the current position and start OFFBOARD
         mode if allowed by config. Otherwise, wait for manual mode switch.
         """
-        mode = await get_data(self.drone.telemetry.flight_mode())
-        if mode == "OFFBOARD":
+        flight_mode = await get_data(self.drone.telemetry.flight_mode())
+        if flight_mode == "OFFBOARD":
             sp("-- Already in offboard mode")
         else:
-            pos = await self.get_position_xyz()
+            position = await self.get_position_xyz()
             await self.drone.offboard.set_position_ned(
-                PositionNedYaw(*pos[:4]))
+                PositionNedYaw(*position[:4]))
             if self.config.get("allowed_mode_switch", True):
                 sp("-- Starting offboard")
                 await self.drone.offboard.start()
@@ -167,7 +167,7 @@ class Communications:
         return (await get_data(self.drone.telemetry.position()
                                )).relative_altitude_m
 
-    async def is_flighing(self) -> bool:
+    async def is_flying(self) -> bool:
         """
         Check if the drone is currently flying (in air).
 
@@ -195,8 +195,8 @@ class Communications:
         await self.check_health()
         if await self.get_relative_height() >= height:
             return
-        h = await self.get_relative_height()
-        await self.mov_by_xyz([0, 0, -height-h], 0)
+        current_height = await self.get_relative_height()
+        await self.mov_by_xyz([0, 0, -height-current_height], 0)
 
     async def _get_attitude(self) -> List[float]:
         """
@@ -205,8 +205,9 @@ class Communications:
         :returns: List of [roll_deg, pitch_deg, yaw_deg].
         :rtype: list[float]
         """
-        res: EulerAngle = await get_data(self.drone.telemetry.attitude_euler())
-        return [res.roll_deg, res.pitch_deg, res.yaw_deg]
+        euler: EulerAngle = await get_data(
+            self.drone.telemetry.attitude_euler())
+        return [euler.roll_deg, euler.pitch_deg, euler.yaw_deg]
 
     async def _get_yaw(self) -> float:
         """
@@ -240,9 +241,9 @@ class Communications:
 
         If GPS is not ready, returns zeros.
         """
-        res: Position = await get_data(self.drone.telemetry.position())
-        return [res.latitude_deg, res.longitude_deg, res.relative_altitude_m
-                ] + await self._get_attitude()
+        position: Position = await get_data(self.drone.telemetry.position())
+        return [position.latitude_deg, position.longitude_deg,
+                position.relative_altitude_m] + await self._get_attitude()
 
     @save_execute("Move to XYZ")
     async def mov_to_xyz(self, pos: List[float], yaw: Optional[float] = None
@@ -268,13 +269,14 @@ class Communications:
                         self.config.get("vel_error", 0.5)))
 
     @save_execute("Move with Velocity")
-    async def mov_with_vel(self, vel: List[float], yaw: Optional[float] = None
+    async def mov_with_vel(self, velocity: List[float],
+                           yaw: Optional[float] = None
                            ) -> None:
         """
         Move the drone with a fixed velocity in the XYZ direction.
 
-        :param vel: Velocity vector [vx, vy, vz] in m/s (global frame).
-        :type vel: list[float]
+        :param velocity: Velocity vector [vx, vy, vz] in m/s (global frame).
+        :type velocity: list[float]
         :param yaw: Yaw angle in degrees (relative to North). If None, uses
             current yaw.
         :type yaw: float, optional
@@ -284,63 +286,67 @@ class Communications:
         if yaw is None:
             yaw = await self._get_yaw()
         await self.drone.offboard.set_velocity_ned(VelocityNedYaw(
-            north_m_s=vel[0], east_m_s=vel[1], down_m_s=vel[2], yaw_deg=yaw))
+            north_m_s=velocity[0], east_m_s=velocity[1],
+            down_m_s=velocity[2], yaw_deg=yaw))
 
     @save_execute("Move by Velocity")
-    async def mov_by_vel(self, vel: List[float], yaw: float = 0) -> None:
+    async def mov_by_vel(self, velocity: List[float], yaw: float = 0) -> None:
         """
         Move the drone with velocity relative to its current yaw orientation.
 
-        :param vel: Velocity vector [vx, vy, vz] in drone's yaw frame.
-        :type vel: list[float]
+        :param velocity: Velocity vector [vx, vy, vz] in drone's yaw frame.
+        :type velocity: list[float]
         :param yaw: Additional yaw to add to current yaw (degrees).
         :type yaw: float, optional
 
         This method rotates the velocity vector by the current yaw and sends
         the command.
         """
-        old_yaw = await self._get_yaw()
-        new_vel = rotation_matrix_yaw(old_yaw) @ np.array(vel)
-        await self.mov_with_vel(new_vel.tolist(), old_yaw + yaw)
+        current_yaw = await self._get_yaw()
+        rotated_velocity = rotation_matrix_yaw(
+            current_yaw) @ np.array(velocity)
+        await self.mov_with_vel(rotated_velocity.tolist(), current_yaw + yaw)
 
     @save_execute("Move by XYZ")
-    async def mov_by_xyz(self, pos: List[float], yaw: float = 0) -> None:
+    async def mov_by_xyz(self, offset: List[float], yaw: float = 0) -> None:
         """
         Move the drone by a relative XYZ offset in its local yaw frame.
 
-        :param pos: Offset [dx, dy, dz] in meters (drone's yaw frame).
-        :type pos: list[float]
+        :param offset: Offset [dx, dy, dz] in meters (drone's yaw frame).
+        :type offset: list[float]
         :param yaw: Additional yaw to add to current yaw (degrees).
         :type yaw: float, optional
 
         This method computes the new position and sends a move command.
         """
-        pos_arr = np.array(pos)
-        cur_pos = await self.get_position_xyz()
-        yaw_cur = cur_pos[5]
-        yaw_total = yaw + yaw_cur
-        cur_pos_arr = np.array(cur_pos[:3])
-        new_pos = cur_pos_arr + rotation_matrix_yaw(yaw_cur) @ pos_arr
-        await self.mov_to_xyz(new_pos.tolist(), yaw_total)
+        offset_arr = np.array(offset)
+        current_position = await self.get_position_xyz()
+        current_yaw = current_position[5]
+        total_yaw = yaw + current_yaw
+        current_position_arr = np.array(current_position[:3])
+        new_position = current_position_arr + \
+            rotation_matrix_yaw(current_yaw) @ offset_arr
+        await self.mov_to_xyz(new_position.tolist(), total_yaw)
 
     @save_execute("Move by XYZ old")
-    async def mov_by_xyz_old(self, pos: List[float], yaw: float = 0) -> None:
+    async def mov_by_xyz_old(self, offset: List[float],
+                             yaw: float = 0) -> None:
         """
         Move the drone by a relative XYZ offset in the local reference frame.
 
-        :param pos: Offset [dx, dy, dz] in meters (NED frame).
-        :type pos: list[float]
+        :param offset: Offset [dx, dy, dz] in meters (NED frame).
+        :type offset: list[float]
         :param yaw: Target yaw in degrees (absolute).
         :type yaw: float, optional
 
         This method computes the new position and sends a move command.
         """
-        pos_arr = np.array(pos)
-        cur_pos = await self.get_position_xyz()
-        yaw_total = yaw + cur_pos[5]
-        cur_pos_arr = np.array(cur_pos[:3])
-        new_pos = cur_pos_arr + pos_arr
-        await self.mov_to_xyz(new_pos.tolist(), yaw_total)
+        offset_arr = np.array(offset)
+        current_position = await self.get_position_xyz()
+        total_yaw = yaw + current_position[5]
+        current_position_arr = np.array(current_position[:3])
+        new_position = current_position_arr + offset_arr
+        await self.mov_to_xyz(new_position.tolist(), total_yaw)
 
     @save_execute("Move to Lat Lon Alt")
     async def mov_to_lat_lon_alt(self, pos: List[float],
@@ -399,12 +405,12 @@ class Communications:
             await asyncio.sleep(2)
         pass
 
-    async def send_found_obj(self, obj: Dict[str, Any]) -> None:
+    async def send_found_obj(self, found_object: Dict[str, Any]) -> None:
         """
         Placeholder for sending information about a found object.
 
-        :param obj: Dictionary containing object information.
-        :type obj: dict
+        :param found_object: Dictionary containing object information.
+        :type found_object: dict
 
         This method is not yet implemented.
         """
@@ -447,9 +453,9 @@ class Communications:
             await writer.drain()
 
             # Send image data in chunks
-            with open(path, 'rb') as f:
+            with open(path, 'rb') as image_file:
                 while True:
-                    chunk = f.read(4096)  # 4KB chunks
+                    chunk = image_file.read(4096)  # 4KB chunks
                     if not chunk:
                         break
                     writer.write(chunk)
@@ -461,11 +467,11 @@ class Communications:
             sp(f"Image sent successfully: {path}")
             return True
 
-        except (socket.gaierror, ConnectionRefusedError, OSError) as e:
-            sp(f"Network error while sending image: {e}")
+        except (socket.gaierror, ConnectionRefusedError, OSError) as exc:
+            sp(f"Network error while sending image: {exc}")
             return False
-        except Exception as e:
-            sp(f"Error sending image: {e}")
+        except Exception as exc:
+            sp(f"Error sending image: {exc}")
             return False
 
     async def send_status(self, status: str) -> None:
