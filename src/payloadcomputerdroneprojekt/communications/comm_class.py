@@ -1,7 +1,7 @@
 from mavsdk import System
 from mavsdk.offboard import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw
-import numpy as np
 from mavsdk.telemetry import PositionVelocityNed, Position, EulerAngle
+import numpy as np
 import asyncio
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import socket
@@ -150,12 +150,9 @@ class Communications:
             position = await self.get_position_xyz()
             await self.drone.offboard.set_position_ned(
                 PositionNedYaw(*position[:4]))
-            if self.config.get("allowed_mode_switch", True):
-                sp("-- Starting offboard")
-                await self.drone.offboard.start()
-            else:
-                await wait_for(self.drone.telemetry.flight_mode(),
-                               lambda x: x == "OFFBOARD")
+
+            sp("-- Starting offboard")
+            await self.drone.offboard.start()
 
     async def get_relative_height(self) -> float:
         """
@@ -305,7 +302,8 @@ class Communications:
         current_yaw = await self._get_yaw()
         rotated_velocity = rotation_matrix_yaw(
             current_yaw) @ np.array(velocity)
-        await self.mov_with_vel(rotated_velocity.tolist(), current_yaw + yaw)
+        await self.mov_with_vel(rotated_velocity[0].tolist(),
+                                current_yaw + yaw)
 
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, offset: List[float], yaw: float = 0) -> None:
@@ -326,7 +324,7 @@ class Communications:
         current_position_arr = np.array(current_position[:3])
         new_position = current_position_arr + \
             rotation_matrix_yaw(current_yaw) @ offset_arr
-        await self.mov_to_xyz(new_position.tolist(), total_yaw)
+        await self.mov_to_xyz(new_position[0].tolist(), total_yaw)
 
     @save_execute("Move by XYZ old")
     async def mov_by_xyz_old(self, offset: List[float],

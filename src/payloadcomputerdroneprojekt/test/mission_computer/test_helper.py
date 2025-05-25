@@ -1,5 +1,5 @@
 import unittest
-import payloadcomputerdroneprojekt.mission_computer as mc
+import payloadcomputerdroneprojekt.mission_computer.helper as mc
 import json
 import os
 

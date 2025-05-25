@@ -314,6 +314,8 @@ class MissionComputer:
         :type objective: dict
         """
         sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
+        if await self._comms.is_flying():
+            return
         await self.mov(options=objective)
 
         if "color" not in objective.keys():
@@ -399,7 +401,7 @@ class MissionComputer:
             h: float = self.current_mission_plan.get(
                 "parameter", {}).get("height", 5)
         pos: List[float] = [options['lat'], options['lon'], h]
-        if not await self._comms.is_flighing():
+        if not await self._comms.is_flying():
             await self._comms.start(h)
 
         await self._comms.mov_to_lat_lon_alt(pos, yaw)
