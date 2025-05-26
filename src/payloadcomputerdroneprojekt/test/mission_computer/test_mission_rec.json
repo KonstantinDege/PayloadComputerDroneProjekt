@@ -1,0 +1,4 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
+    "src": "test_mission.json"
+}

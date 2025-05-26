@@ -1,62 +1,68 @@
 {
-    "$schema": "../configs/config_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
+    "mission_storage": "/media/aviator/BOOTFS/mission_storage",
     "camera": {
-        "format": "XRGB8888",
-        "size": [
-            1280,
-            960
-        ]
+        "control": {
+            "ExposureTime": 50
+        },
+        "main": {
+            "format": "XRGB8888",
+            "size": [
+                1280,
+                960
+            ]
+        }
     },
     "image": {
-        "path": "data/images/spazieren",
+        "path": "data/images",
         "colors": [
             {
                 "name": "blue",
                 "lower": [
-                    100,
-                    100,
-                    100
+                    200,
+                    30,
+                    3
                 ],
                 "upper": [
-                    140,
-                    255,
-                    255
+                    280,
+                    101,
+                    101
                 ]
             },
             {
-                "name": "rot",
+                "name": "red",
                 "lower_0": [
                     0,
-                    50,
-                    50
+                    20,
+                    20
                 ],
                 "upper_0": [
-                    10,
-                    255,
-                    255
+                    20,
+                    101,
+                    101
                 ],
                 "lower_1": [
-                    160,
-                    50,
-                    50
+                    320,
+                    20,
+                    20
                 ],
                 "upper_1": [
-                    179,
-                    255,
-                    255
+                    360,
+                    101,
+                    101
                 ]
             },
             {
-                "name": "gelb",
+                "name": "yellow",
                 "lower": [
-                    20,
-                    10,
-                    100
+                    40,
+                    30,
+                    30
                 ],
                 "upper": [
-                    60,
-                    255,
-                    255
+                    80,
+                    101,
+                    101
                 ]
             }
         ],
@@ -67,13 +73,37 @@
                 0
             ],
             "upper": [
-                180,
-                255,
+                360,
+                101,
                 30
             ]
         },
         "min_diagonal": 50,
         "threashold": -1,
-        "min_diagonal_shape": 2
+        "camera_offset": [
+            0,
+            0,
+            0
+        ],
+        "distance_objs": 5,
+        "min_diagonal_code_element": 1,
+        "min_diagonal_shape": 1,
+        "rotation_offset": [
+            0,
+            0,
+            0
+        ]
+    },
+    "communications": {
+        "allowed_arm": false,
+        "allowed_disarm": false,
+        "allowed_mode_switch": true,
+        "degree_error": 0.5,
+        "pos_error": 0.75,
+        "vel_error": 0.5
+    },
+    "mission_computer": {
+        "land_speed": 2,
+        "recouver_time": 10
     }
 }

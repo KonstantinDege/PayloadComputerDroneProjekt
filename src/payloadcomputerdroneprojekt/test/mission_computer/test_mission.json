@@ -1,0 +1,23 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
+    "action": "list",
+    "commands": [
+        {
+            "action": "start_camera"
+        },
+        {
+            "action": "delay"
+        },
+        {
+            "action": "stop_camera"
+        },
+        {
+            "action": "list",
+            "commands": [
+                {
+                    "action": "land_at"
+                }
+            ]
+        }
+    ]
+}

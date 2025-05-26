@@ -1,0 +1,80 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
+    "camera": {
+        "format": "XRGB8888",
+        "size": [
+            640,
+            480
+        ]
+    },
+    "image": {
+        "colors": [
+            {
+                "name": "orange",
+                "lower": [
+                    20,
+                    30,
+                    40
+                ],
+                "upper": [
+                    80,
+                    60,
+                    70
+                ]
+            },
+            {
+                "name": "blue",
+                "lower": [
+                    20,
+                    0,
+                    -80
+                ],
+                "upper": [
+                    100,
+                    45,
+                    -50
+                ]
+            },
+            {
+                "name": "red",
+                "lower": [
+                    20,
+                    35,
+                    10
+                ],
+                "upper": [
+                    100,
+                    80,
+                    50
+                ]
+            },
+            {
+                "name": "yellow",
+                "lower": [
+                    20,
+                    -30,
+                    30
+                ],
+                "upper": [
+                    100,
+                    0,
+                    80
+                ]
+            }
+        ],
+        "shape_color": {
+            "lower": [
+                -5,
+                -5,
+                -5
+            ],
+            "upper": [
+                25,
+                5,
+                5
+            ]
+        },
+        "min_diagonal": 50,
+        "threashold": -1
+    }
+}

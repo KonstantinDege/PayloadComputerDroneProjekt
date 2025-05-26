@@ -1,0 +1,33 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
+    "action": "list",
+    "parameter": {
+        "flight_height": 5
+    },
+    "commands": [
+        {
+            "action": "start_camera"
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 10
+            }
+        },
+        {
+            "action": "takeoff"
+        },
+        {
+            "action": "stop_camera"
+        },
+        {
+            "action": "land_at"
+        }
+    ]
+}

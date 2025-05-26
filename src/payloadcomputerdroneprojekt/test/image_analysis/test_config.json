@@ -1,5 +1,5 @@
 {
-    "$schema": "../../configs/config_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
     "camera": {
         "format": "XRGB8888",
         "size": [
@@ -12,66 +12,56 @@
             {
                 "name": "blue",
                 "lower": [
-                    100,
-                    100,
-                    100
+                    20,
+                    0,
+                    -80
                 ],
                 "upper": [
-                    140,
-                    255,
-                    255
+                    100,
+                    45,
+                    -50
                 ]
             },
             {
-                "name": "rot",
-                "lower_0": [
-                    0,
-                    50,
-                    50
-                ],
-                "upper_0": [
-                    10,
-                    255,
-                    255
-                ],
-                "lower_1": [
-                    160,
-                    50,
-                    50
-                ],
-                "upper_1": [
-                    179,
-                    255,
-                    255
-                ]
-            },
-            {
-                "name": "gelb",
+                "name": "red",
                 "lower": [
                     20,
-                    10,
-                    100
+                    35,
+                    10
                 ],
                 "upper": [
-                    60,
-                    255,
-                    255
+                    100,
+                    80,
+                    50
+                ]
+            },
+            {
+                "name": "yellow",
+                "lower": [
+                    20,
+                    -30,
+                    30
+                ],
+                "upper": [
+                    100,
+                    0,
+                    80
                 ]
             }
         ],
         "shape_color": {
             "lower": [
-                0,
-                0,
-                0
+                -5,
+                -5,
+                -5
             ],
             "upper": [
-                180,
-                255,
-                30
+                25,
+                5,
+                5
             ]
         },
-        "min_diagonal": 15,
+        "min_diagonal": 50,
         "threashold": -1
     }
 }

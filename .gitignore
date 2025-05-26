@@ -42,7 +42,6 @@ coverage.xml
 build/*
 dist/*
 sdist/*
-docs/api/*
 docs/_rst/*
 docs/_build/*
 cover/*
@@ -57,3 +56,12 @@ myenv/*
 data/*
 pics/*
 test_image/*
+start_scripts/mission_storage/*
+mission_storage/*
+
+
+package.json
+package-lock.json
+
+node_modules/*
+*/mission_storage/*

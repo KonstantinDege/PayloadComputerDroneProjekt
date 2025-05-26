@@ -1,0 +1,912 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>payloadcomputerdroneprojekt.communications.comm_class &#8212; PCDP 0.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/payloadcomputerdroneprojekt/communications/comm_class';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PCDP 0.0.2 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">payloadcomputerdroneprojekt.communications.comm_class</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for payloadcomputerdroneprojekt.communications.comm_class</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">System</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.offboard</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionNedYaw</span><span class="p">,</span> <span class="n">PositionGlobalYaw</span><span class="p">,</span> <span class="n">VelocityNedYaw</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.telemetry</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionVelocityNed</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">EulerAngle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">smart_print</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.communications.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_data</span><span class="p">,</span> <span class="n">wait_for</span><span class="p">,</span> <span class="n">save_execute</span><span class="p">,</span> <span class="n">get_pos_vec</span><span class="p">,</span> <span class="n">reached_pos</span><span class="p">,</span>
+    <span class="n">rotation_matrix_yaw</span><span class="p">,</span> <span class="n">abs_vel</span><span class="p">,</span> <span class="n">get_vel_vec</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.server_utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatusTextType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="n">StatusTextType</span><span class="o">.</span><span class="n">INFO</span>
+
+
+<div class="viewcode-block" id="Communications">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Communications</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handles communication with the drone, including connection, arming,</span>
+<span class="sd">    movement, telemetry, and image transfer.</span>
+
+<span class="sd">    This class abstracts the MAVSDK API and provides high-level methods for</span>
+<span class="sd">    controlling and monitoring the drone, as well as sending data to a ground</span>
+<span class="sd">    station.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Communications object.</span>
+
+<span class="sd">        :param address: Connection address (e.g., serial:///dev/ttyAMA0:57600).</span>
+<span class="sd">        :type address: str</span>
+<span class="sd">        :param config: Optional configuration dictionary for communication</span>
+<span class="sd">            settings.</span>
+<span class="sd">        :type config: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">System</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Communications.connect">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.connect">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Establish a connection to the drone and set telemetry data rates.</span>
+
+<span class="sd">        :returns: True if connection is established, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        This method initializes the MAVSDK System, connects to the specified</span>
+<span class="sd">        address, and waits until the connection is confirmed. It also sets</span>
+<span class="sd">        telemetry data rates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drone</span> <span class="o">=</span> <span class="n">System</span><span class="p">()</span>
+            <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- System initialized&quot;</span><span class="p">)</span>
+
+        <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to drone at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">_plugins</span> <span class="ow">or</span> \
+                <span class="ow">not</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">connection_state</span><span class="p">())</span>
+                     <span class="p">)</span><span class="o">.</span><span class="n">is_connected</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">system_address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">connection_state</span><span class="p">(),</span>
+                           <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_connected</span><span class="p">)</span>
+
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_data_rates</span><span class="p">()</span>
+
+        <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Connection established successfully&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Communications.check_health">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.check_health">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">check_health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the drone&#39;s global position is OK (GPS ready).</span>
+
+<span class="sd">        :returns: True if global position is OK, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">health</span><span class="p">())</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">is_global_position_ok</span></div>
+
+
+<div class="viewcode-block" id="Communications.set_data_rates">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.set_data_rates">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">set_data_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set telemetry data rates for attitude, position, and in-air status.</span>
+
+<span class="sd">        This method configures the frequency at which telemetry data is</span>
+<span class="sd">        received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_rate_attitude_euler</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_rate_position_velocity_ned</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_rate_position</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">set_rate_in_air</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Communications.wait_for_health">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.wait_for_health">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait until both the home position and global position are OK.</span>
+
+<span class="sd">        This method blocks until the drone&#39;s telemetry reports both positions</span>
+<span class="sd">        as ready.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">health</span><span class="p">(),</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_global_position_ok</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">is_home_position_ok</span><span class="p">)</span></div>
+
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Arm&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">await_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arm the drone or wait until it is armed.</span>
+
+<span class="sd">        If &#39;allowed_arm&#39; is set in config, the drone will attempt to arm</span>
+<span class="sd">        itself. Otherwise, it waits for manual arming.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">arm</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self arming failed waiting for manual: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Awaiting arming&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">armed</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Drone armed&quot;</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Disarm&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">await_disarm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disarm the drone or wait until it is disarmed.</span>
+
+<span class="sd">        If &#39;allowed_disarm&#39; is set in config, the drone will attempt to disarm</span>
+<span class="sd">        itself. Otherwise, it waits for manual disarming.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allowed_disarm&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">disarm</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self arming failed waiting for manual: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">armed</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Drone disarmed&quot;</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Ensure Offboard&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_offboard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure the drone is in OFFBOARD mode.</span>
+
+<span class="sd">        If not already in OFFBOARD, set the current position and start OFFBOARD</span>
+<span class="sd">        mode if allowed by config. Otherwise, wait for manual mode switch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flight_mode</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">flight_mode</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">flight_mode</span> <span class="o">==</span> <span class="s2">&quot;OFFBOARD&quot;</span><span class="p">:</span>
+            <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Already in offboard mode&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">set_position_ned</span><span class="p">(</span>
+                <span class="n">PositionNedYaw</span><span class="p">(</span><span class="o">*</span><span class="n">position</span><span class="p">[:</span><span class="mi">4</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allowed_mode_switch&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Starting offboard&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">flight_mode</span><span class="p">(),</span>
+                               <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;OFFBOARD&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Communications.get_relative_height">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_relative_height">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_relative_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the drone&#39;s height above the ground.</span>
+
+<span class="sd">        :returns: Relative altitude in meters.</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position</span><span class="p">()</span>
+                               <span class="p">))</span><span class="o">.</span><span class="n">relative_altitude_m</span></div>
+
+
+<div class="viewcode-block" id="Communications.is_flying">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.is_flying">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">is_flying</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the drone is currently flying (in air).</span>
+
+<span class="sd">        :returns: True if the drone is in air, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">in_air</span><span class="p">())</span></div>
+
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the drone and ascend to a target height.</span>
+
+<span class="sd">        :param height: Target height above ground in meters.</span>
+<span class="sd">        :type height: float</span>
+
+<span class="sd">        :returns: True if already at or above target height, otherwise None.</span>
+<span class="sd">        :rtype: bool or None</span>
+
+<span class="sd">        This method ensures OFFBOARD mode, arms the drone, checks health, and</span>
+<span class="sd">        commands the drone to ascend if necessary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_offboard</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_arm</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_health</span><span class="p">()</span>
+        <span class="k">if</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">height</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">current_height</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_by_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span><span class="o">-</span><span class="n">current_height</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_attitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the drone&#39;s current attitude (roll, pitch, yaw).</span>
+
+<span class="sd">        :returns: List of [roll_deg, pitch_deg, yaw_deg].</span>
+<span class="sd">        :rtype: list[float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">euler</span><span class="p">:</span> <span class="n">EulerAngle</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">attitude_euler</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">euler</span><span class="o">.</span><span class="n">roll_deg</span><span class="p">,</span> <span class="n">euler</span><span class="o">.</span><span class="n">pitch_deg</span><span class="p">,</span> <span class="n">euler</span><span class="o">.</span><span class="n">yaw_deg</span><span class="p">]</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_yaw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the drone&#39;s current yaw angle.</span>
+
+<span class="sd">        :returns: Yaw angle in degrees.</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">attitude_euler</span><span class="p">()))</span><span class="o">.</span><span class="n">yaw_deg</span>
+
+<div class="viewcode-block" id="Communications.get_position_xyz">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_position_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the drone&#39;s local position and attitude.</span>
+
+<span class="sd">        :returns: [x, y, z, roll, pitch, yaw] in meters and degrees.</span>
+<span class="sd">        :rtype: list[float]</span>
+
+<span class="sd">        If GPS is not ready, returns zeros.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position_velocity_ned</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">get_pos_vec</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attitude</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Communications.get_position_lat_lon_alt">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_position_lat_lon_alt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the drone&#39;s global position and attitude.</span>
+
+<span class="sd">        :returns: [latitude_deg, longitude_deg, relative_altitude_m, roll,</span>
+<span class="sd">            pitch, yaw]</span>
+<span class="sd">        :rtype: list[float]</span>
+
+<span class="sd">        If GPS is not ready, returns zeros.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">Position</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">position</span><span class="o">.</span><span class="n">latitude_deg</span><span class="p">,</span> <span class="n">position</span><span class="o">.</span><span class="n">longitude_deg</span><span class="p">,</span>
+                <span class="n">position</span><span class="o">.</span><span class="n">relative_altitude_m</span><span class="p">]</span> <span class="o">+</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attitude</span><span class="p">()</span></div>
+
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move to XYZ&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_to_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">yaw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone to a specific XYZ position in the local NED frame.</span>
+
+<span class="sd">        :param pos: Target [x, y, z] position in meters.</span>
+<span class="sd">        :type pos: list[float]</span>
+<span class="sd">        :param yaw: Target yaw in degrees (compass). If None, uses current yaw.</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method sends a position command and waits until the drone reaches</span>
+<span class="sd">        the target.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">yaw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">yaw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_yaw</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">set_position_ned</span><span class="p">(</span><span class="n">PositionNedYaw</span><span class="p">(</span>
+            <span class="n">north_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">east_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">down_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="n">yaw</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position_velocity_ned</span><span class="p">(),</span>
+            <span class="n">reached_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vel_error&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)))</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move with Velocity&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_with_vel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                           <span class="n">yaw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone with a fixed velocity in the XYZ direction.</span>
+
+<span class="sd">        :param velocity: Velocity vector [vx, vy, vz] in m/s (global frame).</span>
+<span class="sd">        :type velocity: list[float]</span>
+<span class="sd">        :param yaw: Yaw angle in degrees (relative to North). If None, uses</span>
+<span class="sd">            current yaw.</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method sends a velocity command to the drone.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">yaw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">yaw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_yaw</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">set_velocity_ned</span><span class="p">(</span><span class="n">VelocityNedYaw</span><span class="p">(</span>
+            <span class="n">north_m_s</span><span class="o">=</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">east_m_s</span><span class="o">=</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">down_m_s</span><span class="o">=</span><span class="n">velocity</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="n">yaw</span><span class="p">))</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by Velocity&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_vel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone with velocity relative to its current yaw orientation.</span>
+
+<span class="sd">        :param velocity: Velocity vector [vx, vy, vz] in drone&#39;s yaw frame.</span>
+<span class="sd">        :type velocity: list[float]</span>
+<span class="sd">        :param yaw: Additional yaw to add to current yaw (degrees).</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method rotates the velocity vector by the current yaw and sends</span>
+<span class="sd">        the command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_yaw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_yaw</span><span class="p">()</span>
+        <span class="n">rotated_velocity</span> <span class="o">=</span> <span class="n">rotation_matrix_yaw</span><span class="p">(</span>
+            <span class="n">current_yaw</span><span class="p">)</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_with_vel</span><span class="p">(</span><span class="n">rotated_velocity</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">current_yaw</span> <span class="o">+</span> <span class="n">yaw</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by XYZ&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone by a relative XYZ offset in its local yaw frame.</span>
+
+<span class="sd">        :param offset: Offset [dx, dy, dz] in meters (drone&#39;s yaw frame).</span>
+<span class="sd">        :type offset: list[float]</span>
+<span class="sd">        :param yaw: Additional yaw to add to current yaw (degrees).</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method computes the new position and sends a move command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">offset_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">current_position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+        <span class="n">current_yaw</span> <span class="o">=</span> <span class="n">current_position</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">total_yaw</span> <span class="o">=</span> <span class="n">yaw</span> <span class="o">+</span> <span class="n">current_yaw</span>
+        <span class="n">current_position_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_position</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">new_position</span> <span class="o">=</span> <span class="n">current_position_arr</span> <span class="o">+</span> \
+            <span class="n">rotation_matrix_yaw</span><span class="p">(</span><span class="n">current_yaw</span><span class="p">)</span> <span class="o">@</span> <span class="n">offset_arr</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">new_position</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">total_yaw</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by XYZ old&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_xyz_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                             <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone by a relative XYZ offset in the local reference frame.</span>
+
+<span class="sd">        :param offset: Offset [dx, dy, dz] in meters (NED frame).</span>
+<span class="sd">        :type offset: list[float]</span>
+<span class="sd">        :param yaw: Target yaw in degrees (absolute).</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method computes the new position and sends a move command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">offset_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">current_position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+        <span class="n">total_yaw</span> <span class="o">=</span> <span class="n">yaw</span> <span class="o">+</span> <span class="n">current_position</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">current_position_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_position</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">new_position</span> <span class="o">=</span> <span class="n">current_position_arr</span> <span class="o">+</span> <span class="n">offset_arr</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">new_position</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">total_yaw</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move to Lat Lon Alt&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_to_lat_lon_alt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+                                 <span class="n">yaw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone to a specific latitude, longitude, and altitude.</span>
+
+<span class="sd">        :param pos: [latitude_deg, longitude_deg, relative_altitude_m].</span>
+<span class="sd">        :type pos: list[float]</span>
+<span class="sd">        :param yaw: Target yaw in degrees. If None, uses current yaw.</span>
+<span class="sd">        :type yaw: float, optional</span>
+
+<span class="sd">        This method sends a global position command and waits until the drone</span>
+<span class="sd">        reaches the target.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">yaw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">yaw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_yaw</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">set_position_global</span><span class="p">(</span><span class="n">PositionGlobalYaw</span><span class="p">(</span>
+            <span class="n">lat_deg</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lon_deg</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">alt_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="n">yaw</span><span class="p">,</span>
+            <span class="n">altitude_type</span><span class="o">=</span><span class="n">PositionGlobalYaw</span><span class="o">.</span><span class="n">AltitudeType</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">reach_func</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">Position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">latitude_deg</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree_error&quot;</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">longitude_deg</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree_error&quot;</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">relative_altitude_m</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">))</span>
+
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position</span><span class="p">(),</span> <span class="n">reach_func</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position_velocity_ned</span><span class="p">(),</span>
+                       <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">abs_vel</span><span class="p">(</span>
+                           <span class="n">get_vel_vec</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vel_error&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Land&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">land</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Land the drone using the standard land mode.</span>
+
+<span class="sd">        This method triggers the drone&#39;s landing procedure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">land</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Communications.receive_mission_file">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.receive_mission_file">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">receive_mission_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_on_receive</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+                                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Placeholder for receiving a mission file from the ground station.</span>
+
+<span class="sd">        :param func_on_receive: Callback function to execute when a file is</span>
+<span class="sd">            received.</span>
+<span class="sd">        :type func_on_receive: callable</span>
+
+<span class="sd">        This method is not yet implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Communications.send_found_obj">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.send_found_obj">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_found_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">found_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Placeholder for sending information about a found object.</span>
+
+<span class="sd">        :param found_object: Dictionary containing object information.</span>
+<span class="sd">        :type found_object: dict</span>
+
+<span class="sd">        This method is not yet implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Send Image&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send an image file to the ground station over WiFi using TCP sockets.</span>
+
+<span class="sd">        :param path: File path to the image on the Raspberry Pi.</span>
+<span class="sd">        :type path: str</span>
+
+<span class="sd">        :returns: True if the image was sent successfully, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        This method opens a TCP connection to the ground station, sends the</span>
+<span class="sd">        file size, and then streams the image data in chunks. Handles network</span>
+<span class="sd">        and file errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate file existence and accessibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Image file not found at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Get laptop IP and port from config, with defaults</span>
+        <span class="n">laptop_ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;laptop_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;192.168.1.100&quot;</span><span class="p">)</span>
+        <span class="n">laptop_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;laptop_port&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get file size</span>
+            <span class="n">file_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+            <span class="c1"># Create TCP socket</span>
+            <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">open_connection</span><span class="p">(</span>
+                <span class="n">laptop_ip</span><span class="p">,</span> <span class="n">laptop_port</span><span class="p">)</span>
+
+            <span class="c1"># Send file size first (8 bytes, big-endian)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">))</span>
+            <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
+
+            <span class="c1"># Send image data in chunks</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image_file</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">chunk</span> <span class="o">=</span> <span class="n">image_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>  <span class="c1"># 4KB chunks</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
+
+            <span class="c1"># Close connection</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image sent successfully: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">,</span> <span class="ne">ConnectionRefusedError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network error while sending image: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending image: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Communications.send_status">
+<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.send_status">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a status text message to the ground station.</span>
+
+<span class="sd">        :param status: Status message to send.</span>
+<span class="sd">        :type status: str</span>
+
+<span class="sd">        This method uses the MAVSDK server utility to send a status text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="p">,</span> <span class="s1">&#39;server_utility&#39;</span><span class="p">):</span>
+            <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Drone not connected or server utility not available.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">server_utility</span><span class="o">.</span><span class="n">send_status_text</span><span class="p">(</span>
+            <span class="n">StatusTextType</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, KonstantinDege.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

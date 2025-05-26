@@ -1,21 +1,9 @@
-from abc import ABC, abstractmethod
-
-
-class Camera(ABC):
-    def __init__(self, config):
-        super().__init__()
-        self._config = config
-        self._camera = None
-        self.is_active = False
-
-    @abstractmethod
-    def start_camera(self, config=None):
-        pass
-
-    @abstractmethod
-    def get_current_frame(self):
-        pass
-
-    @abstractmethod
-    def stop_camera(self):
-        pass
+from .abstract_class import AbstractCamera  # noqa: F401
+try:
+    from .raspi2 import RaspiCamera  # noqa: F401
+except Exception:
+    pass
+try:
+    from .gazebo_sitl import GazeboCamera  # noqa: F401
+except Exception:
+    pass
