@@ -1,0 +1,9 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID12",
+    "description": "Mission cycle.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 15
+    }
+}
