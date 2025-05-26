@@ -49,8 +49,8 @@ async def upload_mission(file: UploadFile = File(...)):
     await computer.new_mission(mission_file_path)
     return {"detail": "Mission file uploaded successfully"}
 
-api_thread = threading.Thread(target=computer.start, daemon=True)
-api_thread.start()
+# api_thread = threading.Thread(target=computer.start, daemon=True)
+# api_thread.start()
 
 if __name__ == "__main__":
     import uvicorn

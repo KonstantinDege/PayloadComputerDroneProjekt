@@ -6,5 +6,5 @@ cd "$SCRIPT_DIR"
 # Activate the virtual environment
 source "$SCRIPT_DIR/myenv/bin/activate"
 cd start_scripts
-python "start_webserver_raspi.py"
+uvicorn start_webserver_gazebo:app --port 4269
 cd ..

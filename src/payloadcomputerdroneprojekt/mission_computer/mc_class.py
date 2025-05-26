@@ -13,6 +13,7 @@ from payloadcomputerdroneprojekt.helper import smart_print as sp
 import asyncio
 from typing import Any, Callable, Dict, List, Optional
 
+
 MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"
 
@@ -209,12 +210,27 @@ class MissionComputer:
 
         self._save_progress()
         self.running = False
+        if self.progress >= self.max_progress:
+            await self.status("Mission Completed")
+            self.running = False
+            if os.path.exists(MISSION_PROGRESS):
+                os.remove(MISSION_PROGRESS)
+            if os.path.exists(MISSION_PATH):
+                os.remove(MISSION_PATH)
 
     def start(self) -> None:
         """
         Start the mission computer's main event loop.
         """
-        asyncio.run(self._start())
+        self.task = self._start
+        asyncio.run(self._task())
+
+    async def _task(self) -> None:
+        while True:
+            if self.task is not None:
+                asyncio.create_task(self.task())
+                self.task = None
+            await asyncio.sleep(0.1)
 
     async def _start(self) -> None:
         """
@@ -261,7 +277,7 @@ class MissionComputer:
                     sp(f"Error in canceling: {e}")
         self.running = False
         self.initiate(plan)
-        await self._start()
+        self.task = self._start
 
     async def start_camera(self, options: dict) -> None:
         """
