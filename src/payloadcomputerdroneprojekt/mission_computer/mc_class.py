@@ -129,11 +129,24 @@ class MissionComputer:
         :param missionfile: Path to the mission file.
         :type missionfile: str, optional
         """
+        keep_going = True
+        if os.path.exists(MISSION_PROGRESS):
+            with open(MISSION_PROGRESS, "r") as f:
+                progress = json.load(f)
+            # Check if the mission can be recovered based on time
+            if abs(progress["time"] - time.time()
+                   ) < self.config.get("recouver_time", 10):
+                keep_going = True
+            else:
+                if os.path.exists(MISSION_PROGRESS):
+                    os.remove(MISSION_PROGRESS)
+
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
             shutil.copyfile(missionfile, MISSION_PATH)
             if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
+            keep_going = False
 
         if os.path.exists(MISSION_PATH):
             with open(MISSION_PATH, "r") as f:
@@ -149,18 +162,13 @@ class MissionComputer:
                 os.remove(MISSION_PROGRESS)
             return
 
-        if os.path.exists(MISSION_PROGRESS):
+        if keep_going:
             with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
-
-            print(abs(progress["time"] - time.time()))
-            # Check if the mission can be recovered based on time and progress
-            if abs(progress["time"] - time.time()
-                   ) < self.config.get("recouver_time", 10):
-                if count_actions(mission) == progress["max_progress"]:
-                    self.progress = progress["progress"]
-                    self.max_progress = progress["max_progress"]
-                    return
+            if count_actions(mission) == progress["max_progress"]:
+                self.progress = progress["progress"]
+                self.max_progress = progress["max_progress"]
+                return
 
         self.progress = mission.get("progress", 0)
         self.max_progress = count_actions(mission)
