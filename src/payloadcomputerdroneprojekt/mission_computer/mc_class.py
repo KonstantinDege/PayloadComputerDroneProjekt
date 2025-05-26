@@ -129,8 +129,6 @@ class MissionComputer:
         """
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
-            if os.path.exists(MISSION_PATH):
-                os.remove(MISSION_PATH)
             shutil.copyfile(missionfile, MISSION_PATH)
             if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
@@ -153,6 +151,7 @@ class MissionComputer:
             with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
 
+            print(abs(progress["time"] - time.time()))
             # Check if the mission can be recovered based on time and progress
             if abs(progress["time"] - time.time()
                    ) < self.config.get("recouver_time", 10):

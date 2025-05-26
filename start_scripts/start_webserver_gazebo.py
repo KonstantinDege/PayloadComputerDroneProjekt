@@ -51,3 +51,7 @@ async def upload_mission(file: UploadFile = File(...)):
 
 api_thread = threading.Thread(target=computer.start, daemon=True)
 api_thread.start()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("start_webserver_gazebo:app", port=6942, reload=False)

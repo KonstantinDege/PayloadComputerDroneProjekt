@@ -6,5 +6,5 @@ cd "$SCRIPT_DIR"
 # Activate the virtual environment
 source "$SCRIPT_DIR/myenv/bin/activate"
 cd start_scripts
-uvicorn "start_webserver_raspi:app"
+python "start_webserver_raspi.py"
 cd ..
