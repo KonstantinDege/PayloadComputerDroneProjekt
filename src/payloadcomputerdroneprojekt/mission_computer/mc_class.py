@@ -101,7 +101,6 @@ class MissionComputer:
         self.max_progress: int = -1
         self.running: bool = False
         self.main_programm: Optional[asyncio.Task] = None
-        self.wait_plan: Optional[asyncio.Task] = None
         self.actions: Dict[str, Callable] = {
             "start_camera": self.start_camera,
             "stop_camera": self.stop_camera,
@@ -130,6 +129,8 @@ class MissionComputer:
         """
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
+            if os.path.exists(MISSION_PATH):
+                os.remove(MISSION_PATH)
             shutil.copyfile(missionfile, MISSION_PATH)
             if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
@@ -236,20 +237,11 @@ class MissionComputer:
                        f"resetting to 0")
                     self.progress = 0
                     plan = self.current_mission_plan
-
             self.main_programm = asyncio.create_task(
                 self.execute(plan))
         else:
             await self.status("No Valid Mision")
             sp("Waiting for Networking connection")
-        self.wait_plan = asyncio.create_task(
-            self._comms.receive_mission_file(self.new_mission))
-        if self.main_programm is not None:
-            await self.main_programm
-        if self.wait_plan is not None:
-            await self.wait_plan
-        while True:
-            await asyncio.sleep(10)
 
     async def new_mission(self, plan: str) -> None:
         """
@@ -259,7 +251,10 @@ class MissionComputer:
         :type plan: str
         """
         if self.main_programm:
-            self.main_programm.cancel()
+            try:
+                self.main_programm.cancel()
+            except asyncio.CancelledError:
+                sp("Main programm already canceled")
             for task in self.cancel_list:
                 try:
                     task()
