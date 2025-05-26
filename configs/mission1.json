@@ -42,11 +42,10 @@
             }
         },
         {
-            "action": "stop_camera"
-        },
-        {
             "action": "mov_to_objects_cap_pic",
             "commands": {
+                "lat": 0,
+                "lon": 0,
                 "height": 5,
                 "delay": 2
             }

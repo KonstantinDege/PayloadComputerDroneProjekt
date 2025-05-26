@@ -1,0 +1,33 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID13",
+    "description": "Precision land.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 5
+    },
+
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {"altitude": 5}
+        },
+        {
+            "action": "mov_multiple",
+            "commands": [
+                {
+                    "lat": 48.767765,
+                    "lon": 11.336796,
+                    "yaw": 0  
+                }
+            ]
+        },
+        {
+            "type": "land_at",
+                "values": {
+                    "lat": 48.767765,
+                    "lon": 11.336796
+                }  
+        }
+    ]
+}
