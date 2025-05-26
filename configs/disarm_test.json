@@ -1,0 +1,30 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID14",
+    "description": "Disarm test. Start to flight_height: 1m, hover 5sec and land",
+    "type": "list",
+    "parameter": {
+        "flight_height": 1
+    },
+
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {"altitude": 1}
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
+        },
+        {
+            "type": "land_at",
+            "values": {
+                "lat": 0,
+                "lon": 0
+            }
+        }
+    ]
+
+}
