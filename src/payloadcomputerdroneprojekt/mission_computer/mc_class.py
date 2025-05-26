@@ -13,6 +13,7 @@ from payloadcomputerdroneprojekt.helper import smart_print as sp
 import asyncio
 from typing import Any, Callable, Dict, List, Optional
 
+
 MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"
 
@@ -88,7 +89,8 @@ class MissionComputer:
                 config.get("camera", None)), comms=self._comms)
         self._image._camera.start_camera()
         self.config: dict = config.get("mission_computer", {})
-
+        self.task = None
+        self._old_task = None
         self._setup()
 
     def _setup(self) -> None:
@@ -101,7 +103,6 @@ class MissionComputer:
         self.max_progress: int = -1
         self.running: bool = False
         self.main_programm: Optional[asyncio.Task] = None
-        self.wait_plan: Optional[asyncio.Task] = None
         self.actions: Dict[str, Callable] = {
             "start_camera": self.start_camera,
             "stop_camera": self.stop_camera,
@@ -152,6 +153,7 @@ class MissionComputer:
             with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
 
+            print(abs(progress["time"] - time.time()))
             # Check if the mission can be recovered based on time and progress
             if abs(progress["time"] - time.time()
                    ) < self.config.get("recouver_time", 10):
@@ -209,12 +211,29 @@ class MissionComputer:
 
         self._save_progress()
         self.running = False
+        if self.progress >= self.max_progress:
+            await self.status("Mission Completed")
+            self.running = False
+            if os.path.exists(MISSION_PROGRESS):
+                os.remove(MISSION_PROGRESS)
+            if os.path.exists(MISSION_PATH):
+                os.remove(MISSION_PATH)
 
     def start(self) -> None:
         """
         Start the mission computer's main event loop.
         """
-        asyncio.run(self._start())
+        self.task = self._start
+        asyncio.run(self._task())
+
+    async def _task(self) -> None:
+        while True:
+            if self.task is not None:
+                if self._old_task is not None:
+                    self._old_task.cancel()
+                self._old_task = asyncio.create_task(self.task())
+                self.task = None
+            await asyncio.sleep(0.1)
 
     async def _start(self) -> None:
         """
@@ -236,20 +255,13 @@ class MissionComputer:
                        f"resetting to 0")
                     self.progress = 0
                     plan = self.current_mission_plan
-
+            if self.main_programm is not None:
+                self.main_programm.cancel()
             self.main_programm = asyncio.create_task(
                 self.execute(plan))
         else:
             await self.status("No Valid Mision")
             sp("Waiting for Networking connection")
-        self.wait_plan = asyncio.create_task(
-            self._comms.receive_mission_file(self.new_mission))
-        if self.main_programm is not None:
-            await self.main_programm
-        if self.wait_plan is not None:
-            await self.wait_plan
-        while True:
-            await asyncio.sleep(10)
 
     async def new_mission(self, plan: str) -> None:
         """
@@ -259,7 +271,10 @@ class MissionComputer:
         :type plan: str
         """
         if self.main_programm:
-            self.main_programm.cancel()
+            try:
+                self.main_programm.cancel()
+            except asyncio.CancelledError:
+                sp("Main programm already canceled")
             for task in self.cancel_list:
                 try:
                     task()
@@ -267,7 +282,7 @@ class MissionComputer:
                     sp(f"Error in canceling: {e}")
         self.running = False
         self.initiate(plan)
-        await self._start()
+        self.task = self._start
 
     async def start_camera(self, options: dict) -> None:
         """

@@ -2,16 +2,13 @@ from mavsdk import System
 from mavsdk.offboard import PositionNedYaw, PositionGlobalYaw, VelocityNedYaw
 from mavsdk.telemetry import PositionVelocityNed, Position, EulerAngle
 import numpy as np
-import asyncio
 from payloadcomputerdroneprojekt.helper import smart_print as sp
-import socket
-import os
 from payloadcomputerdroneprojekt.communications.helper import (
     get_data, wait_for, save_execute, get_pos_vec, reached_pos,
     rotation_matrix_yaw, abs_vel, get_vel_vec
 )
 from mavsdk.server_utility import StatusTextType
-from typing import Any, Callable, Optional, Dict, List
+from typing import Any, Optional, Dict, List
 
 StatusTextType.INFO
 
@@ -57,15 +54,11 @@ class Communications:
             sp("-- System initialized")
 
         sp(f"Connecting to drone at {self.address} ...")
-        if "action" not in self.drone._plugins or \
-                not (await get_data(self.drone.core.connection_state())
-                     ).is_connected:
-            await self.drone.connect(system_address=self.address)
-            await wait_for(self.drone.core.connection_state(),
-                           lambda x: x.is_connected)
+        await self.drone.connect(system_address=self.address)
+        await wait_for(self.drone.core.connection_state(),
+                       lambda x: x.is_connected)
 
-            await self.set_data_rates()
-
+        await self.set_data_rates()
         sp("-- Connection established successfully")
         return True
 
@@ -411,90 +404,6 @@ class Communications:
         This method triggers the drone's landing procedure.
         """
         await self.drone.action.land()
-
-    async def receive_mission_file(self, func_on_receive: Callable[..., Any]
-                                   ) -> None:
-        """
-        Placeholder for receiving a mission file from the ground station.
-
-        :param func_on_receive: Callback function to execute when a file is
-            received.
-        :type func_on_receive: callable
-
-        This method is not yet implemented.
-        """
-        while True:
-            await asyncio.sleep(2)
-        pass
-
-    async def send_found_obj(self, found_object: Dict[str, Any]) -> None:
-        """
-        Placeholder for sending information about a found object.
-
-        :param found_object: Dictionary containing object information.
-        :type found_object: dict
-
-        This method is not yet implemented.
-        """
-        pass
-
-    @save_execute("Send Image")
-    async def send_image(self, path: str) -> bool:
-        """
-        Send an image file to the ground station over WiFi using TCP sockets.
-
-        :param path: File path to the image on the Raspberry Pi.
-        :type path: str
-
-        :returns: True if the image was sent successfully, False otherwise.
-        :rtype: bool
-
-        This method opens a TCP connection to the ground station, sends the
-        file size, and then streams the image data in chunks. Handles network
-        and file errors.
-        """
-        # Validate file existence and accessibility
-        if not os.path.isfile(path):
-            sp(f"Error: Image file not found at {path}")
-            return False
-
-        # Get laptop IP and port from config, with defaults
-        laptop_ip: str = self.config.get("laptop_ip", "192.168.1.100")
-        laptop_port: int = self.config.get("laptop_port", 5000)
-
-        try:
-            # Get file size
-            file_size: int = os.path.getsize(path)
-
-            # Create TCP socket
-            reader, writer = await asyncio.open_connection(
-                laptop_ip, laptop_port)
-
-            # Send file size first (8 bytes, big-endian)
-            writer.write(file_size.to_bytes(8, byteorder='big'))
-            await writer.drain()
-
-            # Send image data in chunks
-            with open(path, 'rb') as image_file:
-                while True:
-                    chunk = image_file.read(4096)  # 4KB chunks
-                    if not chunk:
-                        break
-                    writer.write(chunk)
-                    await writer.drain()
-
-            # Close connection
-            writer.close()
-            await writer.wait_closed()
-            sp(f"Image sent successfully: {path}")
-            return True
-
-        except (socket.gaierror, ConnectionRefusedError, OSError) as exc:
-            sp(f"Network error while sending image: {exc}")
-            return False
-        except Exception as exc:
-            sp(f"Error sending image: {exc}")
-            return False
 
     async def send_status(self, status: str) -> None:
         """
