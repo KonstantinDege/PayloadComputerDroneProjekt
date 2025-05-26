@@ -54,4 +54,4 @@ api_thread.start()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("start_webserver_gazebo:app", port=6942, reload=False)
+    uvicorn.run("start_webserver_gazebo:app", port=4269, reload=False)
