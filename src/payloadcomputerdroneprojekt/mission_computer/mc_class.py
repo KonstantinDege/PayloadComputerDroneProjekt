@@ -89,7 +89,8 @@ class MissionComputer:
                 config.get("camera", None)), comms=self._comms)
         self._image._camera.start_camera()
         self.config: dict = config.get("mission_computer", {})
-
+        self.task = None
+        self._old_task = None
         self._setup()
 
     def _setup(self) -> None:
@@ -228,7 +229,9 @@ class MissionComputer:
     async def _task(self) -> None:
         while True:
             if self.task is not None:
-                asyncio.create_task(self.task())
+                if self._old_task is not None:
+                    self._old_task.cancel()
+                self._old_task = asyncio.create_task(self.task())
                 self.task = None
             await asyncio.sleep(0.1)
 
@@ -252,6 +255,8 @@ class MissionComputer:
                        f"resetting to 0")
                     self.progress = 0
                     plan = self.current_mission_plan
+            if self.main_programm is not None:
+                self.main_programm.cancel()
             self.main_programm = asyncio.create_task(
                 self.execute(plan))
         else:
