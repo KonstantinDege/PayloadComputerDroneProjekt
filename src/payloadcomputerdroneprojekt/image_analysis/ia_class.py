@@ -284,11 +284,8 @@ class ImageAnalysis:
             x, y, w, h = cv2.boundingRect(approx)
             if (w**2 + h**2) < self.config.get("min_diagonal", 10)**2:
                 continue
-            if len(approx) == 4:
-                x_center = x + (w // 2)
-                y_center = y + (h // 2)
-            else:
-                continue
+            x_center = x + (w // 2)
+            y_center = y + (h // 2)
             objects.append({
                 "color": filtered_image["color"],
                 "bound_box": {
@@ -297,10 +294,13 @@ class ImageAnalysis:
                     "y_start": y,
                     "y_stop": y+h
                 },
-                "contour": [[int(coord) for coord in pt[0]] for pt in approx],
                 "x_center": x_center,
                 "y_center": y_center
             })
+            if len(approx) == 4:
+                objects[-1]["contour"] = [[int(coord)
+                                           for coord in pt[0]]
+                                          for pt in approx]
 
     def get_shape(
         self,
