@@ -121,6 +121,8 @@ class MissionComputer:
         self.cancel_list: List[Callable] = [
             self._image.stop_cam
         ]
+        # TODO: add on off state filter camera is
+        # not being reactivated on restart
 
     def initiate(self, missionfile: str = "") -> None:
         """
