@@ -83,7 +83,7 @@
         "min_diagonal": 150,
         "threashold": -1,
         "camera_offset": [
-            0,
+            0.068,
             0,
             0
         ],
