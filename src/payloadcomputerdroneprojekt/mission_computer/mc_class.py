@@ -137,6 +137,8 @@ class MissionComputer:
                    ) > self.config.get("recouver_time", 10):
                 if os.path.exists(MISSION_PROGRESS):
                     os.remove(MISSION_PROGRESS)
+                if os.path.exists(MISSION_PATH):
+                    os.remove(MISSION_PATH)
 
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
