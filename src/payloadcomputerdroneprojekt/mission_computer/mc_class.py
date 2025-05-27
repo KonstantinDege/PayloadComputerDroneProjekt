@@ -129,15 +129,12 @@ class MissionComputer:
         :param missionfile: Path to the mission file.
         :type missionfile: str, optional
         """
-        keep_going = True
         if os.path.exists(MISSION_PROGRESS):
             with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
             # Check if the mission can be recovered based on time
             if abs(progress["time"] - time.time()
-                   ) < self.config.get("recouver_time", 10):
-                keep_going = True
-            else:
+                   ) > self.config.get("recouver_time", 10):
                 if os.path.exists(MISSION_PROGRESS):
                     os.remove(MISSION_PROGRESS)
 
@@ -146,7 +143,6 @@ class MissionComputer:
             shutil.copyfile(missionfile, MISSION_PATH)
             if os.path.exists(MISSION_PROGRESS):
                 os.remove(MISSION_PROGRESS)
-            keep_going = False
 
         if os.path.exists(MISSION_PATH):
             with open(MISSION_PATH, "r") as f:
@@ -162,7 +158,7 @@ class MissionComputer:
                 os.remove(MISSION_PROGRESS)
             return
 
-        if keep_going:
+        if os.path.exists(MISSION_PROGRESS):
             with open(MISSION_PROGRESS, "r") as f:
                 progress = json.load(f)
             if count_actions(mission) == progress["max_progress"]:
