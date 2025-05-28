@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from payloadcomputerdroneprojekt.camera.abstract_class import AbstractCamera
 from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
+from payloadcomputerdroneprojekt.image_analysis.data_item import DataItem
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
 import tempfile
 from payloadcomputerdroneprojekt.helper import smart_print as sp
@@ -508,11 +509,15 @@ class ImageAnalysis:
         if not self._camera.is_active:
             self._camera.start_camera()
             await asyncio.sleep(2)
-        position = self._comms.get_position_xyz()
-        relative_height = self._comms.get_relative_height()
-        image = self._camera.get_current_frame()
-        return self._get_current_offset_closest(
-            position, relative_height, image, color, shape, yaw_zero)
+        with self._data_handler as item:
+            position = self._comms.get_position_xyz()
+            relative_height = self._comms.get_relative_height()
+            image = self._camera.get_current_frame()
+            item.add_image_position(position)
+            item.add_raw_image(image)
+            item.add_height(relative_height)
+            return self._get_current_offset_closest(
+                position, relative_height, image, color, shape, yaw_zero, item)
 
     def _get_current_offset_closest(
         self,
@@ -521,7 +526,8 @@ class ImageAnalysis:
         image: np.ndarray,
         color: str,
         shape: str,
-        yaw_zero: bool = True
+        yaw_zero: bool = True,
+        item: Optional[DataItem] = None
     ) -> Tuple[Optional[List[float]], Optional[float], Optional[float]]:
         """
         Internal method to get offset to closest object.
@@ -541,10 +547,10 @@ class ImageAnalysis:
         :return: Tuple (offset [x, y], height, yaw offset).
         :rtype: tuple or (None, None, None) if not found
         """
-        closest_obj = self.get_closest_element(image, color, shape)
+        closest_obj = self.get_closest_element(image, color, shape, item)
         if closest_obj is None:
             return None, None, None
-
+        item.add_objects([closest_obj])
         if yaw_zero:
             position[5] = 0
 
@@ -660,7 +666,8 @@ class ImageAnalysis:
         self,
         image: np.ndarray,
         color: str,
-        shape: Optional[str]
+        shape: Optional[str],
+        item: Optional[DataItem] = None
     ) -> Optional[dict]:
         """
         Get the closest detected object of a given color and shape.
@@ -678,6 +685,7 @@ class ImageAnalysis:
         shape_image = self.filter_shape_color(image)
         computed_image["filtered_image"] = self.filter_color(
             image, color, shape_image)
+        item.add_computed_image(computed_image["filtered_image"])
 
         objects: List[dict] = []
         self.detect_obj(objects, computed_image)
