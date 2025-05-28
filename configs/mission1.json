@@ -1,19 +1,15 @@
 {
-    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
-    "name": "Mission 1",
-    "description": "This is the first mission.",
-    "type": "list",
+    "$schema": "mission_schema.json",
     "parameter": {
         "flight_height": 15
     },
     "commands": [
-       
         {
             "action": "takeoff",
             "commands": {
                 "altitude": 15
             }
-        }, 
+        },
         {
             "action": "start_camera",
             "commands": {
@@ -26,7 +22,7 @@
                 {
                     "lat": 0,
                     "lon": 0,
-                    "yaw": 0  
+                    "yaw": 0
                 },
                 {
                     "lat": 4,
@@ -47,15 +43,7 @@
         {
             "action": "mov_to_objects_cap_pic",
             "commands": {
-                "height": 5,
                 "delay": 2
-            }
-        },
-        {
-            "type": "land_at",
-            "values": {
-                "lat": 0,
-                "lon": 0
             }
         }
     ]
