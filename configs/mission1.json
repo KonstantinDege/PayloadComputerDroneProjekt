@@ -1,5 +1,5 @@
 {
-    "$schema": "mission_schema.json",
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
     "parameter": {
         "flight_height": 15
     },
