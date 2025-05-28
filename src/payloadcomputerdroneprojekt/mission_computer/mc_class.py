@@ -18,6 +18,11 @@ MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"
 
 
+def test_rem(path: str) -> None:
+    if os.path.exists(path):
+        os.remove(path)
+
+
 class MissionComputer:
     """
     MissionComputer class for managing drone missions, communication, and image
@@ -63,8 +68,24 @@ class MissionComputer:
         :param image_analysis: ImageAnalysis class.
         :type image_analysis: type[ImageAnalysis], optional
         """
+        self.set_work_dir(config)
+        logging.basicConfig(filename="flight.log",
+                            format='%(asctime)s %(message)s',
+                            level=logging.INFO)
+
         self._comms: Communications = communications(
             port, config.get("communications", {}))
+
+        self._image: ImageAnalysis = image_analysis(
+            config=config.get("image", {}), camera=camera(
+                config.get("camera", None)), comms=self._comms)
+
+        self._image._camera.start_camera()
+        self.config: dict = config.get("mission_computer", {})
+
+        self._setup()
+
+    def set_work_dir(self, config: dict) -> None:
         error: Optional[Exception] = None
         try:
             path: str = config.get("mission_storage", "mission_storage")
@@ -78,25 +99,15 @@ class MissionComputer:
             path = "mission_storage"
             os.makedirs(path, exist_ok=True)
         os.chdir(path)
-        logging.basicConfig(filename="flight.log",
-                            format='%(asctime)s %(message)s',
-                            level=logging.INFO)
         if error:
             logging.info(str(error))
-
-        self._image: ImageAnalysis = image_analysis(
-            config=config.get("image", {}), camera=camera(
-                config.get("camera", None)), comms=self._comms)
-        self._image._camera.start_camera()
-        self.config: dict = config.get("mission_computer", {})
-        self.task = None
-        self._old_task = None
-        self._setup()
 
     def _setup(self) -> None:
         """
         Internal setup for mission plan, progress, and available actions.
         """
+        self.task = None
+        self._old_task = None
         self.current_mission_plan: dict = {}
         self.current_mission_plan.setdefault("parameter", {})
         self.progress: int = 0
@@ -132,21 +143,24 @@ class MissionComputer:
         :type missionfile: str, optional
         """
         if os.path.exists(MISSION_PROGRESS):
-            with open(MISSION_PROGRESS, "r") as f:
-                progress = json.load(f)
+            try:
+                with open(MISSION_PROGRESS, "r") as f:
+                    progress = json.load(f)
             # Check if the mission can be recovered based on time
-            if abs(progress["time"] - time.time()
-                   ) > self.config.get("recouver_time", 10):
-                if os.path.exists(MISSION_PROGRESS):
-                    os.remove(MISSION_PROGRESS)
-                if os.path.exists(MISSION_PATH):
-                    os.remove(MISSION_PATH)
+                if abs(progress["time"] - time.time()
+                       ) > self.config.get("recouver_time", 10):
+                    test_rem(MISSION_PROGRESS)
+                    test_rem(MISSION_PATH)
+            except Exception:
+                sp("Error reading progress file, resetting progress")
+                test_rem(MISSION_PROGRESS)
+                test_rem(MISSION_PATH)
+                return
 
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
             shutil.copyfile(missionfile, MISSION_PATH)
-            if os.path.exists(MISSION_PROGRESS):
-                os.remove(MISSION_PROGRESS)
+            test_rem(MISSION_PROGRESS)
 
         if os.path.exists(MISSION_PATH):
             with open(MISSION_PATH, "r") as f:
@@ -158,17 +172,22 @@ class MissionComputer:
         if mission is None:
             self.progress = 0
             self.max_progress = -1
-            if os.path.exists(MISSION_PROGRESS):
-                os.remove(MISSION_PROGRESS)
+            test_rem(MISSION_PROGRESS)
             return
-
-        if os.path.exists(MISSION_PROGRESS):
-            with open(MISSION_PROGRESS, "r") as f:
-                progress = json.load(f)
-            if count_actions(mission) == progress["max_progress"]:
-                self.progress = progress["progress"]
-                self.max_progress = progress["max_progress"]
-                return
+        try:
+            if os.path.exists(MISSION_PROGRESS):
+                with open(MISSION_PROGRESS, "r") as f:
+                    progress = json.load(f)
+                if count_actions(mission) == progress["max_progress"]:
+                    self.progress = progress["progress"]
+                    self.max_progress = progress["max_progress"]
+                    return
+        except Exception:
+            sp("Error reading progress file, resetting progress")
+            test_rem(MISSION_PROGRESS)
+            self.progress = 0
+            self.max_progress = -1
+            return
 
         self.progress = mission.get("progress", 0)
         self.max_progress = count_actions(mission)
