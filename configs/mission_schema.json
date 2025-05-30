@@ -43,6 +43,10 @@
                     }
                 ]
             }
+        },
+        "$schema": {
+            "type": "string",
+            "description": "The schema version for the mission configuration."
         }
     },
     "required": [
@@ -69,7 +73,8 @@
                             },
                             "description": "A list of commands for 'list' or 'mov_multiple' actions."
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 },
                 {
                     "type": "object",
@@ -88,7 +93,8 @@
                                 }
                             ]
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 },
                 {
                     "type": "object",
@@ -116,7 +122,8 @@
                     },
                     "required": [
                         "action"
-                    ]
+                    ],
+                    "additionalProperties": false
                 },
                 {
                     "src": {
@@ -171,7 +178,8 @@
                 "shape": {
                     "type": "string"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "movement": {
             "type": "array",
@@ -198,8 +206,10 @@
                 "required": [
                     "lat",
                     "lon"
-                ]
+                ],
+                "additionalProperties": false
             }
         }
-    }
+    },
+    "additionalProperties": false
 }

@@ -8,7 +8,7 @@
         {
             "action": "takeoff",
             "commands": {
-                "height": 10
+                "altitude": 10
             }
         },
         {

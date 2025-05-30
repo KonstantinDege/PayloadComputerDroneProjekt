@@ -1,6 +1,6 @@
 import unittest
 from payloadcomputerdroneprojekt.image_analysis.math_helper \
-    import find_rel_position
+    import find_relative_position
 from itertools import permutations
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
 import os
@@ -16,7 +16,7 @@ class TestCode(unittest.TestCase):
         p_list = [(-1, 1, 0), (-1, -1, 0), (1, 1, 0)]
         for p_l in permutations(p_list):
             print(p_l)
-            o_l, u_l, o_r = find_rel_position(p_l)
+            o_l, u_l, o_r = find_relative_position(p_l)
             assert o_l[0] == -1
             assert o_l[1] == 1
             assert u_l[0] == -1
@@ -35,9 +35,9 @@ class TestCode(unittest.TestCase):
         ia = ImageAnalysis(config, cam, TestCommunications(""))
         image = cv2.imread(os.path.join(
             FILE_PATH, "static_image", "Mission_2.png"))
-
-        ret = ia._get_current_offset_closest(
-            [0, 0, 0, 0, 0, 0], 1, image, "orange", "Code")
+        with ia._data_handler as item:
+            ret = ia._get_current_offset_closest(
+                [0, 0, 0, 0, 0, 0], 1, image, "orange", "Code", item=item)
         ret[0][0] > 0
         ret[0][1] < 0
         ret[1] > 1
@@ -54,9 +54,9 @@ class TestCode(unittest.TestCase):
         ia = ImageAnalysis(config, cam, TestCommunications(""))
         image = cv2.imread(os.path.join(
             FILE_PATH, "static_image", "mission_3.png"))
-
-        ret = ia._get_current_offset_closest(
-            [0, 0, 0, 0, 0, 0], 1, image, "yellow", "Kreis")
+        with ia._data_handler as item:
+            ret = ia._get_current_offset_closest(
+                [0, 0, 0, 0, 0, 0], 1, image, "yellow", "Kreis", item=item)
         print(ret)
 
 

@@ -10,8 +10,6 @@ from payloadcomputerdroneprojekt.communications.helper import (
 from mavsdk.server_utility import StatusTextType
 from typing import Any, Optional, Dict, List
 
-StatusTextType.INFO
-
 
 class Communications:
     """

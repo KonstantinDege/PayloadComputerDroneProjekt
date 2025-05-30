@@ -61,6 +61,22 @@ async def upload_mission(file: UploadFile = File(...)):
     await computer.new_mission(mission_file_path)
     return {"detail": "Mission file uploaded successfully"}
 
+
+@app.delete("/data_reset")
+async def reset_data():
+    computer._image._data_handler.reset_data()
+    return {"detail": "Data reset successfully"}
+
+
+@app.get("/log")
+async def get_log():
+    log_file_path = "flight.log"
+    if os.path.exists(log_file_path):
+        return FileResponse(
+            log_file_path, media_type="text/plain", filename=log_file_path)
+    return HTTPException(status_code=404, detail="Log file not found")
+
+
 api_thread = threading.Thread(target=computer.start, daemon=True)
 api_thread.start()
 
