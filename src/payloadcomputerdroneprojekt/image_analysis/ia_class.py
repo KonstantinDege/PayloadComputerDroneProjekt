@@ -8,7 +8,6 @@ from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis.data_handler import DataHandler
 from payloadcomputerdroneprojekt.image_analysis.data_item import DataItem
 import payloadcomputerdroneprojekt.image_analysis.math_helper as mh
-import tempfile
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import time
 
@@ -48,7 +47,7 @@ class ImageAnalysis:
         self._comms: Communications = comms
         self._task: Optional[asyncio.Task] = None
         self._data_handler: DataHandler = DataHandler(config.setdefault(
-            "path", tempfile.mkdtemp(prefix="image_analysis")))
+            "path", "data/images"))
 
         def convert_to_lab(val: list) -> np.ndarray:
             """

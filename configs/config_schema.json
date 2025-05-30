@@ -5,10 +5,17 @@
     "description": "A config description of team Blau for the drone project",
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string"
+        },
         "image": {
             "description": "Parameters for image analysis",
             "type": "object",
             "properties": {
+                "path": {
+                    "type": "string",
+                    "default": "data/images"
+                },
                 "colors": {
                     "type": "array",
                     "items": {
