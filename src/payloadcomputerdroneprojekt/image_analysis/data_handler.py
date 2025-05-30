@@ -35,7 +35,6 @@ class DataHandler:
             makedirs(path)
         self._path: str = path
         sp(f"Mission Path: {path}")
-        self._fake: DataItem = DataItem("")
         self.list: List[DataItem] = []
 
         if exists(join(self._path, FILENAME)):
