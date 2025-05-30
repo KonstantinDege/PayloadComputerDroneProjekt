@@ -130,7 +130,11 @@
                 },
                 "length_box_short_side": {
                     "type": "number",
-                    "default": 0.5
+                    "default": 0.4
+                },
+                "length_box_long_side": {
+                    "type": "number",
+                    "default": 0.6
                 }
             },
             "additionalProperties": false,
