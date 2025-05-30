@@ -136,8 +136,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -227,8 +234,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -322,7 +336,7 @@
 
 
 <div class="viewcode-block" id="save_execute">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.save_execute">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.save_execute">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">save_execute</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator to wrap a function and catch exceptions, printing a message if an</span>
@@ -348,7 +362,7 @@
 
 
 <div class="viewcode-block" id="reached_pos">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.reached_pos">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.reached_pos">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reached_pos</span><span class="p">(</span>
     <span class="n">target</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">error_vel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PositionVelocityNed</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
@@ -374,7 +388,7 @@
 
 
 <div class="viewcode-block" id="get_pos_vec">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_pos_vec">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_pos_vec">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_pos_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the position vector from a PositionVelocityNed object.</span>
@@ -390,7 +404,7 @@
 
 
 <div class="viewcode-block" id="get_vel_vec">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_vel_vec">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_vel_vec">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_vel_vec</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PositionVelocityNed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the velocity vector from a PositionVelocityNed object.</span>
@@ -406,7 +420,7 @@
 
 
 <div class="viewcode-block" id="abs_vel">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.abs_vel">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.abs_vel">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">abs_vel</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the magnitude of a velocity vector.</span>
@@ -421,7 +435,7 @@
 
 
 <div class="viewcode-block" id="pythagoras">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.pythagoras">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.pythagoras">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pythagoras</span><span class="p">(</span><span class="n">pos_a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos_b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the Euclidean distance between two position vectors.</span>
@@ -439,7 +453,7 @@
 
 
 <div class="viewcode-block" id="get_data">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_data">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.get_data">[docs]</a>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Asynchronously retrieves the first result from an async generator.</span>
@@ -454,7 +468,7 @@
 
 
 <div class="viewcode-block" id="wait_for">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.wait_for">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.wait_for">[docs]</a>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
                    <span class="n">b</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -474,7 +488,7 @@
 
 
 <div class="viewcode-block" id="rotation_matrix_yaw">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.rotation_matrix_yaw">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.comm_class.rotation_matrix_yaw">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix_yaw</span><span class="p">(</span><span class="n">rot</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a 3x3 rotation matrix for a yaw (Z-axis) rotation.</span>
@@ -537,7 +551,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

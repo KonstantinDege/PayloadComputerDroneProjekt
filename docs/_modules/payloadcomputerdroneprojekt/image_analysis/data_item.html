@@ -136,8 +136,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -227,8 +234,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -318,7 +332,7 @@
 
 
 <div class="viewcode-block" id="DataItem">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataItem</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a data item for image analysis, storing image paths, metadata,</span>
@@ -341,7 +355,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="DataItem.add_image_position">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_image_position">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_image_position">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_image_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlonalt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add the image&#39;s GPS position (latitude, longitude, altitude).</span>
@@ -353,7 +367,7 @@
 
 
 <div class="viewcode-block" id="DataItem.add_raw_image">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_raw_image">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_raw_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_raw_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save and register the raw image.</span>
@@ -367,7 +381,7 @@
 
 
 <div class="viewcode-block" id="DataItem.add_computed_image">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_computed_image">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_computed_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_computed_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save and register the computed (processed) image.</span>
@@ -382,7 +396,7 @@
 
 
 <div class="viewcode-block" id="DataItem.add_objects">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_objects">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_objects">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add detected objects to the data item and assign unique IDs to each.</span>
@@ -398,7 +412,7 @@
 
 
 <div class="viewcode-block" id="DataItem.add_quality">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_quality">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_quality">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">quality</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a quality metric to the data item.</span>
@@ -410,7 +424,7 @@
 
 
 <div class="viewcode-block" id="DataItem.add_height">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_height">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.add_height">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add the height at which the image was taken.</span>
@@ -422,7 +436,7 @@
 
 
 <div class="viewcode-block" id="DataItem.get_dict">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.get_dict">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.data_item.DataItem.get_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the data item as a dictionary, including its ID.</span>
@@ -484,7 +498,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

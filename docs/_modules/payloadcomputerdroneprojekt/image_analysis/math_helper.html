@@ -136,8 +136,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -227,8 +234,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -319,7 +333,7 @@
 
 
 <div class="viewcode-block" id="compute_local">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_local">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_local">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_local</span><span class="p">(</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">,</span> <span class="n">rotation_angles</span><span class="p">,</span>
                   <span class="n">image_size</span><span class="p">,</span> <span class="n">field_of_view</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -348,7 +362,7 @@
 
 
 <div class="viewcode-block" id="compute_pixel_vec">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_pixel_vec">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_pixel_vec">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_pixel_vec</span><span class="p">(</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">field_of_view</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the normalized direction vector from the camera center to a pixel</span>
@@ -380,7 +394,7 @@
 
 
 <div class="viewcode-block" id="rotation_matrix">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.rotation_matrix">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.rotation_matrix">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">rotation_angles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a rotation matrix from Euler angles.</span>
@@ -396,7 +410,7 @@
 
 
 <div class="viewcode-block" id="local_to_global">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.local_to_global">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.local_to_global">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">local_to_global</span><span class="p">(</span><span class="n">origin_latitude</span><span class="p">,</span> <span class="n">origin_longitude</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a function to convert local (x, y) coordinates to global (lat, lon)</span>
@@ -438,7 +452,7 @@
 
 
 <div class="viewcode-block" id="find_relative_position">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.find_relative_position">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.find_relative_position">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_relative_position</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the relative positions of three points such that two vectors are</span>
@@ -463,7 +477,7 @@
 
 
 <div class="viewcode-block" id="compute_rotation_angle">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_rotation_angle">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.compute_rotation_angle">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_rotation_angle</span><span class="p">(</span><span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the rotation angle (in degrees) between two points.</span>
@@ -482,7 +496,7 @@
 
 
 <div class="viewcode-block" id="find_shortest_longest_sides">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.find_shortest_longest_sides">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.math_helper.find_shortest_longest_sides">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_shortest_longest_sides</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the shortest and longest sides of a quadrilateral defined by four</span>
@@ -556,7 +570,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

@@ -141,6 +141,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -232,6 +239,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -313,10 +327,12 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.camera.abstract_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractCamera</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.communications</span><span class="w"> </span><span class="kn">import</span> <span class="n">Communications</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.image_analysis.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.image_analysis.data_item</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataItem</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.image_analysis.math_helper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mh</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">smart_print</span> <span class="k">as</span> <span class="n">sp</span>
@@ -324,7 +340,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageAnalysis</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handles image analysis for drone payload computer, including color and</span>
@@ -402,7 +418,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="ImageAnalysis.start_cam">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.start_cam">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.start_cam">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_cam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_per_second</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start capturing and saving images asynchronously.</span>
@@ -424,7 +440,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.stop_cam">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.stop_cam">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.stop_cam">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop_cam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop capturing and saving images.</span>
@@ -441,7 +457,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.take_image">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.take_image">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.take_image">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">take_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Take a single image asynchronously.</span>
@@ -498,7 +514,7 @@
             <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;Capturing stopped.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.image_loop">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.image_loop">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.image_loop">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">image_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Main logic for per-frame image analysis.</span>
@@ -567,7 +583,7 @@
             <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.compute_image">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.compute_image">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.compute_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -586,7 +602,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.detect_obj">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.detect_obj">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.detect_obj">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_obj</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
@@ -614,11 +630,8 @@
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="n">x_center</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">y_center</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">continue</span>
+            <span class="n">x_center</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">y_center</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
                 <span class="s2">&quot;bound_box&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -627,14 +640,17 @@
                     <span class="s2">&quot;y_start&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
                     <span class="s2">&quot;y_stop&quot;</span><span class="p">:</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span>
                 <span class="p">},</span>
-                <span class="s2">&quot;contour&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">approx</span><span class="p">],</span>
                 <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="n">x_center</span><span class="p">,</span>
                 <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="n">y_center</span>
-            <span class="p">})</span></div>
+            <span class="p">})</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">objects</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;contour&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+                                           <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                                          <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">approx</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_shape">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_shape">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_shape">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -679,7 +695,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.find_code">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.find_code">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.find_code">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_code</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -729,7 +745,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.filter_colors">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_colors">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_colors">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_colors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
@@ -750,13 +766,13 @@
             <span class="n">filtered_color_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
                  <span class="s2">&quot;filtered_image&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
-                     <span class="n">lab_image</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">shape_mask</span><span class="o">=</span><span class="n">shape_mask</span><span class="p">)})</span>
+                     <span class="n">lab_image</span><span class="p">,</span> <span class="n">elements</span><span class="p">)})</span>
 
         <span class="k">return</span> <span class="n">filtered_color_images</span><span class="p">,</span> <span class="n">shape_mask</span></div>
 
 
 <div class="viewcode-block" id="ImageAnalysis.filter_shape_color">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_shape_color">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_shape_color">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_shape_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter the image for the shape color.</span>
@@ -772,7 +788,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.filter_color">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_color">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.filter_color">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_color</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -799,15 +815,13 @@
         <span class="k">if</span> <span class="n">shape_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">shape_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span>
                 <span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_color</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span><span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">],</span>
-                                  <span class="n">shape_mask</span><span class="o">=</span><span class="n">shape_mask</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_color</span><span class="p">(</span><span class="n">lab_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">color</span><span class="p">])</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_filter_color</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">lab</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]],</span>
-        <span class="n">shape_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Internal method to filter an image in LAB color space for given color</span>
@@ -832,14 +846,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">elements</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">],</span> <span class="n">elements</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="n">shape_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># mask = cv2.bitwise_or(mask, shape_mask)</span>
         <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.get_current_offset_closest">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_current_offset_closest">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_current_offset_closest">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_current_offset_closest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -862,11 +872,15 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">start_camera</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
-        <span class="n">relative_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_offset_closest</span><span class="p">(</span>
-            <span class="n">position</span><span class="p">,</span> <span class="n">relative_height</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">yaw_zero</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_handler</span> <span class="k">as</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+            <span class="n">relative_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">add_image_position</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">add_raw_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">add_height</span><span class="p">(</span><span class="n">relative_height</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_offset_closest</span><span class="p">(</span>
+                <span class="n">position</span><span class="p">,</span> <span class="n">relative_height</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">yaw_zero</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_offset_closest</span><span class="p">(</span>
@@ -876,7 +890,8 @@
         <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Internal method to get offset to closest object.</span>
@@ -896,10 +911,10 @@
 <span class="sd">        :return: Tuple (offset [x, y], height, yaw offset).</span>
 <span class="sd">        :rtype: tuple or (None, None, None) if not found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">closest_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-
+        <span class="n">item</span><span class="o">.</span><span class="n">add_objects</span><span class="p">([</span><span class="n">closest_obj</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">yaw_zero</span><span class="p">:</span>
             <span class="n">position</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -933,7 +948,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">code_side_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;length_code_side&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">height_start</span>
-        <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_rel_position</span><span class="p">(</span>
+        <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_relative_position</span><span class="p">(</span>
             <span class="p">[(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;w&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]])</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
             <span class="n">top_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
@@ -943,10 +958,9 @@
             <span class="n">top_right_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
                 <span class="n">top_right</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
-            <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
-            <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+
             <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">code_side_length</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="n">top_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
@@ -956,9 +970,9 @@
         <span class="n">top_right_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
             <span class="n">top_right</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
-        <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
-        <span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
+
         <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">bottom_left_pos</span> <span class="o">+</span> <span class="n">top_right_pos</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">height</span>
@@ -997,7 +1011,7 @@
             <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]:</span>
                 <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
                     <span class="n">point</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">))</span>
-            <span class="n">short_sides</span><span class="p">,</span> <span class="n">long_sides</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_shorts_longs</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">short_sides</span><span class="p">,</span> <span class="n">long_sides</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">find_shortest_longest_sides</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
             <span class="n">c</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">short_sides</span><span class="p">:</span>
@@ -1013,12 +1027,13 @@
             <span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;x_center&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;y_center&quot;</span><span class="p">]),</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.get_closest_element">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_closest_element">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_closest_element">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_closest_element</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the closest detected object of a given color and shape.</span>
@@ -1036,6 +1051,7 @@
         <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_shape_color</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="n">computed_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_color</span><span class="p">(</span>
             <span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">computed_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">])</span>
 
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">computed_image</span><span class="p">)</span>
@@ -1113,7 +1129,7 @@
         <span class="k">return</span> <span class="n">relevant_objects</span>
 
 <div class="viewcode-block" id="ImageAnalysis.get_filtered_objs">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_filtered_objs">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_filtered_objs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_objs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a dictionary of all filtered objects.</span>
@@ -1126,7 +1142,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_matching_objects">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_matching_objects">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_matching_objects">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_matching_objects</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1146,7 +1162,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_color_obj_list">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_color_obj_list">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_color_obj_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_color_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of all objects for a given color.</span>
@@ -1164,7 +1180,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_all_obj_list">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_all_obj_list">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_all_obj_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all_obj_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of all detected objects with color and shape.</span>
@@ -1182,7 +1198,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.quality_of_image">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.quality_of_image">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.quality_of_image">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">quality_of_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1198,7 +1214,7 @@
 
 
 <div class="viewcode-block" id="ImageAnalysis.get_local_offset">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_local_offset">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_local_offset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_local_offset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -1261,7 +1277,7 @@
         <span class="k">return</span> <span class="n">local_vec_stretched</span> <span class="o">+</span> <span class="n">rot_mat</span> <span class="o">@</span> <span class="n">camera_offset</span>
 
 <div class="viewcode-block" id="ImageAnalysis.add_lat_lon">
-<a class="viewcode-back" href="../../../api/ia.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.add_lat_lon">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.add_lat_lon">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_lat_lon</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -1342,7 +1358,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

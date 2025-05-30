@@ -136,8 +136,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -227,8 +234,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -316,7 +330,7 @@
 
 
 <div class="viewcode-block" id="find_shortest_path">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.find_shortest_path">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.find_shortest_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_shortest_path</span><span class="p">(</span><span class="n">objs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">start</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -344,7 +358,7 @@
 
 
 <div class="viewcode-block" id="count_actions">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.count_actions">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.count_actions">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">count_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively count the number of actions in a nested action plan.</span>
@@ -366,7 +380,7 @@
 
 
 <div class="viewcode-block" id="action_with_count">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.action_with_count">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.action_with_count">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">action_with_count</span><span class="p">(</span><span class="n">plan</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the next action in the plan and return it with the updated count.</span>
@@ -408,7 +422,7 @@
 
 
 <div class="viewcode-block" id="rec_serialize">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.rec_serialize">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.rec_serialize">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rec_serialize</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively serialize the object to load commands from a file if specified.</span>
@@ -438,7 +452,7 @@
 
 
 <div class="viewcode-block" id="diag">
-<a class="viewcode-back" href="../../../api/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.diag">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.mission_computer.helper.diag">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">diag</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the Euclidean distance from the origin to the point (x, y).</span>
@@ -450,7 +464,7 @@
 <span class="sd">    :return: Euclidean distance.</span>
 <span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -502,7 +516,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

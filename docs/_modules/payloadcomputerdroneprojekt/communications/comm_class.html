@@ -141,6 +141,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -232,6 +239,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -312,24 +326,19 @@
   <h1>Source code for payloadcomputerdroneprojekt.communications.comm_class</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">System</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.offboard</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionNedYaw</span><span class="p">,</span> <span class="n">PositionGlobalYaw</span><span class="p">,</span> <span class="n">VelocityNedYaw</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.telemetry</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionVelocityNed</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">EulerAngle</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">smart_print</span> <span class="k">as</span> <span class="n">sp</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.communications.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_data</span><span class="p">,</span> <span class="n">wait_for</span><span class="p">,</span> <span class="n">save_execute</span><span class="p">,</span> <span class="n">get_pos_vec</span><span class="p">,</span> <span class="n">reached_pos</span><span class="p">,</span>
     <span class="n">rotation_matrix_yaw</span><span class="p">,</span> <span class="n">abs_vel</span><span class="p">,</span> <span class="n">get_vel_vec</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mavsdk.server_utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatusTextType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="n">StatusTextType</span><span class="o">.</span><span class="n">INFO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="Communications">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Communications</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handles communication with the drone, including connection, arming,</span>
@@ -356,7 +365,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">System</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Communications.connect">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.connect">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.connect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Establish a connection to the drone and set telemetry data rates.</span>
@@ -373,21 +382,17 @@
             <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- System initialized&quot;</span><span class="p">)</span>
 
         <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to drone at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">_plugins</span> <span class="ow">or</span> \
-                <span class="ow">not</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">connection_state</span><span class="p">())</span>
-                     <span class="p">)</span><span class="o">.</span><span class="n">is_connected</span><span class="p">:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">system_address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">connection_state</span><span class="p">(),</span>
-                           <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_connected</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">system_address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">connection_state</span><span class="p">(),</span>
+                       <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_connected</span><span class="p">)</span>
 
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_data_rates</span><span class="p">()</span>
-
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_data_rates</span><span class="p">()</span>
         <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Connection established successfully&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="Communications.check_health">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.check_health">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.check_health">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">check_health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the drone&#39;s global position is OK (GPS ready).</span>
@@ -400,7 +405,7 @@
 
 
 <div class="viewcode-block" id="Communications.set_data_rates">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.set_data_rates">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.set_data_rates">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">set_data_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set telemetry data rates for attitude, position, and in-air status.</span>
@@ -415,7 +420,7 @@
 
 
 <div class="viewcode-block" id="Communications.wait_for_health">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.wait_for_health">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.wait_for_health">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wait until both the home position and global position are OK.</span>
@@ -476,15 +481,12 @@
             <span class="n">position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">set_position_ned</span><span class="p">(</span>
                 <span class="n">PositionNedYaw</span><span class="p">(</span><span class="o">*</span><span class="n">position</span><span class="p">[:</span><span class="mi">4</span><span class="p">]))</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allowed_mode_switch&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Starting offboard&quot;</span><span class="p">)</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">flight_mode</span><span class="p">(),</span>
-                               <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;OFFBOARD&quot;</span><span class="p">)</span>
+
+            <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;-- Starting offboard&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">offboard</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Communications.get_relative_height">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_relative_height">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.get_relative_height">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_relative_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the drone&#39;s height above the ground.</span>
@@ -497,7 +499,7 @@
 
 
 <div class="viewcode-block" id="Communications.is_flying">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.is_flying">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.is_flying">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">is_flying</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the drone is currently flying (in air).</span>
@@ -506,6 +508,19 @@
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">in_air</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Communications.landed">
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.landed">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">landed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the drone is currently flying (in air).</span>
+
+<span class="sd">        :returns: True if the drone is in air, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">in_air</span><span class="p">(),</span>
+                              <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">)</span></div>
 
 
     <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
@@ -525,10 +540,7 @@
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_offboard</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">await_arm</span><span class="p">()</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_health</span><span class="p">()</span>
-        <span class="k">if</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">height</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="n">current_height</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_by_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span><span class="o">-</span><span class="n">current_height</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_by_xy</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_attitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -551,7 +563,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="k">await</span> <span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">attitude_euler</span><span class="p">()))</span><span class="o">.</span><span class="n">yaw_deg</span>
 
 <div class="viewcode-block" id="Communications.get_position_xyz">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.get_position_xyz">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_position_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the drone&#39;s local position and attitude.</span>
@@ -567,7 +579,7 @@
 
 
 <div class="viewcode-block" id="Communications.get_position_lat_lon_alt">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.get_position_lat_lon_alt">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_position_lat_lon_alt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the drone&#39;s global position and attitude.</span>
@@ -603,7 +615,7 @@
             <span class="n">north_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">east_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">down_m</span><span class="o">=</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="n">yaw</span><span class="p">))</span>
         <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position_velocity_ned</span><span class="p">(),</span>
-            <span class="n">reached_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span>
+            <span class="n">reached_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vel_error&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)))</span>
 
     <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move with Velocity&quot;</span><span class="p">)</span>
@@ -643,7 +655,8 @@
         <span class="n">current_yaw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_yaw</span><span class="p">()</span>
         <span class="n">rotated_velocity</span> <span class="o">=</span> <span class="n">rotation_matrix_yaw</span><span class="p">(</span>
             <span class="n">current_yaw</span><span class="p">)</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_with_vel</span><span class="p">(</span><span class="n">rotated_velocity</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">current_yaw</span> <span class="o">+</span> <span class="n">yaw</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_with_vel</span><span class="p">(</span><span class="n">rotated_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                                <span class="n">current_yaw</span> <span class="o">+</span> <span class="n">yaw</span><span class="p">)</span>
 
     <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by XYZ&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -664,7 +677,24 @@
         <span class="n">current_position_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_position</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
         <span class="n">new_position</span> <span class="o">=</span> <span class="n">current_position_arr</span> <span class="o">+</span> \
             <span class="n">rotation_matrix_yaw</span><span class="p">(</span><span class="n">current_yaw</span><span class="p">)</span> <span class="o">@</span> <span class="n">offset_arr</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">new_position</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">total_yaw</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">new_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">total_yaw</span><span class="p">)</span>
+
+    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by XYZ&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone by a relative XY offset in the local yaw frame.</span>
+<span class="sd">        :param offset: Offset [dx, dy, z] in meters (drone&#39;s yaw frame).</span>
+<span class="sd">        :type offset: list[float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">offset_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">current_position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
+        <span class="n">current_yaw</span> <span class="o">=</span> <span class="n">current_position</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">total_yaw</span> <span class="o">=</span> <span class="n">yaw</span> <span class="o">+</span> <span class="n">current_yaw</span>
+        <span class="n">current_position_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_position</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">current_position_arr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_position</span> <span class="o">=</span> <span class="n">current_position_arr</span> <span class="o">+</span> \
+            <span class="n">rotation_matrix_yaw</span><span class="p">(</span><span class="n">current_yaw</span><span class="p">)</span> <span class="o">@</span> <span class="n">offset_arr</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">new_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">total_yaw</span><span class="p">)</span>
 
     <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Move by XYZ old&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_by_xyz_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
@@ -712,7 +742,7 @@
                     <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">longitude_deg</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                         <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree_error&quot;</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span> <span class="ow">and</span>
                     <span class="nb">abs</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">relative_altitude_m</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                        <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">))</span>
+                        <span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pos_error&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
 
         <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position</span><span class="p">(),</span> <span class="n">reach_func</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">position_velocity_ned</span><span class="p">(),</span>
@@ -728,98 +758,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">drone</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">land</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Communications.receive_mission_file">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.receive_mission_file">[docs]</a>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">receive_mission_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_on_receive</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-                                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Placeholder for receiving a mission file from the ground station.</span>
-
-<span class="sd">        :param func_on_receive: Callback function to execute when a file is</span>
-<span class="sd">            received.</span>
-<span class="sd">        :type func_on_receive: callable</span>
-
-<span class="sd">        This method is not yet implemented.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="Communications.send_found_obj">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.send_found_obj">[docs]</a>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_found_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">found_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Placeholder for sending information about a found object.</span>
-
-<span class="sd">        :param found_object: Dictionary containing object information.</span>
-<span class="sd">        :type found_object: dict</span>
-
-<span class="sd">        This method is not yet implemented.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
-
-
-    <span class="nd">@save_execute</span><span class="p">(</span><span class="s2">&quot;Send Image&quot;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Send an image file to the ground station over WiFi using TCP sockets.</span>
-
-<span class="sd">        :param path: File path to the image on the Raspberry Pi.</span>
-<span class="sd">        :type path: str</span>
-
-<span class="sd">        :returns: True if the image was sent successfully, False otherwise.</span>
-<span class="sd">        :rtype: bool</span>
-
-<span class="sd">        This method opens a TCP connection to the ground station, sends the</span>
-<span class="sd">        file size, and then streams the image data in chunks. Handles network</span>
-<span class="sd">        and file errors.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Validate file existence and accessibility</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Image file not found at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="c1"># Get laptop IP and port from config, with defaults</span>
-        <span class="n">laptop_ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;laptop_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;192.168.1.100&quot;</span><span class="p">)</span>
-        <span class="n">laptop_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;laptop_port&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Get file size</span>
-            <span class="n">file_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-            <span class="c1"># Create TCP socket</span>
-            <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">open_connection</span><span class="p">(</span>
-                <span class="n">laptop_ip</span><span class="p">,</span> <span class="n">laptop_port</span><span class="p">)</span>
-
-            <span class="c1"># Send file size first (8 bytes, big-endian)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_size</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">))</span>
-            <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
-
-            <span class="c1"># Send image data in chunks</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image_file</span><span class="p">:</span>
-                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">chunk</span> <span class="o">=</span> <span class="n">image_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>  <span class="c1"># 4KB chunks</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
-                        <span class="k">break</span>
-                    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-                    <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
-
-            <span class="c1"># Close connection</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image sent successfully: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">,</span> <span class="ne">ConnectionRefusedError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network error while sending image: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending image: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
 <div class="viewcode-block" id="Communications.send_status">
-<a class="viewcode-back" href="../../../api/c.html#payloadcomputerdroneprojekt.communications.Communications.send_status">[docs]</a>
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.communications.html#payloadcomputerdroneprojekt.communications.Communications.send_status">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a status text message to the ground station.</span>
@@ -886,7 +826,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>

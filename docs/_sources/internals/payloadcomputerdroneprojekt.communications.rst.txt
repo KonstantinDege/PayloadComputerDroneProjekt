@@ -9,29 +9,21 @@ payloadcomputerdroneprojekt.communications.comm\_class module
 
 .. automodule:: payloadcomputerdroneprojekt.communications.comm_class
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
 
 payloadcomputerdroneprojekt.communications.helper module
 --------------------------------------------------------
 
 .. automodule:: payloadcomputerdroneprojekt.communications.helper
    :members:
-   :show-inheritance:
    :undoc-members:
-
-payloadcomputerdroneprojekt.communications.laptop\_server module
-----------------------------------------------------------------
-
-.. automodule:: payloadcomputerdroneprojekt.communications.laptop_server
-   :members:
    :show-inheritance:
-   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: payloadcomputerdroneprojekt.communications
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

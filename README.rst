@@ -106,4 +106,4 @@ Build docs
 
     .. code-block:: bash
 
-        sphinx-autobuild docs docs_build
+        sphinx-autobuild docs_src docs

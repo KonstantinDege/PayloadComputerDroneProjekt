@@ -136,8 +136,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -227,8 +234,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../internals/index.html">
-    <no title>
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../internals/modules.html">
+    payloadcomputerdroneprojekt
   </a>
 </li>
 
@@ -318,10 +332,10 @@
 
 
 <div class="viewcode-block" id="CommAsync">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CommAsync</span><span class="p">:</span>
 <div class="viewcode-block" id="CommAsync.move_by">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_by</span><span class="p">():</span>
         <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
@@ -334,29 +348,43 @@
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">land</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="CommAsync.move_by_rel_yaw">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by_rel_yaw">[docs]</a>
+<div class="viewcode-block" id="CommAsync.move_to_xyz">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_to_xyz">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_by_rel_yaw</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_to_xyz</span><span class="p">():</span>
         <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start checkpoint&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">land</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="CommAsync.move_by_xyz_old">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by_xyz_old">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_by_xyz_old</span><span class="p">():</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start checkpoint&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_xyz_old</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_xyz_old</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">land</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="CommAsync.move_by_speed">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by_speed">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_by_speed">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_by_speed</span><span class="p">():</span>
         <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start checkpoint&quot;</span><span class="p">)</span>
-        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_vel</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint1&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_by_vel</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint2&quot;</span><span class="p">)</span>
@@ -364,8 +392,24 @@
         <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">land</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="CommAsync.move_with_speed">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_with_speed">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_with_speed</span><span class="p">():</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start checkpoint&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_with_vel</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint1&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">mov_with_vel</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first checkpoint2&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">con</span><span class="o">.</span><span class="n">land</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="CommAsync.move_global">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_global">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.CommAsync.move_global">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">move_global</span><span class="p">():</span>
         <span class="n">con</span> <span class="o">=</span> <span class="n">Communications</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;allowed_arm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
@@ -381,28 +425,40 @@
 
 
 <div class="viewcode-block" id="TestCommunication">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TestCommunication</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 <div class="viewcode-block" id="TestCommunication.test_move_by">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_move_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_by</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="TestCommunication.test_move_by_rel_yaw">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by_rel_yaw">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by_rel_yaw">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_move_by_rel_yaw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_by_rel_yaw</span><span class="p">())</span></div>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_to_xyz</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TestCommunication.test_move_by_xyz_old">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by_xyz_old">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_move_by_xyz_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_by_xyz_old</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="TestCommunication.test_move_by_speed">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by_speed">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_by_speed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_move_by_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_by_speed</span><span class="p">())</span></div>
 
 
+<div class="viewcode-block" id="TestCommunication.test_move_with_speed">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_with_speed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_move_with_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_with_speed</span><span class="p">())</span></div>
+
+
 <div class="viewcode-block" id="TestCommunication.test_move_global_1">
-<a class="viewcode-back" href="../../../../api/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_global_1">[docs]</a>
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.communications.html#payloadcomputerdroneprojekt.test.communications.test_SITL_mov.TestCommunication.test_move_global_1">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_move_global_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CommAsync</span><span class="o">.</span><span class="n">move_global</span><span class="p">())</span></div>
 </div>
@@ -461,7 +517,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>
