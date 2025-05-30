@@ -2,6 +2,7 @@ from payloadcomputerdroneprojekt.image_analysis.data_item import DataItem
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import json
 from os.path import exists, join
+from os import remove
 from os import makedirs
 from scipy.cluster.hierarchy import fclusterdata
 import numpy as np
@@ -151,6 +152,20 @@ class DataHandler:
         Context manager exit: saves new DataItems.
         """
         self._save()
+
+    def reset_data(self) -> None:
+        """
+        Resets the data handler by clearing the internal list and deleting the
+        data file.
+        """
+        self.list = []
+        self.saved = 0
+        try:
+            if exists(join(self._path, FILENAME)):
+                sp("Resetting data file.")
+                remove(join(self._path, FILENAME))
+        except FileNotFoundError:
+            sp("No data file to reset.")
 
 
 def sort_list(
