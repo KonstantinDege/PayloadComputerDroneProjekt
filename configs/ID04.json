@@ -1,12 +1,11 @@
-{
-    "$schema": "mission_schema.json",
-    "name": "ID13",
-    "description": "Precision land.",
+{"$schema": "mission_schema.json",
+    "name": "ID04",
+    "description": "Vibration of drone",
     "type": "list",
     "parameter": {
         "flight_height": 15
     },
-    
+
     "action": "list",
     "commands": [
         {
@@ -16,29 +15,23 @@
         }
         },
         {
-        "action": "mov",
-        "commands": {
-            "lat": 48.7661,
-            "lon": 11.4252
-        }
-        },
-        {
         "action": "start_camera",
         "commands": {
             "ips": 1
         }
         },
         {
-        "action": "land",
+        "action": "delay",
         "commands": {
-            "lat": 48.7661,
-            "lon": 11.4252,
-            "color": "orange",
-            "shape": "rectangle"
+            "time": 2
         }
         },
         {
         "action": "stop_camera",
+        "commands": {}
+        },
+        {
+        "action": "land",
         "commands": {}
         }
     ]

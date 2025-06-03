@@ -1,0 +1,29 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID14",
+    "description": "Disarm/Arm test.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 1
+    },
+
+    "action": "list",
+    "commands": [
+        {
+        "action": "takeoff",
+        "commands": {
+            "height": 1
+        }
+        },
+        {
+        "action": "delay",
+        "commands": {
+            "time": 5
+        }
+        },
+        {
+        "action": "land",
+        "commands": {}
+        }
+    ]
+}
