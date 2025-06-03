@@ -6,40 +6,39 @@
     "parameter": {
         "flight_height": 15
     },
-    
     "action": "list",
     "commands": [
         {
-        "action": "takeoff",
-        "commands": {
-            "height": 15
-        }
+            "action": "takeoff",
+            "commands": {
+                "height": 15
+            }
         },
         {
-        "action": "mov",
-        "commands": {
-            "lat": 48.7661,
-            "lon": 11.4252
-        }
+            "action": "mov",
+            "commands": {
+                "lat": 48.767958,
+                "lon": 11.336466
+            }
         },
         {
-        "action": "start_camera",
-        "commands": {
-            "ips": 1
-        }
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
         },
         {
-        "action": "land",
-        "commands": {
-            "lat": 48.7661,
-            "lon": 11.4252,
-            "color": "orange",
-            "shape": "rectangle"
-        }
+            "action": "land",
+            "commands": {
+                "lat": 48.767958,
+                "lon": 11.336466,
+                "color": "orange",
+                "shape": "rectangle"
+            }
         },
         {
-        "action": "stop_camera",
-        "commands": {}
+            "action": "stop_camera",
+            "commands": {}
         }
     ]
 }

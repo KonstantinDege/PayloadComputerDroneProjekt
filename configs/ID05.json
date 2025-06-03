@@ -6,17 +6,16 @@
     "parameter": {
         "flight_height": 1
     },
-
     "action": "list",
     "commands": [
         {
-        "action": "start_camera",
-        "commands": {
-            "ips": 1
-        }
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
         },
         {
-        "action": "forever"
+            "action": "forever"
         }
     ]
 }

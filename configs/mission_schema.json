@@ -1,120 +1,194 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "blau.mission",
-  "title": "DroneConfig",
-  "description": "Mission configuration schema for Team Blau's drone project",
-  "type": "object",
-  "properties": {
-    "parameter": {
-      "type": "object",
-      "properties": {
-        "flight_height": {
-          "type": "number",
-          "minimum": 0
-        }
-      },
-      "required": ["flight_height"]
-    },
-    "action": {
-      "type": "string",
-      "enum": [
-        "list", "mov_multiple", "start_camera", "stop_camera",
-        "takeoff", "land_at", "land", "delay", "forever",
-        "mov", "mov_to_objects_cap_pic"
-      ]
-    },
-    "commands": {
-      "type": ["array", "object"]
-    }
-  },
-  "required": ["parameter", "action"],
-  "allOf": [
-    {
-      "if": {
-        "properties": { "action": { "const": "list" } }
-      },
-      "then": {
-        "required": ["commands"],
-        "properties": {
-          "commands": {
-            "type": "array",
-            "items": { "$ref": "#/definitions/command" }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": { "action": { "const": "mov_multiple" } }
-      },
-      "then": {
-        "required": ["commands"],
-        "properties": {
-          "commands": {
-            "type": "array",
-            "items": { "$ref": "#/definitions/movement_step" }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": { "action": { "const": "land" } }
-      },
-      "then": {
-        "required": ["commands"],
-        "properties": {
-          "commands": {
-            "type": "object",
-            "required": ["lat", "lon"]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": { "action": { "const": "takeoff" } }
-      },
-      "then": {
-        "properties": {
-          "commands": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "blau.mission",
+    "title": "DroneConfig",
+    "description": "Mission configuration schema for Team Blau's drone project",
+    "type": "object",
+    "properties": {
+        "parameter": {
             "type": "object",
             "properties": {
-              "height": { "type": "number", "minimum": 0 }
-            }
-          }
-        }
-      }
-    }
-  ],
-  "definitions": {
-    "command": {
-      "type": "object",
-      "properties": {
+                "flight_height": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            },
+            "required": [
+                "flight_height"
+            ]
+        },
         "action": {
-          "type": "string",
-          "enum": [
-            "list", "mov_multiple", "start_camera", "stop_camera",
-            "takeoff", "land_at", "land", "delay", "forever",
-            "mov", "mov_to_objects_cap_pic"
-          ]
+            "type": "string",
+            "enum": [
+                "list",
+                "mov_multiple",
+                "start_camera",
+                "stop_camera",
+                "takeoff",
+                "land_at",
+                "land",
+                "delay",
+                "forever",
+                "mov",
+                "mov_to_objects_cap_pic"
+            ]
         },
         "commands": {
-          "type": ["array", "object"]
-        },
-        "src": { "type": "string" }
-      },
-      "required": ["action"]
+            "type": [
+                "array",
+                "object"
+            ]
+        }
     },
-    "movement_step": {
-      "type": "object",
-      "properties": {
-        "lat": { "type": "number" },
-        "lon": { "type": "number" },
-        "height": { "type": "number" },
-        "yaw": { "type": "number" }
-      },
-      "required": ["lat", "lon"]
+    "required": [
+        "parameter",
+        "action"
+    ],
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "action": {
+                        "const": "list"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "commands"
+                ],
+                "properties": {
+                    "commands": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/command"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "action": {
+                        "const": "mov_multiple"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "commands"
+                ],
+                "properties": {
+                    "commands": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/movement_step"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "action": {
+                        "const": "land"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "commands"
+                ],
+                "properties": {
+                    "commands": {
+                        "type": "object",
+                        "required": [
+                            "lat",
+                            "lon"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "action": {
+                        "const": "takeoff"
+                    }
+                }
+            },
+            "then": {
+                "properties": {
+                    "commands": {
+                        "type": "object",
+                        "properties": {
+                            "height": {
+                                "type": "number",
+                                "minimum": 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "definitions": {
+        "command": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "list",
+                        "mov_multiple",
+                        "start_camera",
+                        "stop_camera",
+                        "takeoff",
+                        "land_at",
+                        "land",
+                        "delay",
+                        "forever",
+                        "mov",
+                        "mov_to_objects_cap_pic"
+                    ]
+                },
+                "commands": {
+                    "type": [
+                        "array",
+                        "object"
+                    ]
+                },
+                "src": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action"
+            ]
+        },
+        "movement_step": {
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "type": "number"
+                },
+                "lon": {
+                    "type": "number"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "yaw": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "lat",
+                "lon"
+            ]
+        }
     }
-  }
 }

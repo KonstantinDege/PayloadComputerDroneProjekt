@@ -3,38 +3,36 @@
     "name": "ID09",
     "description": "Raspi takes control.",
     "type": "list",
-
     "parameter": {
         "flight_height": 5
     },
-
     "action": "list",
     "commands": [
         {
-        "action": "start_camera",
-        "commands": {
-            "ips": 1
-        }
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
         },
         {
-        "action": "takeoff",
-        "commands": {
-            "altitude": 5
-        }
+            "action": "takeoff",
+            "commands": {
+                "altitude": 5
+            }
         },
         {
-        "action": "delay",
-        "commands": {
-            "time": 2
-        }
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
         },
         {
-        "action": "stop_camera",
-        "commands": {}
+            "action": "stop_camera",
+            "commands": {}
         },
         {
-        "action": "land",
-        "commands": {}
+            "action": "land",
+            "commands": {}
         }
     ]
 }

@@ -6,24 +6,23 @@
     "parameter": {
         "flight_height": 1
     },
-
     "action": "list",
     "commands": [
         {
-        "action": "takeoff",
-        "commands": {
-            "height": 1
-        }
+            "action": "takeoff",
+            "commands": {
+                "height": 1
+            }
         },
         {
-        "action": "delay",
-        "commands": {
-            "time": 5
-        }
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
         },
         {
-        "action": "land",
-        "commands": {}
+            "action": "land",
+            "commands": {}
         }
     ]
 }

@@ -6,34 +6,33 @@
     "parameter": {
         "flight_height": 5
     },
-
     "action": "list",
     "commands": [
         {
-        "action": "takeoff",
-        "commands": {
-            "height": 5
-        }
+            "action": "takeoff",
+            "commands": {
+                "height": 5
+            }
         },
         {
-        "action": "mov",
-        "commands": {
-            "lat": 48.766,
-            "lon": 11.425
-        }
+            "action": "mov",
+            "commands": {
+                "lat": 48.767958,
+                "lon": 11.336466
+            }
         },
         {
-        "action": "delay",
-        "commands": {
-            "time": 2
-        }
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
         },
         {
-        "action": "land_at",
-        "commands": {
-            "lat": 48.766,
-            "lon": 11.425
-        }
+            "action": "land_at",
+            "commands": {
+                "lat": 48.767958,
+                "lon": 11.336466
+            }
         }
     ]
 }
