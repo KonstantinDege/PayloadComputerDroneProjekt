@@ -10,8 +10,6 @@ from payloadcomputerdroneprojekt.communications.helper import (
 from mavsdk.server_utility import StatusTextType
 from typing import Any, Optional, Dict, List
 
-StatusTextType.INFO
-
 
 class Communications:
     """
@@ -58,7 +56,7 @@ class Communications:
         await wait_for(self.drone.core.connection_state(),
                        lambda x: x.is_connected)
 
-        await self.set_data_rates()
+        # await self.set_data_rates()
         sp("-- Connection established successfully")
         return True
 
@@ -79,10 +77,10 @@ class Communications:
         This method configures the frequency at which telemetry data is
         received.
         """
-        await self.drone.telemetry.set_rate_attitude_euler(1000)
-        await self.drone.telemetry.set_rate_position_velocity_ned(1000)
-        await self.drone.telemetry.set_rate_position(1000)
-        await self.drone.telemetry.set_rate_in_air(1000)
+        await self.drone.telemetry.set_rate_attitude_euler(100)
+        await self.drone.telemetry.set_rate_position_velocity_ned(100)
+        await self.drone.telemetry.set_rate_position(100)
+        await self.drone.telemetry.set_rate_in_air(100)
 
     async def wait_for_health(self) -> None:
         """

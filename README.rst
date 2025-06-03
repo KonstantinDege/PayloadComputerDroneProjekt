@@ -85,7 +85,7 @@ Helper
     WantedBy=multi-user.target
     
     systemctl --user daemon-reload
-    systemctl --userenable start_droneos.service
+    systemctl --user enable start_droneos.service
     systemctl --user start start_droneos.service
 
     
@@ -106,4 +106,4 @@ Build docs
 
     .. code-block:: bash
 
-        sphinx-autobuild docs docs_build
+        sphinx-autobuild docs_src docs

@@ -6,12 +6,9 @@ from libcamera import Transform
 class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
-        self._camera = Picamera2()
         if not self._config:
             self._config = {"main": {"format": 'XRGB8888', "size": (640, 480)}}
         self._config["main"]["size"] = tuple(self._config["main"]["size"])
-        self._camera = Picamera2()
-        self.mode = self._camera.sensor_modes[0]
 
     def start_camera(self, config=None):
         if self.is_active:
@@ -22,6 +19,9 @@ class RaspiCamera(cam.AbstractCamera):
                 self.stop_camera()
                 self.start_camera()
             return
+
+        self._camera = Picamera2()
+        self.mode = self._camera.sensor_modes[0]
         self._camera.configure(
             self._camera.create_video_configuration(
                 main=self._config["main"],

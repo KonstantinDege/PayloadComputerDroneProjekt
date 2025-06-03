@@ -1,0 +1,37 @@
+payloadcomputerdroneprojekt.camera package
+==========================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   payloadcomputerdroneprojekt.camera.gazebo_sitl
+
+Submodules
+----------
+
+payloadcomputerdroneprojekt.camera.abstract\_class module
+---------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera.abstract_class
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+payloadcomputerdroneprojekt.camera.raspi2 module
+------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera.raspi2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera
+   :members:
+   :undoc-members:
+   :show-inheritance:

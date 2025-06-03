@@ -63,6 +63,7 @@
                         "items": {
                             "$ref": "#/definitions/command"
                         }
+
                     }
                 }
             }
@@ -154,6 +155,7 @@
                         "mov",
                         "mov_to_objects_cap_pic"
                     ]
+
                 },
                 "commands": {
                     "type": [
@@ -185,10 +187,13 @@
                     "type": "number"
                 }
             },
+
             "required": [
                 "lat",
                 "lon"
             ]
+
         }
-    }
+    },
+    "additionalProperties": false
 }

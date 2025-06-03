@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc &#8212; PCDP 0.0.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/payloadcomputerdroneprojekt/test/image_analysis/test_pixel_calc';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PCDP 0.0.2 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../doku_installation/index.html">
+    Dokumentation Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../benutzeranleitung/index.html">
+    Benutzeranleitung
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../internals/modules.html">
+    payloadcomputerdroneprojekt
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.image_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageAnalysis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">payloadcomputerdroneprojekt.test.image_analysis.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">FILE_PATH</span>
+
+
+<div class="viewcode-block" id="TestImage">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestImage</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestImage.test_local_coords_0_0">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_0_0">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_0_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># x is camera width</span>
+        <span class="c1"># but drone forward</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">325</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">230</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pos_x_positive">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pos_x_positive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pos_x_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">325</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pos_y_positive">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pos_y_positive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pos_y_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">230</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pos_x_negative">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pos_x_negative">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pos_x_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">325</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">400</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pos_y_negative">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pos_y_negative">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pos_y_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">230</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pos_x_off_pos">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pos_x_off_pos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pos_x_off_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">4608</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">2592</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">700</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_pitch_angle">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_pitch_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_pitch_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">325</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">230</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_roll_angle">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_roll_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_roll_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">325</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">230</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="mi">650</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_1">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2298</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1922</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.120</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_2">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2316</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">916</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.080</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_3">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_3">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2067</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1343</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.050</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_4">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_4">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2646</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1353</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_5">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_5">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_5</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2201</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1683</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.020</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_6">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_6">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_6</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2636</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1547</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.040</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_7">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_7">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_7</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2494</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1015</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.040</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_8">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_8">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_8</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2031</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1223</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.055</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_9">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_9">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_9</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2312</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">2563</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.240</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_10">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_10">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_10</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1371</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.460</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_11">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_11">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_11</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">2554</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.240</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.460</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_12">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_12">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_12</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2124</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1964</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.5</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.740</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.040</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_13">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_13">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_13</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2124</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1521</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.725</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.070</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.040</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_local_coords_image_14">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_local_coords_image_14">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_local_coords_image_14</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">4390</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">198</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.5</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.712</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.510</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.500</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_offset">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_offset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;camera_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2304</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1296</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestImage.test_offset_reduced_height">
+<a class="viewcode-back" href="../../../../internals/payloadcomputerdroneprojekt.test.image_analysis.html#payloadcomputerdroneprojekt.test.image_analysis.test_pixel_calc.TestImage.test_offset_reduced_height">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_offset_reduced_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">,</span> <span class="s2">&quot;test_config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">)[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rotation_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;camera_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">ia</span> <span class="o">=</span> <span class="n">ImageAnalysis</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x_center&quot;</span><span class="p">:</span> <span class="mi">2304</span><span class="p">,</span>
+            <span class="s2">&quot;y_center&quot;</span><span class="p">:</span> <span class="mi">1296</span>
+        <span class="p">}</span>
+        <span class="n">pos_com</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">ia</span><span class="o">.</span><span class="n">get_local_offset</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pos_com</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="mi">2592</span><span class="p">,</span> <span class="mi">4608</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, KonstantinDege.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
