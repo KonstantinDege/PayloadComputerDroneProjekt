@@ -383,6 +383,7 @@ class Communications:
             altitude_type=PositionGlobalYaw.AltitudeType(2)))
 
         def reach_func(state: Position) -> bool:
+            sp(state)
             return (abs(state.latitude_deg - pos[0]
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.longitude_deg - pos[1]
