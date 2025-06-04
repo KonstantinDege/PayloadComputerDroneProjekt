@@ -443,14 +443,15 @@ class MissionComputer:
             'yaw'.
         :type options: dict
         """
-        await self.status(
-            f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
         yaw: Optional[float] = options.get("yaw")
         if "height" in options.keys():
             h: float = options["height"]
         else:
             h: float = self.current_mission_plan.get(
                 "parameter", {}).get("height", 5)
+        await self.status(
+            f"Moving to {options['lat']:.6f} {options['lon']:.6f} "
+            f"{h:.2} {yaw}")
         pos: List[float] = [options['lat'], options['lon'], h]
         if not await self._comms.is_flying():
             await self._comms.start(h)
