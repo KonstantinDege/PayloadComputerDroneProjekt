@@ -1,0 +1,29 @@
+payloadcomputerdroneprojekt.camera.gazebo\_sitl package
+=======================================================
+
+Submodules
+----------
+
+payloadcomputerdroneprojekt.camera.gazebo\_sitl.gazebo\_cam module
+------------------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera.gazebo_sitl.gazebo_cam
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+payloadcomputerdroneprojekt.camera.gazebo\_sitl.gazebo\_camera\_lib module
+--------------------------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera.gazebo_sitl.gazebo_camera_lib
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: payloadcomputerdroneprojekt.camera.gazebo_sitl
+   :members:
+   :undoc-members:
+   :show-inheritance:

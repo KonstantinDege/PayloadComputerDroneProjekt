@@ -1,6 +1,7 @@
 import threading
 import json
-from payloadcomputerdroneprojekt.image_analysis.data_handler import FILENAME
+from payloadcomputerdroneprojekt.image_analysis.data_handler \
+    import FILENAME, FILENAME_FILTERED
 from payloadcomputerdroneprojekt.camera.raspi2 import RaspiCamera
 from payloadcomputerdroneprojekt import MissionComputer
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -20,7 +21,8 @@ mission = ""
 with open(config) as f:
     config = json.load(f)
 port = "serial:///dev/ttyAMA0:921600"
-computer = MissionComputer(config=config, camera=RaspiCamera, port=port)
+computer: MissionComputer = MissionComputer(
+    config=config, camera=RaspiCamera, port=port)
 computer.initiate(mission)
 DATA = computer._image._data_handler._path
 
@@ -28,6 +30,17 @@ DATA = computer._image._data_handler._path
 @app.get("/found_objects")
 async def get_found_objects():
     file_path = join(DATA, FILENAME)
+    if os.path.exists(file_path):
+        return FileResponse(
+            file_path, media_type="application/json", filename=FILENAME)
+    return HTTPException(status_code=404, detail="Data file not found")
+
+
+@app.get("/found_objects_filtered")
+async def get_filtered_objects():
+    computer._image.get_filtered_objs()
+    file_path = join(DATA, FILENAME_FILTERED)
+    print(file_path)
     if os.path.exists(file_path):
         return FileResponse(
             file_path, media_type="application/json", filename=FILENAME)
@@ -48,6 +61,22 @@ async def upload_mission(file: UploadFile = File(...)):
         f.write(await file.read())
     await computer.new_mission(mission_file_path)
     return {"detail": "Mission file uploaded successfully"}
+
+
+@app.delete("/data_reset")
+async def reset_data():
+    computer._image._data_handler.reset_data()
+    return {"detail": "Data reset successfully"}
+
+
+@app.get("/log")
+async def get_log():
+    log_file_path = "flight.log"
+    if os.path.exists(log_file_path):
+        return FileResponse(
+            log_file_path, media_type="text/plain", filename=log_file_path)
+    return HTTPException(status_code=404, detail="Log file not found")
+
 
 api_thread = threading.Thread(target=computer.start, daemon=True)
 api_thread.start()

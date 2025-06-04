@@ -5,10 +5,17 @@
     "description": "A config description of team Blau for the drone project",
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string"
+        },
         "image": {
             "description": "Parameters for image analysis",
             "type": "object",
             "properties": {
+                "path": {
+                    "type": "string",
+                    "default": "data/images"
+                },
                 "colors": {
                     "type": "array",
                     "items": {
@@ -116,20 +123,21 @@
                     "minimum": 0,
                     "default": 5,
                     "description": "The distance [m] in which a object is considered the same"
+                },
+                "length_code_side": {
+                    "type": "number",
+                    "default": 0.5
+                },
+                "length_box_short_side": {
+                    "type": "number",
+                    "default": 0.4
+                },
+                "length_box_long_side": {
+                    "type": "number",
+                    "default": 0.6
                 }
             },
-            "min_diagonal": {
-                "type": "number",
-                "minimum": 0
-            },
-            "length_code_side": {
-                "type": "number",
-                "default": 0.5
-            },
-            "length_box_short_side": {
-                "type": "number",
-                "default": 0.5
-            },
+            "additionalProperties": false,
             "required": [
                 "colors",
                 "shape_color",
@@ -169,7 +177,8 @@
                                 ]
                             ]
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 },
                 "control": {
                     "type": "object",
@@ -181,9 +190,11 @@
                                 50
                             ]
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 }
             },
+            "additionalProperties": false,
             "required": [
                 "main",
                 "control"
@@ -204,7 +215,8 @@
                     "description": "The speed the drones land with",
                     "default": 2
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "communications": {
             "type": "object",
@@ -233,7 +245,8 @@
                     "type": "number",
                     "default": 0.5
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "mission_storage": {
             "type": "string",
@@ -287,5 +300,6 @@
         "mission_computer",
         "mission_storage",
         "communications"
-    ]
+    ],
+    "additionalProperties": false
 }

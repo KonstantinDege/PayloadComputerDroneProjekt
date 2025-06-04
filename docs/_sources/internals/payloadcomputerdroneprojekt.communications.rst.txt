@@ -1,0 +1,29 @@
+payloadcomputerdroneprojekt.communications package
+==================================================
+
+Submodules
+----------
+
+payloadcomputerdroneprojekt.communications.comm\_class module
+-------------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.communications.comm_class
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+payloadcomputerdroneprojekt.communications.helper module
+--------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.communications.helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: payloadcomputerdroneprojekt.communications
+   :members:
+   :undoc-members:
+   :show-inheritance:

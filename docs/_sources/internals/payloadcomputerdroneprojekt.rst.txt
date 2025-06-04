@@ -1,0 +1,33 @@
+payloadcomputerdroneprojekt package
+===================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   payloadcomputerdroneprojekt.camera
+   payloadcomputerdroneprojekt.communications
+   payloadcomputerdroneprojekt.image_analysis
+   payloadcomputerdroneprojekt.mission_computer
+   payloadcomputerdroneprojekt.test
+
+Submodules
+----------
+
+payloadcomputerdroneprojekt.helper module
+-----------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: payloadcomputerdroneprojekt
+   :members:
+   :undoc-members:
+   :show-inheritance:
