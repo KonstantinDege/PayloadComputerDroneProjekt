@@ -377,9 +377,10 @@ class Communications:
         """
         if yaw is None:
             yaw = await self._get_yaw()
+        # TODO: check if type 2 is better
         await self.drone.offboard.set_position_global(PositionGlobalYaw(
             lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2], yaw_deg=yaw,
-            altitude_type=PositionGlobalYaw.AltitudeType(0)))
+            altitude_type=PositionGlobalYaw.AltitudeType(2)))
 
         def reach_func(state: Position) -> bool:
             return (abs(state.latitude_deg - pos[0]
@@ -387,12 +388,14 @@ class Communications:
                     abs(state.longitude_deg - pos[1]
                         ) < self.config.get("degree_error", 0.00001) and
                     abs(state.relative_altitude_m - pos[2]
-                        ) < self.config.get("pos_error", 0.2))
+                        ) < self.config.get("pos_error", 0.2)*5)
 
         await wait_for(self.drone.telemetry.position(), reach_func)
+        sp("reached pos")
         await wait_for(self.drone.telemetry.position_velocity_ned(),
                        lambda x: abs_vel(
                            get_vel_vec(x)) < self.config.get("vel_error", 0.5))
+        sp("reached point")
 
     @save_execute("Land")
     async def land(self) -> None:
