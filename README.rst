@@ -22,8 +22,10 @@ Setup
 
     .. code-block:: bash 
 
-        cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
-
+        cd && cd PX4-Autopilot/ && HEADLESS=1 PX4_HOME_LAT=48.7678933 \
+        PX4_HOME_LON=11.3365773 PX4_HOME_ALT=375 \
+        make px4_sitl gz_x500_mono_cam_down
+    
         ip addr | grep eth0
 
 3. clone this repo and install this package inside of your wsl instance
