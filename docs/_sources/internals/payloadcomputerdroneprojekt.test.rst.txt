@@ -16,5 +16,5 @@ Module contents
 
 .. automodule:: payloadcomputerdroneprojekt.test
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
