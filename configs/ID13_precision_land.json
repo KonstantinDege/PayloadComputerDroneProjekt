@@ -1,0 +1,44 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID13",
+    "description": "Precision land.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 15
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "height": 15
+            }
+        },
+        {
+            "action": "mov",
+            "commands": {
+                "lat": 48.7678325,
+                "lon": 11.3366447
+            }
+        },
+        {
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
+        },
+        {
+            "action": "land",
+            "commands": {
+                "lat": 48.7678325,
+                "lon": 11.3366447,
+                "color": "orange",
+                "shape": "rectangle"
+            }
+        },
+        {
+            "action": "stop_camera",
+            "commands": {}
+        }
+    ]
+}

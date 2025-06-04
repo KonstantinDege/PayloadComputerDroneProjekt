@@ -1,0 +1,38 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID11",
+    "description": "Start Mission with file test.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 5
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "height": 5
+            }
+        },
+        {
+            "action": "mov",
+            "commands": {
+                "lat": 48.7678325,
+                "lon": 11.3366447
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        },
+        {
+            "action": "land_at",
+            "commands": {
+                "lat": 48.7678325,
+                "lon": 11.3366447
+            }
+        }
+    ]
+}

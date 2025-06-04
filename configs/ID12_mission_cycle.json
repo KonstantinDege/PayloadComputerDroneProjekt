@@ -1,0 +1,52 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID12",
+    "description": "Mission cycle.",
+    "type": "list",
+    "parameter": {
+        "flight_height": 15
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "height": 15
+            }
+        },
+        {
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
+        },
+        {
+            "action": "mov_multiple",
+            "commands": [
+                {
+                    "lat": 48.7678325,
+                    "lon": 11.3366447
+                },
+                {
+                    "lat": 48.7678325,
+                    "lon": 11.3366447
+                },
+                {
+                    "lat": 48.7678325,
+                    "lon": 11.3366447
+                }
+            ]
+        },
+        {
+            "action": "stop_camera",
+            "commands": {}
+        },
+        {
+            "action": "land_at",
+            "commands": {
+                "lat": 48.7678325,
+                "lon": 11.3366447
+            }
+        }
+    ]
+}

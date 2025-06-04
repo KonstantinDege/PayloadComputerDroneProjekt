@@ -1,0 +1,38 @@
+{
+    "$schema": "mission_schema.json",
+    "name": "ID04",
+    "description": "Vibration of drone",
+    "type": "list",
+    "parameter": {
+        "flight_height": 15
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "height": 15
+            }
+        },
+        {
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        },
+        {
+            "action": "stop_camera",
+            "commands": {}
+        },
+        {
+            "action": "land",
+            "commands": {}
+        }
+    ]
+}

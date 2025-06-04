@@ -38,9 +38,6 @@
             }
         },
         {
-            "action": "stop_camera"
-        },
-        {
             "action": "mov_to_objects_cap_pic",
             "commands": {
                 "delay": 2

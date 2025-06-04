@@ -118,6 +118,7 @@ class MissionComputer:
             "start_camera": self.start_camera,
             "stop_camera": self.stop_camera,
             "takeoff": self.takeoff,
+            "land": self.land,
             "land_at": self.land,
             "delay": self.delay,
             "list": self.execute_list,
