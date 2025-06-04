@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
-    "mission_storage": "/media/aviator/BOOTFS1/mission_storage",
+    "mission_storage": "/media/aviator/BOOTFS2/mission_storage",
     "camera": {
         "control": {
             "ExposureTime": 50
@@ -101,15 +101,15 @@
         ]
     },
     "communications": {
-        "allowed_arm": false,
-        "allowed_disarm": false,
+        "allowed_arm": true,
+        "allowed_disarm": true,
         "allowed_mode_switch": true,
         "degree_error": 0.5,
         "pos_error": 0.75,
         "vel_error": 0.5
     },
     "mission_computer": {
-        "land_speed": 2,
+        "land_speed": 0.5,
         "recouver_time": 10
     }
 }
