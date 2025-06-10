@@ -19,6 +19,7 @@ Basic Commands
 
 .. code-block:: bash
 
-    python main.py --help
+    python start_scripts\start_raspi_px4.py -h
 
-Refer to the following sections for detailed command usage and examples.
+This will give you further instructions but basicly only the mission_file.json
+is needed.

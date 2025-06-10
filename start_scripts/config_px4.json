@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/config_schema.json",
-    "mission_storage": "/media/aviator/BOOTFS2/mission_storage",
+    "mission_storage": "/media/aviator/SAVE/mission_storage",
     "camera": {
         "control": {
             "ExposureTime": 50
