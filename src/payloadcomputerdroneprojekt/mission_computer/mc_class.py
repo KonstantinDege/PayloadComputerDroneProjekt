@@ -125,6 +125,7 @@ class MissionComputer:
             "forever": self.forever,
             "mov": self.mov,
             "mov_to_objects_cap_pic": self.mov_to_objects_cap_pic,
+            "mov_local": self.mov_local
         }
         self.none_counting_tasks: List[str] = [
             "list", "mov_multiple"
@@ -500,3 +501,27 @@ class MissionComputer:
         """
         sp(msg)
         await self._comms.send_status(msg)
+
+    async def mov_local(self, options: dict) -> None:
+        """
+        Move the drone to a specified local position (x, y, z) in meters.
+
+        :param options: Dictionary with 'x', 'y', and optional 'z' and 'yaw'.
+            x: forward (North), y: right (East), z: down (positive)
+        :type options: dict
+        """
+        await self.status(
+            f"Moving to local x={options['x']:.2f}, y={options['y']:.2f}")
+
+        yaw: Optional[float] = options.get("yaw")
+
+        # Höhe (z) setzen, Standardhöhe 0 falls nicht angegeben
+        z: float = options.get("z", 0)
+
+        pos_local: List[float] = [options['x'], options['y'], z]
+
+        if not await self._comms.is_flying():
+            await self._comms.start(-z)
+            # negativ, weil z in NED nach unten positiv ist
+
+        await self._comms.mov_to_xyz(pos_local, yaw)
