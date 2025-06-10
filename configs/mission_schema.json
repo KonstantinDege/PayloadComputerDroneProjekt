@@ -51,7 +51,8 @@
     },
     "required": [
         "parameter",
-        "commands"
+        "commands",
+        "action"
     ],
     "definitions": {
         "command": {
@@ -108,8 +109,7 @@
                                 "land_at",
                                 "delay",
                                 "forever",
-                                "mov_to_objects_cap_pic",
-                                "mov_local"
+                                "mov_to_objects_cap_pic"
                             ],
                             "description": "The type of action for the drone."
                         },
@@ -118,6 +118,43 @@
                                 {
                                     "$ref": "#/definitions/action_properties"
                                 }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "action"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "mov_local"
+                            ],
+                            "description": "The type of action for the drone."
+                        },
+                        "commands": {
+                            "type": "object",
+                            "properties": {
+                                "x": {
+                                    "type": "number"
+                                },
+                                "y": {
+                                    "type": "number"
+                                },
+                                "z": {
+                                    "type": "number"
+                                },
+                                "yaw": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "x",
+                                "y"
                             ]
                         }
                     },
