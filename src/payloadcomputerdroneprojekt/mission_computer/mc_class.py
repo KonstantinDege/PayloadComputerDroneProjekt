@@ -157,6 +157,9 @@ class MissionComputer:
                 test_rem(MISSION_PROGRESS)
                 test_rem(MISSION_PATH)
                 return
+        else:
+            test_rem(MISSION_PROGRESS)
+            test_rem(MISSION_PATH)
 
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
@@ -252,6 +255,7 @@ class MissionComputer:
         Start the mission computer's main event loop.
         """
         self.task = self._start
+        asyncio.create_task(self.save_progress())
         asyncio.run(self._task())
 
     async def _task(self) -> None:
@@ -270,7 +274,6 @@ class MissionComputer:
         await self._comms.connect()
         await self.status("Mission Computer Started")
 
-        asyncio.create_task(self.save_progress())
         await self.status(f"Starting with Progress: {self.progress}")
         if "action" in self.current_mission_plan.keys():
             self.running = True

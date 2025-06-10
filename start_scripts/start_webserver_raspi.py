@@ -23,7 +23,11 @@ with open(config) as f:
 port = "serial:///dev/ttyAMA0:921600"
 computer: MissionComputer = MissionComputer(
     config=config, camera=RaspiCamera, port=port)
-computer.initiate(mission)
+
+try:
+    computer.initiate(mission)
+except Exception as e:
+    print(f"Error initiating mission computer: {e}")
 DATA = computer._image._data_handler._path
 
 
