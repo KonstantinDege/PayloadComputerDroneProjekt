@@ -22,6 +22,7 @@ Die Datei config-schema.json dient als Schema zur Validierung von Konfigurations
 und zu ermöglichen, dass das System korrekt funktioniert. Dieses Schema ist entscheidend für die korrekte Initialisierung und Anpassung des Systems an spezifische Anforderungen und Umgebungen.
 Das Schema stellt sicher, dass alle erforderlichen Parameter vorhanden sind und die richtigen Datentypen verwendet werden. Es hilft auch, mögliche Fehler in der Konfiguration frühzeitig zu erkennen und zu beheben, bevor sie zu Problemen im Betrieb führen können.
 
+
 Die Datei config-schema.json ist im Verzeichnis `src/payload_computer/schemas/` zu finden.
 Mission-Schema
 ----------------
