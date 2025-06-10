@@ -9,21 +9,21 @@ payloadcomputerdroneprojekt.mission\_computer.helper module
 
 .. automodule:: payloadcomputerdroneprojekt.mission_computer.helper
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 payloadcomputerdroneprojekt.mission\_computer.mc\_class module
 --------------------------------------------------------------
 
 .. automodule:: payloadcomputerdroneprojekt.mission_computer.mc_class
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: payloadcomputerdroneprojekt.mission_computer
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
