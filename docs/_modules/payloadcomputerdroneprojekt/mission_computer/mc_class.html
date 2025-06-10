@@ -459,6 +459,7 @@
             <span class="s2">&quot;forever&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">forever</span><span class="p">,</span>
             <span class="s2">&quot;mov&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov</span><span class="p">,</span>
             <span class="s2">&quot;mov_to_objects_cap_pic&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_to_objects_cap_pic</span><span class="p">,</span>
+            <span class="s2">&quot;mov_local&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov_local</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">none_counting_tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;list&quot;</span><span class="p">,</span> <span class="s2">&quot;mov_multiple&quot;</span>
@@ -715,18 +716,16 @@
 <span class="sd">            color/shape.</span>
 <span class="sd">        :type objective: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objective</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objective</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">(</span>
-                <span class="s2">&quot;No landing position given, landing at current position&quot;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">mov_by_vel</span><span class="p">(</span>
-                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;land_speed&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">landed</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">is_flying</span><span class="p">():</span>
             <span class="k">return</span>
 
-        <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Landing at </span><span class="si">{</span><span class="n">objective</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">objective</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">is_flying</span><span class="p">()):</span>
-            <span class="k">return</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="n">coords_available</span> <span class="o">=</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">objective</span> <span class="ow">and</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">in</span> <span class="n">objective</span>
+
+        <span class="k">if</span> <span class="n">coords_available</span><span class="p">:</span>
+            <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Landing at </span><span class="si">{</span><span class="n">objective</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">objective</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mov</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">objective</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s2">&quot;No lat/lon given – skipping GPS movement&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;color&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objective</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">sp</span><span class="p">(</span><span class="s2">&quot;No color given&quot;</span><span class="p">)</span>
@@ -737,7 +736,8 @@
         <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suche Objekt vom Typ &#39;</span><span class="si">{</span><span class="n">objective</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
            <span class="sa">f</span><span class="s2">&quot;mit Farbe &#39;</span><span class="si">{</span><span class="n">objective</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-        <span class="n">min_alt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">min_alt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_mission_plan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;parameter&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;decision_height&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">detected_alt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
 
         <span class="c1"># Loop to adjust position until the drone is close enough to the object</span>
@@ -883,7 +883,87 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sp</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">send_status</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
-</div>
+
+
+<div class="viewcode-block" id="MissionComputer.mov_local">
+<a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.mission_computer.html#payloadcomputerdroneprojekt.MissionComputer.mov_local">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mov_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone to a specified local position (x, y, z) in meters.</span>
+
+<span class="sd">        :param options: Dictionary with &#39;x&#39;, &#39;y&#39;, and optional &#39;z&#39; and &#39;yaw&#39;.</span>
+<span class="sd">            x: forward (North), y: right (East), z: down (positive)</span>
+<span class="sd">        :type options: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;x&quot;</span> <span class="ow">in</span> <span class="n">options</span> <span class="ow">and</span> <span class="s2">&quot;y&quot;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_move_local</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;dx&quot;</span> <span class="ow">in</span> <span class="n">options</span> <span class="ow">and</span> <span class="s2">&quot;dy&quot;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_move_local_delta</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s2">&quot;No valid input fields in local move&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_move_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone to a specified local position (x, y, z) in meters.</span>
+
+<span class="sd">        :param options: Dictionary with &#39;x&#39;, &#39;y&#39;, and optional &#39;z&#39; and &#39;yaw&#39;.</span>
+<span class="sd">            x: forward (North), y: right (East), z: down (positive)</span>
+<span class="sd">        :type options: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Extract coordinates</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;z&quot;</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_mission_plan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;parameter&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">yaw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;yaw&quot;</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Moving to local x=</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, y=</span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, z=</span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">pos_local</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">is_flying</span><span class="p">():</span>
+            <span class="c1"># Use negative z for takeoff height since NED z is positive</span>
+            <span class="c1"># downward</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">mov_to_xyz</span><span class="p">(</span><span class="n">pos_local</span><span class="p">,</span> <span class="n">yaw</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_move_local_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the drone by a specified delta in local coordinates (dx, dy, dz).</span>
+
+<span class="sd">        :param options: Dictionary with &#39;dx&#39;, &#39;dy&#39;, and optional &#39;dz&#39; and</span>
+<span class="sd">            &#39;yaw&#39;.</span>
+<span class="sd">        :type options: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span>
+        <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dz&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">yaw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;yaw&quot;</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Moving local delta dx=</span><span class="si">{</span><span class="n">dx</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, dy=</span><span class="si">{</span><span class="n">dy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, dz=</span><span class="si">{</span><span class="n">dz</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">pos_local</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">is_flying</span><span class="p">():</span>
+            <span class="c1"># Use negative dz for takeoff height since NED z is positive</span>
+            <span class="c1"># downward</span>
+            <span class="n">z</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_mission_plan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;parameter&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">takeoff_height</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">dz</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">takeoff_height</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">mov_by_xyz</span><span class="p">(</span><span class="n">pos_local</span><span class="p">,</span> <span class="n">yaw</span><span class="p">)</span></div>
 
 </pre></div>
 
