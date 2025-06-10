@@ -108,7 +108,8 @@
                                 "land_at",
                                 "delay",
                                 "forever",
-                                "mov_to_objects_cap_pic"
+                                "mov_to_objects_cap_pic",
+                                "mov_local"
                             ],
                             "description": "The type of action for the drone."
                         },
