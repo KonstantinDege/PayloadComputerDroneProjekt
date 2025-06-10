@@ -359,9 +359,7 @@ class MissionComputer:
         if not await self._comms.is_flying():
             return
 
-        coords_available = (
-            "lat" in objective.keys() and "lon" in objective.keys()
-        )
+        coords_available = "lat" in objective and "lon" in objective
 
         if coords_available:
             sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
@@ -546,7 +544,7 @@ class MissionComputer:
         if not await self._comms.is_flying():
             # Use negative z for takeoff height since NED z is positive
             # downward
-            await self._comms.start(-z)
+            await self._comms.start(abs(z))
 
         await self._comms.mov_to_xyz(pos_local, yaw)
 
@@ -574,6 +572,8 @@ class MissionComputer:
             # downward
             z: float = self.current_mission_plan.get(
                 "parameter", {}).get("height", 1)
-            await self._comms.start(z-dz)
+
+            takeoff_height = abs(z - dz)
+            await self._comms.start(takeoff_height)
 
         await self._comms.mov_by_xyz(pos_local, yaw)
