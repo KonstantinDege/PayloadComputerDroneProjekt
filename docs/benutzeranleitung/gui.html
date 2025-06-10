@@ -281,9 +281,7 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="schemas.html">Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface (CLI)</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">GUI Benutzeranleitung</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
-</ul>
-</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">GUI Benutzeranleitung</a></li>
 </ul>
 </div>
 </nav></div>
@@ -352,15 +350,76 @@
 Computer Drone Projekts beschrieben. Die Anleitung erklärt die wichtigsten
 Funktionen und die Bedienung der Oberfläche.</p>
 </section>
-<section id="inhaltsverzeichnis">
-<h2>Inhaltsverzeichnis<a class="headerlink" href="#inhaltsverzeichnis" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-</div>
+<section id="benutzerhandbuch">
+<h2>Benutzerhandbuch<a class="headerlink" href="#benutzerhandbuch" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>USB-C-Anschluss von Stromverteilerplatine in Raspberry Pi einstecken, falls nicht bereits erfolgt.</p></li>
+<li><p>USB-B-Stick in Raspberry Pi einstecken.</p></li>
+<li><p>Akku anschließen.</p></li>
+<li><p>Die LED in der Mitte des Raspberry Pi muss dauerhaft grün leuchten. Das bedeutet, dass dieser mit Strom versorgt wird.</p></li>
+<li><p>Falls der Raspberry Pi keinen Strom bekommt und die LED dementsprechend rot leuchtet, kann man eine andere Stromquelle, zum Beispiel eine Powerbank, an den USB-C-Port anschließen und testen.</p></li>
+<li><p>Mit dem Netzwerk der jeweiligen Drohne verbinden oder beide Geräte in ein gemeinsames Netzwerk bringen.</p></li>
+</ul>
 </section>
-<section id="uberblick">
-<h2>Überblick<a class="headerlink" href="#uberblick" title="Link to this heading">#</a></h2>
-<p>Hier folgt eine Übersicht der GUI und ihrer Hauptfunktionen.</p>
+<section id="id1">
+<h2>GUI<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="admin-panel-schnellstartanleitung">
+<h3>Admin Panel – Schnellstartanleitung<a class="headerlink" href="#admin-panel-schnellstartanleitung" title="Link to this heading">#</a></h3>
+<section id="mit-dem-raspberry-pi-verbinden">
+<h4>Mit dem Raspberry Pi verbinden<a class="headerlink" href="#mit-dem-raspberry-pi-verbinden" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Geben Sie die Raspi-IP ein (z.B. <code class="docutils literal notranslate"><span class="pre">ltraspi02.local:4269</span></code>).</p></li>
+<li><p>Klicken Sie auf den <strong>CONNECT RASPI</strong>-Button.</p></li>
+</ul>
+</section>
+<section id="datensatz-hochladen">
+<h4>Datensatz hochladen<a class="headerlink" href="#datensatz-hochladen" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Ziehen Sie Ihre Datensatzdatei in das Feld <strong>Upload datasets</strong>.</p></li>
+<li><p>Warten Sie, bis der Upload-Fortschritt 100 % erreicht.</p></li>
+</ul>
+</section>
+<section id="missionsdatei-anzeigen-bearbeiten">
+<h4>Missionsdatei anzeigen/bearbeiten<a class="headerlink" href="#missionsdatei-anzeigen-bearbeiten" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Der Inhalt der Missionsdatei wird im Textfeld angezeigt.</p></li>
+<li><dl class="simple">
+<dt>Sie enthält JSON-formatierte Befehle, z.B.:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;start_camera&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;delay&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;takeoff&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;land_at&quot;</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="missionsdatei-auswahlen">
+<h4>Missionsdatei auswählen<a class="headerlink" href="#missionsdatei-auswahlen" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Wählen Sie eine Missionsdatei zum Senden aus (z.B. <code class="docutils literal notranslate"><span class="pre">test_mission.json</span></code>).</p></li>
+</ul>
+</section>
+<section id="mission-senden">
+<h4>Mission senden<a class="headerlink" href="#mission-senden" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Klicken Sie auf den <strong>SEND MISSION</strong>-Button, um die ausgewählte Missionsdatei an den Raspberry Pi zu senden.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="backup">
+<h2>Backup<a class="headerlink" href="#backup" title="Link to this heading">#</a></h2>
+<section id="backup-uber-webinterface">
+<h3>Backup über Webinterface<a class="headerlink" href="#backup-uber-webinterface" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Mit einem Internetbrowser <code class="docutils literal notranslate"><span class="pre">&lt;ip&gt;:4269/docs</span></code> (z.B.
+<code class="docutils literal notranslate"><span class="pre">ltraspi02.local:4269/docs</span></code>) öffnen. <code class="docutils literal notranslate"><span class="pre">&lt;ip&gt;</span></code> steht für die IP-Adresse.</p></li>
+<li><p>Mission File hochladen und ausführen.</p></li>
+</ul>
 <p>Weitere Abschnitte können hier ergänzt werden.</p>
+</section>
 </section>
 </section>
 
@@ -412,8 +471,22 @@ Funktionen und die Bedienung der Oberfläche.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#einleitung">Einleitung</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inhaltsverzeichnis">Inhaltsverzeichnis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#uberblick">Überblick</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benutzerhandbuch">Benutzerhandbuch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">GUI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#admin-panel-schnellstartanleitung">Admin Panel – Schnellstartanleitung</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mit-dem-raspberry-pi-verbinden">Mit dem Raspberry Pi verbinden</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datensatz-hochladen">Datensatz hochladen</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#missionsdatei-anzeigen-bearbeiten">Missionsdatei anzeigen/bearbeiten</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#missionsdatei-auswahlen">Missionsdatei auswählen</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mission-senden">Mission senden</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backup">Backup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backup-uber-webinterface">Backup über Webinterface</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -460,7 +533,7 @@ Funktionen und die Bedienung der Oberfläche.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
