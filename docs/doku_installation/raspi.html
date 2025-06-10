@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Raspberry Pi Installation Guide &#8212; PCDP 0.1.1 documentation</title>
+    <title>Raspberry Pi Installation Guide &#8212; PCDP 0.1.2 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../_static/documentation_options.js?v=92734c54"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'doku_installation/raspi';</script>
@@ -48,7 +48,7 @@
     <link rel="prev" title="SITL Installation Guide" href="sitl.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.1" />
+  <meta name="docsearch:version" content="0.1.2" />
   </head>
   
   
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">PCDP 0.1.1 documentation</p>
+    <p class="title logo__title">PCDP 0.1.2 documentation</p>
   
 </a></div>
     
@@ -347,6 +347,47 @@
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>Follow the sections below to prepare your Raspberry Pi for use in the project.</p>
+<p>Connect the Raspi as discribed in the PX4 dokumentation and make sure you use
+the same bit rate as used in your start file.</p>
+<p>Install the Picamera2 package.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-picamera2
+</pre></div>
+</div>
+<p>Clone and install the repo into a virtual environment on the Raspi. Make sure
+<code class="docutils literal notranslate"><span class="pre">include-system-site-packages</span></code> is set to true, else it will not be able to
+access the raspicam package.</p>
+<p>Configure the config file as needed by your system and requierements.</p>
+</section>
+<section id="autostart">
+<h2>Autostart<a class="headerlink" href="#autostart" title="Link to this heading">#</a></h2>
+<p>Only do this when you want the script to start on every boot.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/systemd/user
+code<span class="w"> </span>~/.config/systemd/user/start_droneos.service
+</pre></div>
+</div>
+<p>Then add this to the file, make sure that you replace <code class="docutils literal notranslate"><span class="pre">/home/aviator/</span></code> to the
+absolute path to your install directory of the package.</p>
+<div class="highlight-service notranslate"><div class="highlight"><pre><span></span>[Unit]
+Description=Start Drone Computer
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/bash /home/aviator/PayloadComputerDroneProjekt/start_raspi_script.sh
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--user<span class="w"> </span>daemon-reload
+systemctl<span class="w"> </span>--user<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>start_droneos.service
+systemctl<span class="w"> </span>--user<span class="w"> </span>start<span class="w"> </span>start_droneos.service
+</pre></div>
+</div>
+<p>To check on it run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--user<span class="w"> </span>status<span class="w"> </span>start_droneos.service
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -398,6 +439,7 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#autostart">Autostart</a></li>
 </ul>
   </nav></div>
 

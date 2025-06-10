@@ -125,6 +125,7 @@ class MissionComputer:
             "forever": self.forever,
             "mov": self.mov,
             "mov_to_objects_cap_pic": self.mov_to_objects_cap_pic,
+            "mov_local": self.mov_local
         }
         self.none_counting_tasks: List[str] = [
             "list", "mov_multiple"
@@ -156,6 +157,9 @@ class MissionComputer:
                 test_rem(MISSION_PROGRESS)
                 test_rem(MISSION_PATH)
                 return
+        else:
+            test_rem(MISSION_PROGRESS)
+            test_rem(MISSION_PATH)
 
         mission: Optional[dict] = None
         if os.path.exists(missionfile):
@@ -251,6 +255,7 @@ class MissionComputer:
         Start the mission computer's main event loop.
         """
         self.task = self._start
+        asyncio.create_task(self.save_progress())
         asyncio.run(self._task())
 
     async def _task(self) -> None:
@@ -269,7 +274,6 @@ class MissionComputer:
         await self._comms.connect()
         await self.status("Mission Computer Started")
 
-        asyncio.create_task(self.save_progress())
         await self.status(f"Starting with Progress: {self.progress}")
         if "action" in self.current_mission_plan.keys():
             self.running = True
@@ -355,18 +359,16 @@ class MissionComputer:
             color/shape.
         :type objective: dict
         """
-        if "lat" not in objective.keys() or "lon" not in objective.keys():
-            await self.status(
-                "No landing position given, landing at current position")
-            await self._comms.mov_by_vel(
-                [0, 0, self.config.get("land_speed", 2)])
-            await self._comms.landed()
+        if not await self._comms.is_flying():
             return
 
-        sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
-        if not (await self._comms.is_flying()):
-            return
-        await self.mov(options=objective)
+        coords_available = "lat" in objective and "lon" in objective
+
+        if coords_available:
+            sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
+            await self.mov(options=objective)
+        else:
+            await self.status("No lat/lon given – skipping GPS movement")
 
         if "color" not in objective.keys():
             sp("No color given")
@@ -377,7 +379,8 @@ class MissionComputer:
         sp(f"Suche Objekt vom Typ '{objective.get('shape', None)}' "
            f"mit Farbe '{objective['color']}'")
 
-        min_alt: float = 1
+        min_alt: float = self.current_mission_plan.get(
+            "parameter", {}).get("decision_height", 1)
         detected_alt: float = await self._comms.get_relative_height()
 
         # Loop to adjust position until the drone is close enough to the object
@@ -443,14 +446,16 @@ class MissionComputer:
             'yaw'.
         :type options: dict
         """
-        await self.status(
-            f"Moving to {options['lat']:.6f} {options['lon']:.6f}")
         yaw: Optional[float] = options.get("yaw")
         if "height" in options.keys():
             h: float = options["height"]
         else:
             h: float = self.current_mission_plan.get(
-                "parameter", {}).get("height", 5)
+                "parameter", {}).get("flight_height", 5)
+        await self.status(
+            f"Moving to {options['lat']:.6f} {options['lon']:.6f} "
+            f"{h:.2} {yaw}")
+
         pos: List[float] = [options['lat'], options['lon'], h]
         if not await self._comms.is_flying():
             await self._comms.start(h)
@@ -500,3 +505,80 @@ class MissionComputer:
         """
         sp(msg)
         await self._comms.send_status(msg)
+
+    async def mov_local(self, options: dict) -> None:
+        """
+        Move the drone to a specified local position (x, y, z) in meters.
+
+        :param options: Dictionary with 'x', 'y', and optional 'z' and 'yaw'.
+            x: forward (North), y: right (East), z: down (positive)
+        :type options: dict
+        """
+        if "x" in options and "y" in options:
+            await self._move_local(options)
+        elif "dx" in options and "dy" in options:
+            await self._move_local_delta(options)
+        else:
+            await self.status("No valid input fields in local move")
+
+    async def _move_local(self, options: dict) -> None:
+        """
+        Move the drone to a specified local position (x, y, z) in meters.
+
+        :param options: Dictionary with 'x', 'y', and optional 'z' and 'yaw'.
+            x: forward (North), y: right (East), z: down (positive)
+        :type options: dict
+        """
+
+        # Extract coordinates
+        x, y = options['x'], options['y']
+
+        if "z" in options.keys():
+            z: float = options["z"]
+        else:
+            z: float = -1 * self.current_mission_plan.get(
+                "parameter", {}).get("height", 1)
+
+        yaw: Optional[float] = options.get("yaw")
+
+        await self.status(
+            f"Moving to local x={x:.2f}, y={y:.2f}, z={z:.2f}")
+
+        pos_local: List[float] = [x, y, z]
+
+        if not await self._comms.is_flying():
+            # Use negative z for takeoff height since NED z is positive
+            # downward
+            await self._comms.start(abs(z))
+
+        await self._comms.mov_to_xyz(pos_local, yaw)
+
+    async def _move_local_delta(self, options: dict) -> None:
+        """
+        Move the drone by a specified delta in local coordinates (dx, dy, dz).
+
+        :param options: Dictionary with 'dx', 'dy', and optional 'dz' and
+            'yaw'.
+        :type options: dict
+        """
+
+        dx, dy = options['dx'], options['dy']
+        dz: float = options.get("dz", 0)
+
+        yaw: Optional[float] = options.get("yaw")
+
+        await self.status(
+            f"Moving local delta dx={dx:.2f}, dy={dy:.2f}, dz={dz:.2f}")
+
+        pos_local: List[float] = [dx, dy, dz]
+
+        if not await self._comms.is_flying():
+            # Use negative dz for takeoff height since NED z is positive
+            # downward
+            z: float = self.current_mission_plan.get(
+                "parameter", {}).get("height", 1)
+
+            takeoff_height = abs(z - dz)
+            await self._comms.start(takeoff_height)
+
+        await self._comms.mov_by_xyz(pos_local, yaw)

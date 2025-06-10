@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>payloadcomputerdroneprojekt.mission_computer package &#8212; PCDP 0.1.1 documentation</title>
+    <title>payloadcomputerdroneprojekt.mission_computer package &#8212; PCDP 0.1.2 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../_static/documentation_options.js?v=92734c54"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'internals/payloadcomputerdroneprojekt.mission_computer';</script>
@@ -48,7 +48,7 @@
     <link rel="prev" title="payloadcomputerdroneprojekt.image_analysis package" href="payloadcomputerdroneprojekt.image_analysis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.1" />
+  <meta name="docsearch:version" content="0.1.2" />
   </head>
   
   
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">PCDP 0.1.1 documentation</p>
+    <p class="title logo__title">PCDP 0.1.2 documentation</p>
   
 </a></div>
     
@@ -565,6 +565,18 @@ color/shape.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_local">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_local" title="Link to this definition">#</a></dt>
+<dd><p>Move the drone to a specified local position (x, y, z) in meters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with ‘x’, ‘y’, and optional ‘z’ and ‘yaw’.
+x: forward (North), y: right (East), z: down (positive)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_multiple">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mov_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.mov_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_multiple" title="Link to this definition">#</a></dt>
 <dd><p>Move to multiple locations sequentially.</p>
@@ -737,6 +749,7 @@ second).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.initiate"><code class="docutils literal notranslate"><span class="pre">MissionComputer.initiate()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.land"><code class="docutils literal notranslate"><span class="pre">MissionComputer.land()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_local"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_local()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_multiple"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_multiple()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_to_objects_cap_pic"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_to_objects_cap_pic()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.new_mission"><code class="docutils literal notranslate"><span class="pre">MissionComputer.new_mission()</span></code></a></li>
