@@ -356,14 +356,16 @@ class MissionComputer:
             color/shape.
         :type objective: dict
         """
+        if not await self._comms.is_flying():
+            return
+
         coords_available = (
             "lat" in objective.keys() and "lon" in objective.keys()
         )
 
         if coords_available:
             sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
-            if await self._comms.is_flying():
-                await self.mov(options=objective)
+            await self.mov(options=objective)
         else:
             await self.status("No lat/lon given – skipping GPS movement")
 
@@ -376,7 +378,8 @@ class MissionComputer:
         sp(f"Suche Objekt vom Typ '{objective.get('shape', None)}' "
            f"mit Farbe '{objective['color']}'")
 
-        min_alt: float = 1
+        min_alt: float = self.current_mission_plan.get(
+            "parameter", {}).get("decision_height", 1)
         detected_alt: float = await self._comms.get_relative_height()
 
         # Loop to adjust position until the drone is close enough to the object
@@ -508,18 +511,69 @@ class MissionComputer:
             x: forward (North), y: right (East), z: down (positive)
         :type options: dict
         """
-        await self.status(
-            f"Moving to local x={options['x']:.2f}, y={options['y']:.2f}")
+        if "x" in options and "y" in options:
+            await self._move_local(options)
+        elif "dx" in options and "dy" in options:
+            await self._move_local_delta(options)
+        else:
+            await self.status("No valid input fields in local move")
+
+    async def _move_local(self, options: dict) -> None:
+        """
+        Move the drone to a specified local position (x, y, z) in meters.
+
+        :param options: Dictionary with 'x', 'y', and optional 'z' and 'yaw'.
+            x: forward (North), y: right (East), z: down (positive)
+        :type options: dict
+        """
+
+        # Extract coordinates
+        x, y = options['x'], options['y']
+
+        if "z" in options.keys():
+            z: float = options["z"]
+        else:
+            z: float = -1 * self.current_mission_plan.get(
+                "parameter", {}).get("height", 1)
 
         yaw: Optional[float] = options.get("yaw")
 
-        # Höhe (z) setzen, Standardhöhe 0 falls nicht angegeben
-        z: float = options.get("z", 0)
+        await self.status(
+            f"Moving to local x={x:.2f}, y={y:.2f}, z={z:.2f}")
 
-        pos_local: List[float] = [options['x'], options['y'], z]
+        pos_local: List[float] = [x, y, z]
 
         if not await self._comms.is_flying():
+            # Use negative z for takeoff height since NED z is positive
+            # downward
             await self._comms.start(-z)
-            # negativ, weil z in NED nach unten positiv ist
 
         await self._comms.mov_to_xyz(pos_local, yaw)
+
+    async def _move_local_delta(self, options: dict) -> None:
+        """
+        Move the drone by a specified delta in local coordinates (dx, dy, dz).
+
+        :param options: Dictionary with 'dx', 'dy', and optional 'dz' and
+            'yaw'.
+        :type options: dict
+        """
+
+        dx, dy = options['dx'], options['dy']
+        dz: float = options.get("dz", 0)
+
+        yaw: Optional[float] = options.get("yaw")
+
+        await self.status(
+            f"Moving local delta dx={dx:.2f}, dy={dy:.2f}, dz={dz:.2f}")
+
+        pos_local: List[float] = [dx, dy, dz]
+
+        if not await self._comms.is_flying():
+            # Use negative dz for takeoff height since NED z is positive
+            # downward
+            z: float = self.current_mission_plan.get(
+                "parameter", {}).get("height", 1)
+            await self._comms.start(z-dz)
+
+        await self._comms.mov_by_xyz(pos_local, yaw)

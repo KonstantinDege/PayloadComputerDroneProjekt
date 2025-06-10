@@ -17,6 +17,17 @@
                         10,
                         15
                     ]
+                },
+                "decision_height": {
+                    "type": "number",
+                    "description": "The height at which the drone makes decisions during the mission.",
+                    "minimum": 0,
+                    "examples": [
+                        2,
+                        5,
+                        10
+                    ],
+                    "default": 1
                 }
             },
             "required": [
@@ -150,11 +161,37 @@
                                 },
                                 "yaw": {
                                     "type": "number"
+                                },
+                                "dx": {
+                                    "type": "number",
+                                    "description": "Change in x coordinate."
+                                },
+                                "dy": {
+                                    "type": "number",
+                                    "description": "Change in y coordinate."
+                                },
+                                "dz": {
+                                    "type": "number",
+                                    "description": "Change in z coordinate."
+                                },
+                                "dyaw": {
+                                    "type": "number",
+                                    "description": "Change in yaw."
                                 }
                             },
-                            "required": [
-                                "x",
-                                "y"
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "x",
+                                        "y"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "dx",
+                                        "dy"
+                                    ]
+                                }
                             ]
                         }
                     },
