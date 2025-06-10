@@ -17,21 +17,21 @@ payloadcomputerdroneprojekt.camera.abstract\_class module
 
 .. automodule:: payloadcomputerdroneprojekt.camera.abstract_class
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 payloadcomputerdroneprojekt.camera.raspi2 module
 ------------------------------------------------
 
 .. automodule:: payloadcomputerdroneprojekt.camera.raspi2
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: payloadcomputerdroneprojekt.camera
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

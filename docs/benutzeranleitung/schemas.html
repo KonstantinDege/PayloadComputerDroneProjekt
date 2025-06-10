@@ -354,6 +354,24 @@ Systems ausgetauscht werden.</p>
 <h2>Einleitung<a class="headerlink" href="#einleitung" title="Link to this heading">#</a></h2>
 <p>Hier finden Sie eine Übersicht und Beschreibung der relevanten Schema, die im Projekt verwendet werden. Details zu jedem Schema finden Sie in den jeweiligen Unterabschnitten.</p>
 </section>
+<section id="config-schema">
+<h2>Config-Schema<a class="headerlink" href="#config-schema" title="Link to this heading">#</a></h2>
+<p>Das Config-Schema definiert die Struktur der Konfigurationsdateien, die für die Initialisierung und Anpassung des Systems verwendet werden. Es legt fest, welche Parameter erforderlich sind und welche optional sein können.
+Die Datei config-schema.json dient als Schema zur Validierung von Konfigurationsdateien in JSON-Format. Sie definiert die zulässigen Schlüssel, Datentypen und mögliche Werte, um eine konsistente und fehlerfreie Konfiguration sicherzustellen
+und zu ermöglichen, dass das System korrekt funktioniert. Dieses Schema ist entscheidend für die korrekte Initialisierung und Anpassung des Systems an spezifische Anforderungen und Umgebungen.
+Das Schema stellt sicher, dass alle erforderlichen Parameter vorhanden sind und die richtigen Datentypen verwendet werden. Es hilft auch, mögliche Fehler in der Konfiguration frühzeitig zu erkennen und zu beheben, bevor sie zu Problemen im Betrieb führen können.</p>
+<p>Die Datei config-schema.json ist im Verzeichnis <cite>src/payload_computer/schemas/</cite> zu finden.
+Mission-Schema
+—————-
+Dieses Dokument beschreibt die Missionskonfiguration für Team Blau’s Drohnenprojekt anhand des JSON-Schemas. Das Schema ermöglicht eine strukturierte Definition von Parametern, Aktionen und Befehlen für die Drohne.
+Das JSON-Schema besteht aus mehreren Hauptelementen:
+- Parameter: Definiert die Flugbedingungen (z. B. Flughöhe).
+- Aktionen: Gibt den Typ der Mission an (z. B. “list” oder “mov_multiple”).
+- Befehle: Enthält spezifische Bewegungs- und Steuerungskommandos
+- Bewegungsbefehle: Definiert die Bewegungsrichtung und Geschwindigkeit der Drohne.
+- Steuerbefehle: Enthält Befehle zur Steuerung der Drohne, wie Start, Stopp und Notlandung.
+Die Datei mission-schema.json ist im Verzeichnis <cite>src/payload_computer/schemas/</cite> zu finden.</p>
+</section>
 </section>
 
 
@@ -404,6 +422,7 @@ Systems ausgetauscht werden.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#einleitung">Einleitung</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-schema">Config-Schema</a></li>
 </ul>
   </nav></div>
 
@@ -450,7 +469,7 @@ Systems ausgetauscht werden.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

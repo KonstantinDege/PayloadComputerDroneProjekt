@@ -21,13 +21,13 @@ payloadcomputerdroneprojekt.helper module
 
 .. automodule:: payloadcomputerdroneprojekt.helper
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: payloadcomputerdroneprojekt
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
