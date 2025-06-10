@@ -437,11 +437,9 @@ class MissionComputer:
 
     async def mov(self, options: dict) -> None:
         """
-        Move the drone to a specified latitude, longitude, and height.
-
-        :param options: Dictionary with 'lat', 'lon', and optional 'height' and
-            'yaw'.
-        :type options: dict
+        Moves the drone to the specified latitude, longitude, and height, with an optional yaw.
+        
+        If height is not provided in options, uses the mission plan's default flight height or 5 meters.
         """
         yaw: Optional[float] = options.get("yaw")
         if "height" in options.keys():

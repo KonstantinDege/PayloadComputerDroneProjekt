@@ -493,17 +493,17 @@ class ImageAnalysis:
         yaw_zero: bool = True
     ) -> Tuple[Optional[List[float]], Optional[float], Optional[float]]:
         """
-        Get the offset from the drone to the closest object of a given color
-        and shape.
-
-        :param color: Color name to detect.
-        :type color: str
-        :param shape: Shape name to detect.
-        :type shape: str
-        :param yaw_zero: If True, set yaw to zero for calculation.
-        :type yaw_zero: bool
-        :return: Tuple (offset [x, y], height, yaw offset).
-        :rtype: tuple or (None, None, None) if not found
+        Asynchronously computes the offset from the drone to the closest detected object of the specified color and shape.
+        
+        If the camera is not active, it is started before capturing data. Captures the current image and drone position, then returns the local offset vector to the closest matching object, along with the estimated height and yaw offset. Returns (None, None, None) if no matching object is found.
+        
+        Args:
+            color: The color of the object to detect.
+            shape: The shape of the object to detect.
+            yaw_zero: If True, sets yaw to zero for the calculation.
+        
+        Returns:
+            A tuple containing the local offset [x, y], estimated height, and yaw offset, or (None, None, None) if no matching object is found.
         """
         if not self._camera.is_active:
             self._camera.start_camera()

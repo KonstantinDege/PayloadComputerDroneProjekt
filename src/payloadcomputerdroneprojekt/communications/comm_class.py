@@ -365,16 +365,14 @@ class Communications:
     async def mov_to_lat_lon_alt(self, pos: List[float],
                                  yaw: Optional[float] = None) -> None:
         """
-        Move the drone to a specific latitude, longitude, and altitude.
-
-        :param pos: [latitude_deg, longitude_deg, relative_altitude_m].
-        :type pos: list[float]
-        :param yaw: Target yaw in degrees. If None, uses current yaw.
-        :type yaw: float, optional
-
-        This method sends a global position command and waits until the drone
-        reaches the target.
-        """
+                                 Moves the drone to a specified global position (latitude, longitude, relative altitude) with optional yaw.
+                                 
+                                 Args:
+                                     pos: Target position as [latitude_deg, longitude_deg, relative_altitude_m].
+                                     yaw: Target yaw in degrees. If None, the current yaw is used.
+                                 
+                                 The method sends a global position command and waits until the drone reaches the target position within configured tolerances for latitude, longitude, and altitude, then waits until the drone's velocity falls below the configured threshold.
+                                 """
         if yaw is None:
             yaw = await self._get_yaw()
         # TODO: check if type 2 is better
@@ -383,6 +381,12 @@ class Communications:
             altitude_type=PositionGlobalYaw.AltitudeType(2)))
 
         def reach_func(state: Position) -> bool:
+            """
+            Checks if the drone's current global position is within configured tolerances of the target.
+            
+            Returns:
+                True if the latitude, longitude, and relative altitude are within the specified error thresholds of the target position; otherwise, False.
+            """
             sp(state)
             return (abs(state.latitude_deg - pos[0]
                         ) < self.config.get("degree_error", 0.00001) and
@@ -401,9 +405,9 @@ class Communications:
     @save_execute("Land")
     async def land(self) -> None:
         """
-        Land the drone using the standard land mode.
-
-        This method triggers the drone's landing procedure.
+        Commands the drone to land using the standard land mode.
+        
+        Initiates the drone's landing procedure via the MAVSDK action interface.
         """
         await self.drone.action.land()
 
