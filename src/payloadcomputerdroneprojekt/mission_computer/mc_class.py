@@ -356,18 +356,16 @@ class MissionComputer:
             color/shape.
         :type objective: dict
         """
-        if "lat" not in objective.keys() or "lon" not in objective.keys():
-            await self.status(
-                "No landing position given, landing at current position")
-            await self._comms.mov_by_vel(
-                [0, 0, self.config.get("land_speed", 2)])
-            await self._comms.landed()
-            return
+        coords_available = (
+            "lat" in objective.keys() and "lon" in objective.keys()
+        )
 
-        sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
-        if not (await self._comms.is_flying()):
-            return
-        await self.mov(options=objective)
+        if coords_available:
+            sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
+            if await self._comms.is_flying():
+                await self.mov(options=objective)
+        else:
+            await self.status("No lat/lon given – skipping GPS movement")
 
         if "color" not in objective.keys():
             sp("No color given")
