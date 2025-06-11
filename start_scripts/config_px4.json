@@ -3,13 +3,13 @@
     "mission_storage": "/media/aviator/SAVE/mission_storage",
     "camera": {
         "control": {
-            "ExposureTime": 50
+            "ExposureTime": 1500
         },
         "main": {
-            "format": "XRGB8888",
+            "format": "RGB888",
             "size": [
-                1280,
-                960
+                1920,
+                1080
             ]
         }
     },

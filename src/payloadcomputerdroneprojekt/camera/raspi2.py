@@ -7,7 +7,9 @@ class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
         if not self._config:
-            self._config = {"main": {"format": 'XRGB8888', "size": (640, 480)}}
+            self._config = {
+                "main": {"format": 'RGB888', "size": (1920, 1080)}}
+            # old default 640x480
         self._config["main"]["size"] = tuple(self._config["main"]["size"])
 
     def start_camera(self, config=None):
@@ -30,7 +32,8 @@ class RaspiCamera(cam.AbstractCamera):
                 transform=Transform(hflip=1, vflip=1))
         )
         self._camera.set_controls(
-            self._config.get("control", {"ExposureTime": 50}))
+            # old default 50
+            self._config.get("control", {"ExposureTime": 1500}))
 
         self._camera.start()
         self.is_active = True
