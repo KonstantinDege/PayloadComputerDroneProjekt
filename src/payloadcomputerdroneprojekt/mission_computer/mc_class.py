@@ -255,10 +255,10 @@ class MissionComputer:
         Start the mission computer's main event loop.
         """
         self.task = self._start
-        asyncio.create_task(self.save_progress())
         asyncio.run(self._task())
 
     async def _task(self) -> None:
+        asyncio.create_task(self.save_progress())
         while True:
             if self.task is not None:
                 if self._old_task is not None:

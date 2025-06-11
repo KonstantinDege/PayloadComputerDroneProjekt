@@ -47,6 +47,11 @@ class RaspiCamera(cam.AbstractCamera):
 
 
 if __name__ == "__main__":
-    cam = RaspiCamera(None)
+    import json
+    with open("start_scripts/config_px4.json", "r") as f:
+        j = json.load(f)["camera"]
+    cam = RaspiCamera(j)
     cam.start_camera()
-    cam.get_current_frame()
+    import cv2
+    i = cam.get_current_frame()
+    cv2.imwrite("test.jpg", i)
