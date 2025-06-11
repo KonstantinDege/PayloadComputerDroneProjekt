@@ -490,6 +490,7 @@ class ImageAnalysis:
         self,
         color: str,
         shape: str,
+        yaw_zero: bool = True,
         indoor: bool = False
     ) -> Tuple[Optional[List[float]], Optional[float], Optional[float]]:
         """
