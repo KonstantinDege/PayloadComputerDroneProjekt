@@ -3,7 +3,9 @@
     "mission_storage": "/media/aviator/SAVE/mission_storage",
     "camera": {
         "control": {
-            "ExposureTime": 1500
+            "ExposureTime": 1500,
+            "AeEnable": false,
+            "AnalogueGain": 1.0
         },
         "main": {
             "format": "RGB888",
