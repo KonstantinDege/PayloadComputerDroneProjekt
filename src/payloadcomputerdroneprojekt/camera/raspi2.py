@@ -22,13 +22,12 @@ class RaspiCamera(cam.AbstractCamera):
                 self.start_camera()
             return
 
-        self._camera = Picamera2()
+        tuning = Picamera2.load_tuning_file("imx708.json")
+        self._camera = Picamera2(tuning=tuning)
         self.mode = self._camera.sensor_modes[0]
         self._camera.configure(
-            self._camera.create_video_configuration(
+            self._camera.create_preview_configuration(
                 main=self._config["main"],
-                sensor={'output_size': self.mode['size'],
-                        'bit_depth': self.mode['bit_depth']},
                 transform=Transform(hflip=1, vflip=1))
         )
         self._camera.set_controls(
