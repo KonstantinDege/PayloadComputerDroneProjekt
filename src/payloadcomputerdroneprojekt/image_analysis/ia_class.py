@@ -509,9 +509,13 @@ class ImageAnalysis:
             self._camera.start_camera()
             await asyncio.sleep(2)
         with self._data_handler as item:
+            sp("starting 123")
             position = await self._comms.get_position_xyz()
+            sp("pos 123")
             relative_height = await self._comms.get_relative_height()
+            sp("rel height 123")
             image = self._camera.get_current_frame()
+            sp("frame 123")
             item.add_image_position(position)
             item.add_raw_image(image)
             item.add_height(relative_height)

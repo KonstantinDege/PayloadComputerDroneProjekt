@@ -565,7 +565,7 @@ class MissionComputer:
         dx, dy = options['dx'], options['dy']
         dz: float = options.get("dz", 0)
 
-        yaw: Optional[float] = options.get("yaw")
+        yaw: Optional[float] = options.get("yaw", 0)
 
         await self.status(
             f"Moving local delta dx={dx:.2f}, dy={dy:.2f}, dz={dz:.2f}")
