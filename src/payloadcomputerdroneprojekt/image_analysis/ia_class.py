@@ -600,7 +600,7 @@ class ImageAnalysis:
             left = norm(np.array(bottom_left_pos) - np.array(top_left_pos))
             top = norm(np.array(top_right_pos) - np.array(top_left_pos))
 
-            height = height*(code_side_length*(1/left + 1/top) / 2)
+            height = height*(code_side_length/(left + top) / 2)
 
         top_left_pos = self._get_local_offset(
             top_left[:2], rotation, height, image_shape)
