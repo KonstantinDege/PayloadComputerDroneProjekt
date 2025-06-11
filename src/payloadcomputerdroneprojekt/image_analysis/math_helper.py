@@ -124,15 +124,21 @@ def find_relative_position(points: list):
         None.
     :rtype: tuple or None
     """
+    outs = []
     for top_left, bottom_left, top_right in permutations(points, 3):
         vec1 = np.array(bottom_left) - np.array(top_left)
         vec2 = np.array(top_right) - np.array(top_left)
 
         # Check if vectors are orthogonal
-        if np.isclose(np.dot(vec1, vec2), 0, atol=0.01):
-            # Check orientation using cross product
-            if np.cross(vec1, vec2)[2] > 0:
+        if np.cross(vec1, vec2)[2] > 0:
+            outs.append((np.dot(vec1, vec2), top_left, bottom_left, top_right))
+            if np.isclose(np.dot(vec1, vec2), 0, atol=0.05):
+                # Check orientation using cross product
                 return top_left, bottom_left, top_right
+
+    closest = sorted(outs, key=lambda x: x[0])[0]
+
+    return closest[1], closest[2], closest[3]
 
 
 def compute_rotation_angle(top_left, bottom_left):
