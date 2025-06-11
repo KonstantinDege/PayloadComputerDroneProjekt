@@ -9,7 +9,7 @@ def main(config, mission):
     mission = os.path.abspath(mission)
     with open(config) as f:
         config = json.load(f)
-    port = "serial:///dev/ttyAMA0:921600"
+    port = "serial:///dev/ttyAMA0:115200"
     computer = MissionComputer(config=config, camera=RaspiCamera, port=port)
     computer.initiate(mission)
     computer.start()
