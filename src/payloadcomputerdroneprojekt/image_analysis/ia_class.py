@@ -505,6 +505,7 @@ class ImageAnalysis:
         :return: Tuple (offset [x, y], height, yaw offset).
         :rtype: tuple or (None, None, None) if not found
         """
+        sp(self._camera.is_active)
         if not self._camera.is_active:
             self._camera.start_camera()
             await asyncio.sleep(2)
