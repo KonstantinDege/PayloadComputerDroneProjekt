@@ -214,6 +214,13 @@
                     "minimum": 0.1,
                     "description": "The speed the drones land with",
                     "default": 2
+                },
+                "cruise_speed": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 1,
+                    "description": "The speed the drones cruise with",
+                    "default": 0.5
                 }
             },
             "additionalProperties": false
