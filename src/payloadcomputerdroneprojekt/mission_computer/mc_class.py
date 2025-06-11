@@ -384,11 +384,15 @@ class MissionComputer:
         detected_alt: float = await self._comms.get_relative_height()
 
         # Loop to adjust position until the drone is close enough to the object
+        sp(detected_alt)
+        sp(min_alt)
+        sp(detected_alt > min_alt)
         while detected_alt > min_alt:
             offset, detected_alt, yaw = \
                 await self._image.get_current_offset_closest(
                     objective["color"], objective.get('shape', None))
 
+            sp(offset)
             if offset is None:
                 await self.status("Objekt nicht gefunden.")
                 break
