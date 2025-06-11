@@ -7,7 +7,9 @@ class RaspiCamera(cam.AbstractCamera):
     def __init__(self, config):
         super().__init__(config)
         if not self._config:
-            self._config = {"main": {"format": 'XRGB8888', "size": (640, 480)}}
+            self._config = {
+                "main": {"format": 'RGB888', "size": (1920, 1080)}}
+            # old default 640x480
         self._config["main"]["size"] = tuple(self._config["main"]["size"])
 
     def start_camera(self, config=None):
@@ -20,17 +22,17 @@ class RaspiCamera(cam.AbstractCamera):
                 self.start_camera()
             return
 
-        self._camera = Picamera2()
+        tuning = Picamera2.load_tuning_file("imx708.json")
+        self._camera = Picamera2(tuning=tuning)
         self.mode = self._camera.sensor_modes[0]
         self._camera.configure(
-            self._camera.create_video_configuration(
+            self._camera.create_preview_configuration(
                 main=self._config["main"],
-                sensor={'output_size': self.mode['size'],
-                        'bit_depth': self.mode['bit_depth']},
                 transform=Transform(hflip=1, vflip=1))
         )
         self._camera.set_controls(
-            self._config.get("control", {"ExposureTime": 50}))
+            # old default 50
+            self._config.get("control", {"ExposureTime": 1500}))
 
         self._camera.start()
         self.is_active = True
@@ -45,6 +47,11 @@ class RaspiCamera(cam.AbstractCamera):
 
 
 if __name__ == "__main__":
-    cam = RaspiCamera(None)
+    import json
+    with open("start_scripts/config_px4.json", "r") as f:
+        j = json.load(f)["camera"]
+    cam = RaspiCamera(j)
     cam.start_camera()
-    cam.get_current_frame()
+    import cv2
+    i = cam.get_current_frame()
+    cv2.imwrite("test.jpg", i)

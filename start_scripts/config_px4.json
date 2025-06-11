@@ -3,13 +3,15 @@
     "mission_storage": "/media/aviator/SAVE/mission_storage",
     "camera": {
         "control": {
-            "ExposureTime": 50
+            "ExposureTime": 1500,
+            "AeEnable": false,
+            "AnalogueGain": 1.0
         },
         "main": {
-            "format": "XRGB8888",
+            "format": "RGB888",
             "size": [
-                1280,
-                960
+                1920,
+                1080
             ]
         }
     },
@@ -17,19 +19,19 @@
         "path": "data/images",
         "length_box_short_side": 0.4,
         "length_box_long_side": 0.6,
-        "length_code_side": 0.5,
+        "length_code_side": 0.245,
         "colors": [
             {
                 "name": "orange",
                 "lower": [
                     20,
-                    30,
-                    40
+                    -5,
+                    20
                 ],
                 "upper": [
-                    80,
-                    60,
-                    70
+                    100,
+                    30,
+                    80
                 ]
             },
             {
@@ -110,6 +112,7 @@
     },
     "mission_computer": {
         "land_speed": 0.5,
-        "recouver_time": 10
+        "recouver_time": 10,
+        "decision_height": 0.3
     }
 }
