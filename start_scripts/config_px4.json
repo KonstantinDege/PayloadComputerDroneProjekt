@@ -113,6 +113,6 @@
     "mission_computer": {
         "land_speed": 0.5,
         "recouver_time": 10,
-        "decision_height": 0.3
+        "indoor": true
     }
 }
