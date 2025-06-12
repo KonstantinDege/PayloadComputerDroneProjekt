@@ -362,18 +362,26 @@ class MissionComputer:
         if not await self._comms.is_flying():
             return
 
-        coords_available = "lat" in objective and "lon" in objective
-
-        if coords_available:
+        if "lat" in objective and "lon" in objective:
             sp(f"Landing at {objective['lat']:.6f} {objective['lon']:.6f}")
             await self.mov(options=objective)
         else:
             await self.status("No lat/lon given – skipping GPS movement")
 
+        try:
+            await self.smart_land(objective)
+        except Exception as e:
+            sp(f"Error during smart land: {e}")
+            await self.status("Smart land failed, landing at current position")
+
+        await self.status("Landeposition erreicht. Drohne landet.")
+        await self._comms.mov_by_vel(
+            [0, 0, self.config.get("land_speed", 2)])
+        await self._comms.landed()
+
+    async def smart_land(self, objective: dict) -> None:
         if "color" not in objective.keys():
             sp("No color given")
-            await self._comms.mov_by_vel(
-                [0, 0, self.config.get("land_speed", 2)])
             return
 
         sp(f"Suche Objekt vom Typ '{objective.get('shape', None)}' "
@@ -381,34 +389,50 @@ class MissionComputer:
 
         min_alt: float = self.current_mission_plan.get(
             "parameter", {}).get("decision_height", 1)
-        detected_alt: float = await self._comms.get_relative_height()
 
-        # Loop to adjust position until the drone is close enough to the object
+        if self.config.get("indoor", False):
+            # For indoor flights, use the drone's z position
+            detected_alt: float = -1*(await self._comms.get_position_xyz())[2]
+        else:
+            detected_alt: float = await self._comms.get_relative_height()
+
+        # Clamp negative readings to zero to prevent downward‐only velocity
+        if detected_alt <= 0:
+            sp(f"Warning: detected_alt below 0 ({detected_alt:.2f}),"
+               " clamping to 0")
+            detected_alt = 0.001
+
         sp(detected_alt)
         sp(min_alt)
         sp(detected_alt > min_alt)
+
+        tries = 3
+
+        # Loop to adjust position until the drone is close enough to the object
         while detected_alt > min_alt:
             offset, detected_alt, yaw = \
                 await self._image.get_current_offset_closest(
-                    objective["color"], objective.get('shape', None))
+                    objective["color"], objective.get('shape', None),
+                    indoor=self.config.get("indoor", False))
 
-            sp(offset)
             if offset is None:
                 await self.status("Objekt nicht gefunden.")
-                break
+                tries -= 1
+                if tries <= 0:
+                    sp("Max tries reached, aborting landing")
+                    return
+                continue
+
+            sp(f"Offset: {offset}, Detected Altitude: {detected_alt}, "
+               f"Yaw: {yaw}")
 
             vel_ver: float = 1 / diag(offset[0], offset[1])
             if vel_ver/2 > detected_alt:
                 vel_ver = detected_alt / 2
+
+            sp(f"Vertical Velocity: {vel_ver:.2f}")
             await self._comms.mov_by_vel(
                 [offset[0]/10, offset[1]/10, vel_ver], yaw)
-
-            await asyncio.sleep(0.1)
-
-        await self.status("Landeposition erreicht. Drohne landet.")
-        await self._comms.mov_by_vel(
-            [0, 0, self.config.get("land_speed", 2)])
-        await self._comms.landed()
 
     async def delay(self, options: dict) -> None:
         """
