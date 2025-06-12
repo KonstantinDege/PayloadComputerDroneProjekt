@@ -124,4 +124,6 @@ def diag(x: float, y: float) -> float:
     :return: Euclidean distance.
     :rtype: float
     """
-    return (x**2 + y**2)
+    if d := (x**2 + y**2) == 0:
+        return 0.001
+    return d

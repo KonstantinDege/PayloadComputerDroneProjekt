@@ -396,6 +396,12 @@ class MissionComputer:
         else:
             detected_alt: float = await self._comms.get_relative_height()
 
+        # Clamp negative readings to zero to prevent downward‐only velocity
+        if detected_alt <= 0:
+            sp(f"Warning: detected_alt below 0 ({detected_alt:.2f}),"
+               " clamping to 0")
+            detected_alt = 0.001
+
         sp(detected_alt)
         sp(min_alt)
         sp(detected_alt > min_alt)

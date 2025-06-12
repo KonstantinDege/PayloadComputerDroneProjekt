@@ -517,6 +517,12 @@ class ImageAnalysis:
                 relative_height = -1 * position[2]
             else:
                 relative_height = await self._comms.get_relative_height()
+
+            if relative_height <= 0:
+                sp(f"Warning: detected_alt below 0 ({relative_height:.2f}),"
+                   " clamping to 0")
+                relative_height = 0.001
+
             image = self._camera.get_current_frame()
             item.add_image_position(position)
             item.add_raw_image(image)
