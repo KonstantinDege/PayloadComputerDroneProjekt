@@ -79,6 +79,7 @@
         "indoor": true
     },
     "mission_computer": {
-        "land_speed": 0.5
+        "land_speed": 0.5,
+        "indoor": true
     }
 }

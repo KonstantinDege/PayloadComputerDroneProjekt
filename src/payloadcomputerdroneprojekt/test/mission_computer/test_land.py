@@ -17,7 +17,7 @@ class image(ImageAnalysis):
         super().__init__(config, camera, comms)
 
     async def get_current_offset_closest(self, color, shape, 
-                                         yaw_0=True, indoor=True):
+                                         yaw_0=True, indoor=False):
         cur_pos = await self._comms.get_position_xyz()
         yaw_cur = cur_pos[5]
         cur_pos = np.array(cur_pos[:3])
@@ -41,14 +41,14 @@ async def mission():
         }
     }
     await computer._comms.connect()
-    for _ in range(3):
-        await computer.takeoff({"height": 2})
-        print("takeoff done")
-        await computer._comms.mov_by_xyz([4, 5.5, 0])
-        print("moved")
-        await asyncio.sleep(2)
-        await computer.land({"shape": "", "color": ""})
-        await asyncio.sleep(5)
+    
+    await computer.takeoff({"height": 2})
+    print("takeoff done")
+    await computer._comms.mov_by_xyz([4, 5.5, 0])
+    print("moved")
+    await asyncio.sleep(2)
+    await computer.land({"shape": "", "color": ""})
+    await asyncio.sleep(5)
 
 
 class TestLand(unittest.TestCase):

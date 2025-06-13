@@ -395,7 +395,6 @@ class MissionComputer:
             detected_alt: float = -1*(await self._comms.get_position_xyz())[2]
         else:
             detected_alt: float = await self._comms.get_relative_height()
-            sp("indoor")
 
         # Clamp negative readings to zero to prevent downward‐only velocity
         if detected_alt <= 0:
