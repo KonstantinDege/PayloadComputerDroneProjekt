@@ -423,6 +423,8 @@ class MissionComputer:
                     return
                 continue
 
+            tries = 3
+
             sp(f"Offset: {offset}, Detected Altitude: {detected_alt}, "
                f"Yaw: {yaw}")
 
