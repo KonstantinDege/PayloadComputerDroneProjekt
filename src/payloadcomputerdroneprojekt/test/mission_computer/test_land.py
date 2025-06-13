@@ -22,7 +22,8 @@ class image(ImageAnalysis):
         cur_pos = np.array(cur_pos[:3])
         pos = (rotation_matrix_yaw(yaw_cur) @
                cur_pos)[0] * (1+(random()-0.5)/25)
-        return [-pos[0], -pos[1]], -pos[2], 0
+        yaw_target = 90
+        return [-pos[0], -pos[1]], -pos[2], yaw_target - yaw_cur
 
 
 async def mission():
