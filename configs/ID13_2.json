@@ -4,6 +4,7 @@
         "flight_height": 2,
         "decision_height": 1
     },
+    "action": "list",
     "commands": [
         {
             "action": "takeoff",
@@ -27,7 +28,7 @@
             }
         },
         {
-            "action": "land"
+            "action": "land_at"
         }
     ]
 }
