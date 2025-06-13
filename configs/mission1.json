@@ -1,13 +1,14 @@
 {
     "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
     "parameter": {
-        "flight_height": 15
+        "flight_height": 10
     },
+    "action": "list",
     "commands": [
         {
             "action": "takeoff",
             "commands": {
-                "altitude": 15
+                "altitude": 10
             }
         },
         {
@@ -20,22 +21,26 @@
             "action": "mov_multiple",
             "commands": [
                 {
-                    "lat": 0,
-                    "lon": 0,
-                    "yaw": 0
+                    "lat": 48.767600,
+                    "lon": 11.337287,
+                    "yaw": 300
                 },
                 {
-                    "lat": 4,
-                    "lon": 4,
-                    "yaw": 0
+                    "lat": 48.767927,
+                    "lon": 11.336635,
+                    "yaw": 210
+                },
+                {
+                    "lat": 48.767879,
+                    "lon": 11.336581,
+                    "yaw": 120
+                },
+                {
+                    "lat": 48.767552,
+                    "lon": 11.337228,
+                    "yaw": 30
                 }
             ]
-        },
-        {
-            "action": "delay",
-            "commands": {
-                "time": 5
-            }
         },
         {
             "action": "stop_camera"
@@ -43,7 +48,15 @@
         {
             "action": "mov_to_objects_cap_pic",
             "commands": {
+                "altitude": 5,
                 "delay": 2
+            }
+        },
+        {
+            "action": "land_at",
+            "commands": {
+                "lat": 48.7678933,
+                "lon": 11.3365773
             }
         }
     ]
