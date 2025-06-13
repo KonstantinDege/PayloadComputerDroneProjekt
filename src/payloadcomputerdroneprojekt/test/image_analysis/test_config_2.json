@@ -75,6 +75,10 @@
             ]
         },
         "min_diagonal": 50,
-        "threashold": -1
+        "threashold": -1,
+        "indoor": true
+    },
+    "mission_computer": {
+        "land_speed": 0.5
     }
 }

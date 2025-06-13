@@ -395,6 +395,7 @@ class MissionComputer:
             detected_alt: float = -1*(await self._comms.get_position_xyz())[2]
         else:
             detected_alt: float = await self._comms.get_relative_height()
+            sp("indoor")
 
         # Clamp negative readings to zero to prevent downward‐only velocity
         if detected_alt <= 0:
@@ -407,7 +408,7 @@ class MissionComputer:
         sp(detected_alt > min_alt)
 
         tries = 3
-
+        old_d = 0.0
         # Loop to adjust position until the drone is close enough to the object
         while detected_alt > min_alt:
             offset, detected_alt, yaw = \
@@ -426,13 +427,17 @@ class MissionComputer:
             sp(f"Offset: {offset}, Detected Altitude: {detected_alt}, "
                f"Yaw: {yaw}")
 
-            vel_ver: float = 1 / diag(offset[0], offset[1])
+            d = diag(offset[0], offset[1])
+            vel_ver: float = 0.002 / d
             if vel_ver/2 > detected_alt:
                 vel_ver = detected_alt / 2
-
+            if abs(d-old_d) > 0.1:
+                vel_ver = 0
             sp(f"Vertical Velocity: {vel_ver:.2f}")
             await self._comms.mov_by_vel(
-                [offset[0]/10, offset[1]/10, vel_ver], yaw)
+                [offset[0]/5, offset[1]/5, vel_ver], yaw)
+
+            old_d = d
 
     async def delay(self, options: dict) -> None:
         """

@@ -16,13 +16,14 @@ class image(ImageAnalysis):
     def __init__(self, config, camera, comms):
         super().__init__(config, camera, comms)
 
-    async def get_current_offset_closest(self, color, shape, yaw_0=True):
+    async def get_current_offset_closest(self, color, shape, 
+                                         yaw_0=True, indoor=True):
         cur_pos = await self._comms.get_position_xyz()
         yaw_cur = cur_pos[5]
         cur_pos = np.array(cur_pos[:3])
-        pos = (rotation_matrix_yaw(yaw_cur) @
+        pos = (rotation_matrix_yaw(-yaw_cur) @
                cur_pos)[0] * (1+(random()-0.5)/25)
-        yaw_target = 90
+        yaw_target = -90
         return [-pos[0], -pos[1]], -pos[2], yaw_target - yaw_cur
 
 
@@ -34,16 +35,19 @@ async def mission():
     config.setdefault("communications", {})["allowed_arm"] = True
     computer = MissionComputer(
         config=config, camera=GazeboCamera, port=port, image_analysis=image)
+    computer.current_mission_plan = {
+        "parameter": {
+            "decision_height": 0.2
+        }
+    }
     await computer._comms.connect()
     for _ in range(3):
-        await computer.takeoff({"height": 10})
+        await computer.takeoff({"height": 2})
         print("takeoff done")
-        await computer._comms.mov_by_xyz([8, 2, 0])
-        print("move done")
-        pos = await computer._comms.get_position_lat_lon_alt()
-        print(f"current position: {pos}")
-        await computer.land({"lat": pos[0], "lon": pos[1],
-                            "shape": "", "color": ""})
+        await computer._comms.mov_by_xyz([4, 5.5, 0])
+        print("moved")
+        await asyncio.sleep(2)
+        await computer.land({"shape": "", "color": ""})
         await asyncio.sleep(5)
 
 
