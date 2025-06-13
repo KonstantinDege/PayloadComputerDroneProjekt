@@ -1,0 +1,24 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
+    "parameter": {
+        "flight_height": 2,
+        "decision_height": 1
+    },
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "altitude": 2
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
+        },
+        {
+            "action": "land"
+        }
+    ]
+}
