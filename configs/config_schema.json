@@ -135,6 +135,11 @@
                 "length_box_long_side": {
                     "type": "number",
                     "default": 0.6
+                },
+                "strong_bounding_check": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true, the bounding box of the object is checked to be a square."
                 }
             },
             "additionalProperties": false,
@@ -177,8 +182,7 @@
                                 ]
                             ]
                         }
-                    },
-                    "additionalProperties": false
+                    }
                 },
                 "control": {
                     "type": "object",
@@ -190,8 +194,7 @@
                                 50
                             ]
                         }
-                    },
-                    "additionalProperties": false
+                    }
                 }
             },
             "additionalProperties": false,
@@ -214,6 +217,11 @@
                     "minimum": 0.1,
                     "description": "The speed the drones land with",
                     "default": 2
+                },
+                "indoor": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, the mission computer assumes the drone is flying indoors"
                 }
             },
             "additionalProperties": false

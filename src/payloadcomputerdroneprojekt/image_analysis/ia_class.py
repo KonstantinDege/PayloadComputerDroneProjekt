@@ -291,6 +291,11 @@ class ImageAnalysis:
                 continue
             x_center = x + (w // 2)
             y_center = y + (h // 2)
+
+            if self.config.get("strong_bounding_check", False):
+                if len(approx) != 4:
+                    continue
+
             objects.append({
                 "color": filtered_image["color"],
                 "bound_box": {
