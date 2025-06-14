@@ -13,6 +13,7 @@ def main(path, config):
 
     config["image"]["path"] = tempfile.mkdtemp(prefix="precalc_", dir=path)
     ia = ImageAnalysis(config=config["image"], camera=None, comms=None)
+    ia.config["save_shape_image"] = True
 
     with open(join(path, "__data__.json")) as f:
         content = f.read()
@@ -29,6 +30,7 @@ def main(path, config):
             image=cv2.imread(os.path.join(path, item["raw_path"])),
             position_data=item["image_pos"], height=item["height"]
         )
+    ia.get_filtered_objs()
 
 
 def args():

@@ -7,6 +7,7 @@ from os import makedirs
 from scipy.cluster.hierarchy import fclusterdata
 import numpy as np
 from typing import Any, Dict, List, Optional, TypeVar
+from collections import Counter
 
 FILENAME = "__data__.json"
 FILENAME_FILTERED = "__data_filtered__.json"
@@ -118,11 +119,9 @@ class DataHandler:
         object_store: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
         for items in self.get_items():
             for obj in items["found_objs"]:
-                color_dict = object_store.setdefault(obj["color"], {})
-                if obj.get("shape", False):
-                    color_dict.setdefault(obj["shape"], []).append(obj)
-                else:
-                    color_dict.setdefault("all", []).append(obj)
+                object_store.setdefault(
+                    obj["color"], []).append(obj)
+
                 obj["time"] = items["time"]
         return object_store
 
@@ -183,31 +182,23 @@ def sort_list(
     :return: Nested dictionary of clustered objects.
     :rtype: dict
     """
-    sorted_list: Dict[str, Dict[str, Dict[int, List[Dict[str, Any]]]]] = {}
-    for color, shapes in object_store.items():
+    sorted_list: Dict[str, Dict[int, List[Dict[str, Any]]]] = {}
+    for color, objs in object_store.items():
         sorted_list[color] = {}
-        all_objs: List[Dict[str, Any]] = []
-        if "all" in shapes.keys():
-            all_objs = shapes["all"].copy()
+        coords_array = np.array([np.array(o["lat_lon"])
+                                for o in objs])
 
-        for shape, objs in shapes.items():
-            if shape == "all":
-                continue
-            sorted_list[color][shape] = {}
-            combined_objs: List[Dict[str, Any]] = all_objs.copy() + objs
-            coords_array = np.array([np.array(o["lat_lon"])
-                                    for o in combined_objs])
+        # If only one object, assign it to its own cluster
+        if len(coords_array) == 1:
+            sorted_list[color][0] = objs
+            continue
 
-            # If only one object, assign it to its own cluster
-            if len(coords_array) == 1:
-                sorted_list[color][shape][0] = [combined_objs[0]]
-                continue
-
-            # Cluster objects by spatial proximity
-            labels = fclusterdata(coords_array, t=distance_threshold)
-            for i, obj in enumerate(combined_objs):
-                sorted_list[color][shape].setdefault(
-                    int(labels[i]), []).append(obj)
+        # Cluster objects by spatial proximity
+        labels = fclusterdata(
+            coords_array, criterion="distance", t=distance_threshold/110000)
+        for i, obj in enumerate(objs):
+            sorted_list[color].setdefault(
+                int(labels[i]), []).append(obj)
 
     return sorted_list
 
@@ -223,27 +214,38 @@ def get_mean(
     :return: Nested dictionary with mean positions and associated times/IDs.
     :rtype: dict
     """
-    output: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
-    for color, shapes in sorted_list.items():
-        output[color] = {}
-        for shape, clusters in shapes.items():
-            output[color][shape] = []
-            for _, cluster_objs in clusters.items():
-                n: int = len(cluster_objs)
-                lat: float = 0.0
-                lon: float = 0.0
-                times: List[Any] = []
-                ids: List[Any] = []
-                for item in cluster_objs:
-                    lat += item["lat_lon"][0]
-                    lon += item["lat_lon"][1]
-                    times.append(item["time"])
-                    ids.append(item["id"])
+    output: Dict[str, List[Dict[str, Any]]] = {}
+    for color, clusters in sorted_list.items():
+        output[color] = []
+        for _, cluster_objs in clusters.items():
+            n: int = len(cluster_objs)
+            lat: float = 0.0
+            lon: float = 0.0
+            times: List[Any] = []
+            ids: List[Any] = []
+            shapes: List[str] = []
+            for item in cluster_objs:
+                lat += item["lat_lon"][0]
+                lon += item["lat_lon"][1]
+                times.append(item["time"])
+                ids.append(item["id"])
 
-                output[color][shape].append({
-                    "lat": lat/n,
-                    "lon": lon/n,
-                    "time": times,
-                    "id": ids,
-                })
+                if item["shape"]:
+                    shapes.append(item["shape"])
+
+            if n == 0:
+                continue
+
+            if len(shapes) == 0:
+                most_common_shape = "unknown"
+            else:
+                most_common_shape = Counter(shapes).most_common(1)[0][0]
+
+            output[color].append({
+                "lat": lat/n,
+                "lon": lon/n,
+                "time": times,
+                "id": ids,
+                "shape": most_common_shape
+            })
     return output

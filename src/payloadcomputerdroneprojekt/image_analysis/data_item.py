@@ -42,9 +42,20 @@ class DataItem:
         :param image: Raw image as a numpy array.
         :type image: np.ndarray
         """
-        raw_path: str = join(self._path, f"{self._time}_raw_image.jpg")
-        cv2.imwrite(raw_path, image)
-        self._data["raw_path"] = f"{self._time}_raw_image.jpg"
+        self.add_image(image, "raw_image")
+
+    def add_image(self, image, name: str) -> None:
+        """
+        Save and register an image with a specific name.
+
+        :param image: Image as a numpy array.
+        :type image: np.ndarray
+        :param name: Name for the saved image.
+        :type name: str
+        """
+        image_path: str = join(self._path, f"{self._time}_{name}.jpg")
+        cv2.imwrite(image_path, image)
+        self._data[name] = f"{self._time}_{name}.jpg"
 
     def add_computed_image(self, image: np.ndarray) -> None:
         """
@@ -53,10 +64,7 @@ class DataItem:
         :param image: Computed image as a numpy array.
         :type image: np.ndarray
         """
-        computed_path: str = join(
-            self._path, f"{self._time}_computed_image.jpg")
-        cv2.imwrite(computed_path, image)
-        self._data["computed_path"] = f"{self._time}_computed_image.jpg"
+        self.add_image(image, "computed_image")
 
     def add_objects(self, objects: List[Dict[str, Any]]) -> None:
         """

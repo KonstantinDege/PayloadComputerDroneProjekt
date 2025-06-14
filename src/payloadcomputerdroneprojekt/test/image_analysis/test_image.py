@@ -8,6 +8,7 @@ import json
 from payloadcomputerdroneprojekt.test.image_analysis.helper \
     import TestCommunications, TestCamera, FILE_PATH
 import asyncio
+from payloadcomputerdroneprojekt.image_analysis.data_item import DataItem
 
 
 class TestImage(unittest.TestCase):
@@ -88,7 +89,8 @@ class TestImage(unittest.TestCase):
         image = cv2.imread(os.path.join(
             FILE_PATH, "test_data", "artifical_1.jpg"))
 
-        obj, _ = ia.compute_image(image)
+        item = DataItem(path)
+        obj, _ = ia.compute_image(image, item)
 
         assert len(obj) == 3
 

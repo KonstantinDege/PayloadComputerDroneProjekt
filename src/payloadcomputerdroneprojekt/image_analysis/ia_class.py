@@ -218,7 +218,7 @@ class ImageAnalysis:
                 return
             if position_data[0] == 0:
                 return
-            objects, shape_image = self.compute_image(image)
+            objects, shape_image = self.compute_image(image, item)
             item.add_objects(objects)
 
             loc_to_global: Callable[[float, float], Any] = mh.local_to_global(
@@ -239,9 +239,11 @@ class ImageAnalysis:
                               (bounding_box["x_stop"],
                                bounding_box["y_stop"]), (0, 255, 0), 2)
 
-            item.add_computed_image(image)
+            if self.config.get("save_shape_image", False):
+                item.add_computed_image(image)
+                item.add_image(shape_image, "shape")
 
-    def compute_image(self, image: np.ndarray
+    def compute_image(self, image: np.ndarray, item: Optional[DataItem] = None
                       ) -> Tuple[List[dict], np.ndarray]:
         """
         Filter image for defined colors and detect objects.
@@ -255,6 +257,9 @@ class ImageAnalysis:
         filtered_images, shape_image = self.filter_colors(image)
         for filtered_image in filtered_images:
             self.detect_obj(objects, filtered_image)
+            if item is not None and self.config.get("save_shape_image", False):
+                item.add_image(filtered_image["filtered_image"],
+                               filtered_image["color"])
         return objects, shape_image
 
     def detect_obj(
@@ -328,6 +333,9 @@ class ImageAnalysis:
 
         contours, _ = cv2.findContours(
             thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # cv2.imshow("img", gray)
+        # cv2.waitKey(1)
+        # input("Press Enter to continue...")
 
         for contour in contours:
             approx = cv2.approxPolyDP(
