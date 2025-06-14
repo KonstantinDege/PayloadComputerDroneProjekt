@@ -379,6 +379,7 @@ class ImageAnalysis:
             gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         possible_elements: List[Dict[str, Any]] = []
+        rectangles: List[Dict[str, Any]] = []
         for contour in contours:
             epsilon = self.config.get("approx_poly_epsilon", 0.04
                                       ) * cv2.arcLength(contour, True)
@@ -398,12 +399,14 @@ class ImageAnalysis:
             if len(approx) == 3:
                 possible_elements.append(
                     {"size": area, "shape": "Dreieck"})
-            elif len(approx) == 4:
-                possible_elements.append(
-                    {"size": area, "shape": "Rechteck"})
             elif len(approx) > 4:
                 possible_elements.append(
                     {"size": area, "shape": "Kreis"})
+            elif len(approx) == 4:
+                rectangles.append({"size": area, "shape": "Rechteck"})
+
+        if len(possible_elements) == 0:
+            possible_elements = rectangles
 
         if len(possible_elements) == 0:
             return False

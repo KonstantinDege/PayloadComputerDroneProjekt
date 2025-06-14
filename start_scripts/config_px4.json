@@ -95,15 +95,15 @@
         ],
         "distance_objs": 5,
         "min_diagonal_code_element": 100,
-        "min_diagonal_shape": 400,
+        "min_diagonal_shape": 450,
         "rotation_offset": [
             0,
             0,
             0
         ],
-        "bounding_box_shrink_percentage": 0.2,
+        "bounding_box_shrink_percentage": 0.20,
         "strong_bounding_check": false,
-        "approx_poly_epsilon": 0.04,
+        "approx_poly_epsilon": 0.05,
         "min_shape_area": 500
     },
     "communications": {
