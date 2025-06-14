@@ -218,14 +218,14 @@ class ImageAnalysis:
                 return
             if position_data[0] == 0:
                 return
-            objects, shape_image = self.compute_image(image, item)
+            objects, shape_image = self.compute_image(image, item, height)
             item.add_objects(objects)
 
             loc_to_global: Callable[[float, float], Any] = mh.local_to_global(
                 position_data[0], position_data[1])
 
             for obj in objects:
-                obj["shape"] = self.get_shape(obj, shape_image)
+                obj["shape"] = self.get_shape(obj, shape_image, height)
                 self.add_lat_lon(
                     obj, position_data[3:6], height, shape_image.shape[:2],
                     loc_to_global)
@@ -243,8 +243,8 @@ class ImageAnalysis:
                 item.add_computed_image(image)
                 item.add_image(shape_image, "shape")
 
-    def compute_image(self, image: np.ndarray, item: Optional[DataItem] = None
-                      ) -> Tuple[List[dict], np.ndarray]:
+    def compute_image(self, image: np.ndarray, item: Optional[DataItem] = None,
+                      height: float = 1) -> Tuple[List[dict], np.ndarray]:
         """
         Filter image for defined colors and detect objects.
 
@@ -256,7 +256,7 @@ class ImageAnalysis:
         objects: List[dict] = []
         filtered_images, shape_image = self.filter_colors(image)
         for filtered_image in filtered_images:
-            self.detect_obj(objects, filtered_image)
+            self.detect_obj(objects, filtered_image, height=height)
             if item is not None and self.config.get("save_shape_image", False):
                 item.add_image(filtered_image["filtered_image"],
                                filtered_image["color"])
@@ -265,7 +265,8 @@ class ImageAnalysis:
     def detect_obj(
         self,
         objects: List[dict],
-        filtered_image: Dict[str, Any]
+        filtered_image: Dict[str, Any],
+        height: float = 1
     ) -> None:
         """
         Detect objects in a filtered image and append to objects list.
@@ -274,20 +275,24 @@ class ImageAnalysis:
         :type objects: list[dict]
         :param filtered_image: Dictionary with color and filtered image.
         :type filtered_image: dict
+        :param height: Minimum height for object detection.
+        :type height: float
         :return: None
         """
+        if height <= 0:
+            height = 0.01
+
         gray: np.ndarray = filtered_image["filtered_image"]
-        blurred: np.ndarray = cv2.GaussianBlur(gray, (5, 5), 0)
-        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
 
         contours, _ = cv2.findContours(
-            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+            gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for contour in contours:
-            approx = cv2.approxPolyDP(
-                contour, 0.04 * cv2.arcLength(contour, True), True)
+            epsilon = self.config.get("approx_poly_epsilon", 0.04
+                                      ) * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
             x, y, w, h = cv2.boundingRect(approx)
-            if (w**2 + h**2) < self.config.get("min_diagonal", 10)**2:
+            if (w**2 + h**2) < (self.config.get("min_diagonal", 10) / height
+                                )**2:
                 continue
             x_center = x + (w // 2)
             y_center = y + (h // 2)
@@ -295,7 +300,9 @@ class ImageAnalysis:
             if self.config.get("strong_bounding_check", False):
                 if len(approx) != 4:
                     continue
-
+            else:
+                if len(approx) > 16:
+                    continue
             objects.append({
                 "color": filtered_image["color"],
                 "bound_box": {
@@ -312,10 +319,39 @@ class ImageAnalysis:
                                            for coord in pt[0]]
                                           for pt in approx]
 
+    def _get_shrunk_subframe(self, bounding_box: dict,
+                             image: np.ndarray) -> np.ndarray:
+        """
+        Get a subframe of the image, shrunk by a configurable percentage.
+        :param bounding_box: Bounding box dictionary.
+        :type bounding_box: dict
+        :param image: Input image.
+        :type image: np.array
+        :return: Subframe of the image.
+        :rtype: np.array
+        """
+        shrink_percent = self.config.get(
+            "bounding_box_shrink_percentage", 0)
+        x_start = bounding_box["x_start"]
+        x_stop = bounding_box["x_stop"]
+        y_start = bounding_box["y_start"]
+        y_stop = bounding_box["y_stop"]
+        w = x_stop - x_start
+        h = y_stop - y_start
+        dx = int(w * shrink_percent / 2)
+        dy = int(h * shrink_percent / 2)
+        x_start_shrunk = x_start + dx
+        x_stop_shrunk = x_stop - dx
+        y_start_shrunk = y_start + dy
+        y_stop_shrunk = y_stop - dy
+        return image[y_start_shrunk:y_stop_shrunk,
+                     x_start_shrunk:x_stop_shrunk]
+
     def get_shape(
         self,
         obj: dict,
-        shape_image: np.ndarray
+        shape_image: np.ndarray,
+        height: float = 1
     ) -> Union[str, bool]:
         """
         Detect the shape inside the object boundaries.
@@ -324,43 +360,65 @@ class ImageAnalysis:
         :type obj: dict
         :param shape_image: Shape-filtered image.
         :type shape_image: np.array
+        :param height: Minimum height for shape detection.
+        :type height: float
         :return: Shape name ("Dreieck", "Rechteck", "Kreis") or False.
         :rtype: str or bool
         """
+        if height <= 0:
+            height = 0.01
+
         bounding_box = obj["bound_box"]
 
-        subframe = shape_image[bounding_box["y_start"]:bounding_box["y_stop"],
-                               bounding_box["x_start"]:bounding_box["x_stop"]]
-
-        gray = subframe
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+        # Shrink bounding box by a configurable percentage (default 0%)
+        gray = self._get_shrunk_subframe(bounding_box, shape_image)
+        if gray.shape[0] < 5 or gray.shape[1] < 5:
+            return False
 
         contours, _ = cv2.findContours(
-            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # cv2.imshow("img", gray)
-        # cv2.waitKey(1)
-        # input("Press Enter to continue...")
+            gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+        possible_elements: List[Dict[str, Any]] = []
         for contour in contours:
-            approx = cv2.approxPolyDP(
-                contour, 0.04 * cv2.arcLength(contour, True), True)
+            epsilon = self.config.get("approx_poly_epsilon", 0.04
+                                      ) * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
             *_, w, h = cv2.boundingRect(approx)
-            if (w**2 + h**2) < self.config.get("min_diagonal_shape", 1)**2:
-                continue
-            if len(approx) == 3:
-                return "Dreieck"
-            elif len(approx) == 4:
-                return "Rechteck"
-            elif len(approx) > 4:
-                return "Kreis"
 
-        return False
+            if (w**2 + h**2) < (self.config.get(
+                    "min_diagonal_shape", 1) / height)**2:
+                continue
+
+            area = cv2.contourArea(contour)
+            perimeter = cv2.arcLength(contour, True)
+            if perimeter == 0 or area < (
+                    self.config.get("min_shape_area", 20) / height**2):
+                continue
+
+            if len(approx) == 3:
+                possible_elements.append(
+                    {"size": area, "shape": "Dreieck"})
+            elif len(approx) == 4:
+                possible_elements.append(
+                    {"size": area, "shape": "Rechteck"})
+            elif len(approx) > 4:
+                possible_elements.append(
+                    {"size": area, "shape": "Kreis"})
+
+        if len(possible_elements) == 0:
+            return False
+        if len(possible_elements) == 1:
+            return possible_elements[0]["shape"]
+        # Sort by size and return the largest shape
+        possible_elements = sorted(
+            possible_elements, key=lambda x: x["size"], reverse=True)
+        return possible_elements[0]["shape"]
 
     def find_code(
         self,
         obj: dict,
-        shape_image: np.ndarray
+        shape_image: np.ndarray,
+        height: float = 1
     ) -> bool:
         """
         Find code elements (e.g., QR code-like) inside the object.
@@ -369,27 +427,30 @@ class ImageAnalysis:
         :type obj: dict
         :param shape_image: Shape-filtered image.
         :type shape_image: np.array
+        :param height: Minimum height for code element detection.
+        :type height: float
         :return: True if code found, False otherwise.
         :rtype: bool
         """
+        if height <= 0:
+            height = 0.01
+
         bounding_box = obj["bound_box"]
 
-        subframe = shape_image[bounding_box["y_start"]:bounding_box["y_stop"],
-                               bounding_box["x_start"]:bounding_box["x_stop"]]
-
-        gray = subframe
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        _, thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)
+        subframe = self._get_shrunk_subframe(bounding_box, shape_image)
+        if subframe.shape[0] < 5 or subframe.shape[1] < 5:
+            return False
 
         contours, _ = cv2.findContours(
-            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            subframe, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         code_elements: List[Dict[str, Any]] = []
         for contour in contours:
-            approx = cv2.approxPolyDP(
-                contour, 0.04 * cv2.arcLength(contour, True), True)
+            epsilon = self.config.get("approx_poly_epsilon", 0.04
+                                      ) * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
             x, y, w, h = cv2.boundingRect(approx)
-            if (w**2 + h**2) < self.config.get(
-                    "min_diagonal_code_element", 1)**2:
+            if (w**2 + h**2) < (self.config.get("min_diagonal_code_element",
+                                                1) / height)**2:
                 continue
             if len(approx) == 4:
                 code_elements.append(
@@ -497,7 +558,23 @@ class ImageAnalysis:
         else:
             mask = cv2.inRange(lab, elements["lower"], elements["upper"])
 
-        return cv2.GaussianBlur(mask, (7, 7), 0)
+        blurred = cv2.GaussianBlur(mask, (15, 15), 0)
+
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
+        denoised_mask = cv2.morphologyEx(blurred, cv2.MORPH_OPEN,
+                                         kernel)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+        denoised_mask = cv2.morphologyEx(denoised_mask, cv2.MORPH_OPEN,
+                                         kernel)
+
+        denoised_mask = cv2.morphologyEx(denoised_mask, cv2.MORPH_CLOSE,
+                                         kernel)
+
+        blurred = cv2.GaussianBlur(mask, (7, 7), 0)
+
+        _, thresh_mask = cv2.threshold(
+            blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        return thresh_mask
 
     async def get_current_offset_closest(
         self,
@@ -571,7 +648,8 @@ class ImageAnalysis:
         :return: Tuple (offset [x, y], height, yaw offset).
         :rtype: tuple or (None, None, None) if not found
         """
-        closest_obj = self.get_closest_element(image, color, shape, item)
+        closest_obj = self.get_closest_element(image, color, shape, item,
+                                               height=relative_height)
         if closest_obj is None:
             return None, None, None
         item.add_objects([closest_obj])
@@ -691,7 +769,8 @@ class ImageAnalysis:
         image: np.ndarray,
         color: str,
         shape: Optional[str],
-        item: Optional[DataItem] = None
+        item: Optional[DataItem] = None,
+        height: float = 1
     ) -> Optional[dict]:
         """
         Get the closest detected object of a given color and shape.
@@ -712,14 +791,14 @@ class ImageAnalysis:
         item.add_computed_image(computed_image["filtered_image"])
 
         objects: List[dict] = []
-        self.detect_obj(objects, computed_image)
+        self.detect_obj(objects, computed_image, height=height)
         if shape is not None:
             if shape in self.shape_funcs:
                 relevant_objects = self.shape_funcs["Code"](
-                    objects, shape_image, shape)
+                    objects, shape_image, shape, height)
             else:
                 relevant_objects = self._get_correct_shape(
-                    objects, shape_image, shape)
+                    objects, shape_image, shape, height)
         else:
             relevant_objects = objects
 
@@ -741,7 +820,8 @@ class ImageAnalysis:
         self,
         objects: List[dict],
         shape_image: np.ndarray,
-        shape: str
+        shape: str,
+        height: float = 1
     ) -> List[dict]:
         """
         Filter objects by matching shape.
@@ -757,7 +837,7 @@ class ImageAnalysis:
         """
         relevant_objects: List[dict] = []
         for obj in objects:
-            if self.get_shape(obj, shape_image) == shape:
+            if self.get_shape(obj, shape_image, height) == shape:
                 relevant_objects.append(obj)
         return relevant_objects
 
@@ -765,7 +845,8 @@ class ImageAnalysis:
         self,
         objects: List[dict],
         shape_image: np.ndarray,
-        shape: str
+        shape: str,
+        height: float = 1
     ) -> List[dict]:
         """
         Filter objects by presence of code.
@@ -781,7 +862,7 @@ class ImageAnalysis:
         """
         relevant_objects: List[dict] = []
         for obj in objects:
-            if self.find_code(obj, shape_image):
+            if self.find_code(obj, shape_image, height):
                 relevant_objects.append(obj)
         return relevant_objects
 
@@ -942,4 +1023,4 @@ class ImageAnalysis:
             obj, rotation, height, image_size)
 
         obj["lat_lon"] = loc_to_global(
-            local_vec_stretched[0], local_vec_stretched[1])
+            local_vec_stretched[0], local_vec_stretched[1])[::-1]
