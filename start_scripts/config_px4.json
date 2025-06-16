@@ -43,7 +43,7 @@
                 ],
                 "upper": [
                     100,
-                    20,
+                    40,
                     -30
                 ]
             },
@@ -51,7 +51,7 @@
                 "name": "red",
                 "lower": [
                     20,
-                    35,
+                    10,
                     -20
                 ],
                 "upper": [
@@ -64,29 +64,29 @@
                 "name": "yellow",
                 "lower": [
                     80,
-                    -5,
-                    -5
+                    -15,
+                    -15
                 ],
                 "upper": [
                     100,
-                    5,
-                    5
+                    15,
+                    15
                 ]
             }
         ],
         "shape_color": {
             "lower": [
                 40,
-                -5,
+                -15,
                 -50
             ],
             "upper": [
-                70,
+                80,
                 15,
                 5
             ]
         },
-        "min_diagonal": 150,
+        "min_diagonal": 1000,
         "threashold": -1,
         "camera_offset": [
             0.068,
@@ -94,13 +94,17 @@
             0
         ],
         "distance_objs": 5,
-        "min_diagonal_code_element": 1,
-        "min_diagonal_shape": 1,
+        "min_diagonal_code_element": 100,
+        "min_diagonal_shape": 450,
         "rotation_offset": [
             0,
             0,
             0
-        ]
+        ],
+        "bounding_box_shrink_percentage": 0.20,
+        "strong_bounding_check": false,
+        "approx_poly_epsilon": 0.05,
+        "min_shape_area": 500
     },
     "communications": {
         "allowed_arm": true,

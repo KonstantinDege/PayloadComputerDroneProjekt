@@ -12,6 +12,9 @@ def main(path, config):
         config = json.load(f)
 
     config["image"]["path"] = tempfile.mkdtemp(prefix="precalc_", dir=path)
+    with open(join(config["image"]["path"], "config.json"), "w") as f:
+        json.dump(config, f, indent=4)
+
     ia = ImageAnalysis(config=config["image"], camera=None, comms=None)
     ia.config["save_shape_image"] = True
 
