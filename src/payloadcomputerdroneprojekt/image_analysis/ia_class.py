@@ -345,7 +345,8 @@ class ImageAnalysis:
         y_start_shrunk = y_start + dy
         y_stop_shrunk = y_stop - dy
         return image[y_start_shrunk:y_stop_shrunk,
-                     x_start_shrunk:x_stop_shrunk]
+                     x_start_shrunk:x_stop_shrunk], \
+            x_start_shrunk, y_start_shrunk
 
     def get_shape(
         self,
@@ -371,7 +372,7 @@ class ImageAnalysis:
         bounding_box = obj["bound_box"]
 
         # Shrink bounding box by a configurable percentage (default 0%)
-        gray = self._get_shrunk_subframe(bounding_box, shape_image)
+        gray, *_ = self._get_shrunk_subframe(bounding_box, shape_image)
         if gray.shape[0] < 5 or gray.shape[1] < 5:
             return False
 
@@ -440,7 +441,8 @@ class ImageAnalysis:
 
         bounding_box = obj["bound_box"]
 
-        subframe = self._get_shrunk_subframe(bounding_box, shape_image)
+        subframe, x_start, y_start = self._get_shrunk_subframe(
+            bounding_box, shape_image)
         if subframe.shape[0] < 5 or subframe.shape[1] < 5:
             return False
 
@@ -457,7 +459,8 @@ class ImageAnalysis:
                 continue
             if len(approx) == 4:
                 code_elements.append(
-                    {"x": x, "y": y, "w": w, "h": h, "d": (w**2 + h**2)})
+                    {"x": x_start+x, "y": y_start+y,
+                     "w": w, "h": h, "d": (w**2 + h**2)})
 
         if len(code_elements) < 3:
             return False
