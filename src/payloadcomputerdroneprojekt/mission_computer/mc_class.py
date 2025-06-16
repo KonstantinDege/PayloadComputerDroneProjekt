@@ -2,7 +2,7 @@ from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
 from payloadcomputerdroneprojekt.camera import AbstractCamera
 from payloadcomputerdroneprojekt.mission_computer.scan_planer import \
-    plan_scan
+    plan_scan, export_geojson
 from payloadcomputerdroneprojekt.mission_computer.helper \
     import rec_serialize, count_actions, action_with_count, diag, \
     find_shortest_path
@@ -658,6 +658,11 @@ class MissionComputer:
         )
         sp("Scan Mission Plan:")
         sp(mission)
+
+        if not mission:
+            sp("No valid scan mission plan generated")
+            return
+        export_geojson(mission, filename="scan_mission.geojson")
 
         for line in mission["route"]:
             sp(f"Scan Line: {line}")
