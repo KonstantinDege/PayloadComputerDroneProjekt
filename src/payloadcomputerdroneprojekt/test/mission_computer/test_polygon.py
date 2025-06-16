@@ -7,14 +7,15 @@ from payloadcomputerdroneprojekt.mission_computer.scan_planer \
 class TestPolygonScanPlan(unittest.TestCase):
     def setUp(self):
         self.polygon = [
-            (48.767642, 11.337281),
-            (48.767535, 11.337174),
-            (48.767722, 11.336517),
-            (48.768063, 11.336072),
-            (48.768167, 11.336196)
+            [48.767642, 11.337281],
+            [48.767535, 11.337174],
+            [48.767722, 11.336517],
+            [48.768063, 11.336072],
+            [48.768167, 11.336196]
         ]
-        self.start = (48.767642, 11.337281)
-        self.end = (48.767722, 11.336799)
+        self.start = [48.767642, 11.337281]
+        # self.end = (48.767722, 11.336799)
+        self.end = self.start
         self.altitude = 10
         self.fov_deg = 60
         self.overlap_ratio = 0.2
