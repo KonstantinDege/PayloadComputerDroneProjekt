@@ -12,6 +12,18 @@
             "description": "Parameters for image analysis",
             "type": "object",
             "properties": {
+                "fov": {
+                    "type": "array",
+                    "maxItems": 2,
+                    "minItems": 2,
+                    "description": "Field of view in degree [horizontal, vertical]",
+                    "items": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 180,
+                        "default": 90
+                    }
+                },
                 "path": {
                     "type": "string",
                     "default": "data/images"

@@ -1,6 +1,8 @@
 from payloadcomputerdroneprojekt.communications import Communications
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
 from payloadcomputerdroneprojekt.camera import AbstractCamera
+from payloadcomputerdroneprojekt.mission_computer.scan_planer import \
+    plan_scan
 from payloadcomputerdroneprojekt.mission_computer.helper \
     import rec_serialize, count_actions, action_with_count, diag, \
     find_shortest_path
@@ -619,3 +621,45 @@ class MissionComputer:
             await self._comms.start(takeoff_height)
 
         await self._comms.mov_by_xyz(pos_local, yaw)
+
+    async def scan_area(self, options: dict) -> None:
+        """
+        Scan a specified area using the drone's camera.
+
+        :param options: Dictionary with 'lat', 'lon', 'height', and optional
+            'yaw'.
+        :type options: dict
+        """
+        start = self._comms.get_position_lat_lon_alt()[:2]
+        polygon: List[tuple] = options.get("polygon", [])
+        end = options.get("end_point", start)
+        # polygon = [(48.767642,  11.337281),
+        #            (48.767535, 11.337174),
+        #            (48.767722,  11.336517),
+        #            (48.768063, 11.336072),
+        #            (48.768167, 11.336196)
+        #            ]
+        # start = (48.767642, 11.337281)
+        # end = (48.767722,  11.336799)
+        if "height" in options.keys():
+            h: float = options["height"]
+        else:
+            h: float = self.current_mission_plan.get(
+                "parameter", {}).get("flight_height", 5)
+
+        mission = plan_scan(
+            polygon_latlon=polygon,
+            start_latlon=start,
+            end_latlon=end,
+            altitude=h,
+            fov_deg=self._image.config.get("fov", [66, 41])[0],
+            overlap_ratio=options.get("overlap_ratio", 0.2)
+        )
+        sp("Scan Mission Plan:")
+        sp(mission)
+
+        for line in mission["route"]:
+            sp(f"Scan Line: {line}")
+            for point in line:
+                await self.mov({"lat": point[0], "lon": point[1], "height": h})
+                await asyncio.sleep(options.get("delay", 0.5))

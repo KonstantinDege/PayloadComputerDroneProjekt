@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
+    "$schema": "mission_schema.json",
     "parameter": {
         "flight_height": 10
     },
@@ -16,7 +16,7 @@
         },
         {
             "action": "mov_multiple",
-            "commands":[
+            "commands": [
                 {
                     "lat": 0,
                     "lon": 0
@@ -28,6 +28,40 @@
         },
         {
             "action": "land_at"
+        },
+        {
+            "action": "scan_area",
+            "commands": {
+                "delay": 0,
+                "end_point": [
+                    48.767722,
+                    11.336799
+                ],
+                "height": 10,
+                "overlap_ratio": 0.2,
+                "polygon": [
+                    [
+                        48.767642,
+                        11.337281
+                    ],
+                    [
+                        48.767535,
+                        11.337174
+                    ],
+                    [
+                        48.767722,
+                        11.336517
+                    ],
+                    [
+                        48.768063,
+                        11.336072
+                    ],
+                    [
+                        48.768167,
+                        11.336196
+                    ]
+                ]
+            }
         }
     ]
 }
