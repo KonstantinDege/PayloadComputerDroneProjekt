@@ -127,7 +127,8 @@ class MissionComputer:
             "forever": self.forever,
             "mov": self.mov,
             "mov_to_objects_cap_pic": self.mov_to_objects_cap_pic,
-            "mov_local": self.mov_local
+            "mov_local": self.mov_local,
+            "scan_area": self.scan_area,
         }
         self.none_counting_tasks: List[str] = [
             "list", "mov_multiple"
