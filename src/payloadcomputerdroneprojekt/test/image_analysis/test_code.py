@@ -75,6 +75,22 @@ class TestCode(unittest.TestCase):
                 [0, 0, 0, 0, 0, 0], 1, image, "orange", "Code", item=item)
         print(ret)
 
+    def test_compute_image_3(self):
+        path = tempfile.mkdtemp(prefix="image_analysis")
+        with open(os.path.join(FILE_PATH, "config_px4.json")) as json_data:
+            config = json.load(json_data)["image"]
+
+        config["path"] = path
+
+        cam = TestCamera(config)
+        ia = ImageAnalysis(config, cam, TestCommunications(""))
+        image = cv2.imread(os.path.join(
+            FILE_PATH, "static_image", "inflight_code.jpg"))
+        with ia._data_handler as item:
+            ret = ia._get_current_offset_closest(
+                [0, 0, 0, 0, 0, 0], 1, image, "orange", "Code", item=item)
+        print(f"Code 3: {ret}")
+
 
 if __name__ == '__main__':
     unittest.main()

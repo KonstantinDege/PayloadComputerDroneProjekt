@@ -410,6 +410,7 @@ class MissionComputer:
         old_d = 0.0
         # Loop to adjust position until the drone is close enough to the object
         while detected_alt > min_alt:
+            old_alt = detected_alt
             offset, detected_alt, yaw = \
                 await self._image.get_current_offset_closest(
                     objective["color"], objective.get('shape', None),
@@ -418,9 +419,11 @@ class MissionComputer:
             if offset is None:
                 await self.status("Objekt nicht gefunden.")
                 tries -= 1
+                detected_alt = old_alt
                 if tries <= 0:
                     sp("Max tries reached, aborting landing")
                     return
+                sp("skip to next")
                 continue
 
             tries = 3
