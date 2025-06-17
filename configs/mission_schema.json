@@ -265,7 +265,7 @@
                                     "description": "Delay in seconds before starting the scan.",
                                     "minimum": 0
                                 }
-                            },
+                            }
                         }
                     },
                     "required": [
