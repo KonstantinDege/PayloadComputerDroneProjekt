@@ -666,7 +666,6 @@ class MissionComputer:
 
         for point in mission["route"]:
             sp(f"Scan Line: {point}")
-            
             await self.mov({"lat": point[0], "lon": point[1],
-                            "height": h, "yaw": point[2] + 180})
+                            "height": h, "yaw": point[2]})
             await asyncio.sleep(options.get("delay", 0.5))

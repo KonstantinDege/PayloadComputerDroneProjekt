@@ -386,9 +386,7 @@ class Communications:
             return (abs(state.latitude_deg - pos[0]
                         ) < self.config.get("degree_error", 1/110000) and
                     abs(state.longitude_deg - pos[1]
-                        ) < self.config.get("degree_error", 1/110000) and
-                    abs(state.relative_altitude_m - pos[2]
-                        ) < self.config.get("pos_error", 0.2)*5)
+                        ) < self.config.get("degree_error", 1/110000))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
         sp("reached pos")

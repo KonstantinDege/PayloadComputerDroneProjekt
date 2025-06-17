@@ -86,7 +86,7 @@
                 15
             ]
         },
-        "min_diagonal": 10,
+        "min_diagonal": 100,
         "threashold": -1,
         "camera_offset": [
             0.068,
@@ -114,8 +114,7 @@
         "vel_error": 0.5
     },
     "mission_computer": {
-        "land_speed": 0.5,
-        "recouver_time": 10,
-        "indoor": true
+        "land_speed": 1,
+        "recouver_time": 10
     }
 }
