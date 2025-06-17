@@ -494,7 +494,7 @@ class MissionComputer:
                 "parameter", {}).get("flight_height", 5)
         await self.status(
             f"Moving to {options['lat']:.6f} {options['lon']:.6f} "
-            f"{h:.2} {yaw}")
+            f"{h:.2f} {yaw}")
 
         pos: List[float] = [options['lat'], options['lon'], h]
         if not await self._comms.is_flying():
@@ -631,7 +631,7 @@ class MissionComputer:
             'yaw'.
         :type options: dict
         """
-        start = self._comms.get_position_lat_lon_alt()[:2]
+        start = (await self._comms.get_position_lat_lon_alt())[:2]
         polygon: List[tuple] = options.get("polygon", [])
         end = options.get("end_point", start)
         # polygon = [(48.767642,  11.337281),
@@ -664,8 +664,9 @@ class MissionComputer:
             return
         export_geojson(mission, filename="scan_mission.geojson")
 
-        for line in mission["route"]:
-            sp(f"Scan Line: {line}")
-            for point in line:
-                await self.mov({"lat": point[0], "lon": point[1], "height": h})
-                await asyncio.sleep(options.get("delay", 0.5))
+        for point in mission["route"]:
+            sp(f"Scan Line: {point}")
+            
+            await self.mov({"lat": point[0], "lon": point[1],
+                            "height": h, "yaw": point[2] + 180})
+            await asyncio.sleep(options.get("delay", 0.5))

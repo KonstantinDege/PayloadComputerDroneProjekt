@@ -110,7 +110,6 @@
         "allowed_arm": true,
         "allowed_disarm": true,
         "allowed_mode_switch": true,
-        "degree_error": 0.5,
         "pos_error": 0.75,
         "vel_error": 0.5
     },

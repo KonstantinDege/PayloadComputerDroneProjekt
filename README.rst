@@ -21,10 +21,13 @@ Setup
 2. run simulation
 
     .. code-block:: bash 
+        
+        export PX4_HOME_LAT=48.7678933
+        export PX4_HOME_LON=11.3365773
+        export PX4_HOME_ALT=375
 
-        cd && cd PX4-Autopilot/ && HEADLESS=1 PX4_HOME_LAT=48.7678933 \
-        PX4_HOME_LON=11.3365773 PX4_HOME_ALT=375 \
-        make px4_sitl gz_x500_mono_cam_down
+
+        cd && cd PX4-Autopilot/ && HEADLESS=1 make px4_sitl gz_x500_mono_cam_down
     
         ip addr | grep eth0
 

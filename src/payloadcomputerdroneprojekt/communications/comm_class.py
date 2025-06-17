@@ -380,14 +380,13 @@ class Communications:
         # TODO: check if type 2 is better
         await self.drone.offboard.set_position_global(PositionGlobalYaw(
             lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2], yaw_deg=yaw,
-            altitude_type=PositionGlobalYaw.AltitudeType(2)))
+            altitude_type=PositionGlobalYaw.AltitudeType(0)))
 
         def reach_func(state: Position) -> bool:
-            sp(state)
             return (abs(state.latitude_deg - pos[0]
-                        ) < self.config.get("degree_error", 0.00001) and
+                        ) < self.config.get("degree_error", 1/110000) and
                     abs(state.longitude_deg - pos[1]
-                        ) < self.config.get("degree_error", 0.00001) and
+                        ) < self.config.get("degree_error", 1/110000) and
                     abs(state.relative_altitude_m - pos[2]
                         ) < self.config.get("pos_error", 0.2)*5)
 
