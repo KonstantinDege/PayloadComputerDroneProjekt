@@ -14,7 +14,7 @@ import shutil
 from payloadcomputerdroneprojekt.helper import smart_print as sp
 import asyncio
 from typing import Any, Callable, Dict, List, Optional
-
+import numpy as np
 
 MISSION_PATH = "mission_file.json"
 MISSION_PROGRESS = "__mission__.json"
@@ -409,7 +409,7 @@ class MissionComputer:
         sp(min_alt)
         sp(detected_alt > min_alt)
 
-        tries = 3
+        tries = 5
         old_d = 0.0
         # Loop to adjust position until the drone is close enough to the object
         while detected_alt > min_alt:
@@ -429,7 +429,7 @@ class MissionComputer:
                 sp("skip to next")
                 continue
 
-            tries = 3
+            tries = 5
 
             sp(f"Offset: {offset}, Detected Altitude: {detected_alt}, "
                f"Yaw: {yaw}")
@@ -441,8 +441,16 @@ class MissionComputer:
             if abs(d-old_d) > 0.1:
                 vel_ver = 0
             sp(f"Vertical Velocity: {vel_ver:.2f}")
+
+            def smart_yaw(x):
+                return np.sign(x) * np.sqrt(np.abs(x))
+
+            def smart_xy(x):
+                return (x/25)**3 / 5
+
             await self._comms.mov_by_vel(
-                [offset[0]/5, offset[1]/5, vel_ver], yaw)
+                [smart_xy(offset[0]), smart_xy(offset[1]), vel_ver],
+                smart_yaw(-yaw))
 
             old_d = d
 
