@@ -1,0 +1,24 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/PayloadComputerDroneProjekt/refs/heads/master/configs/mission_schema.json",
+    "parameter": {
+        "flight_height": 0
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "start_camera",
+            "commands": {
+                "ips": 1
+            }
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
+        },
+        {
+            "action": "stop_camera"
+        }
+    ]
+}
