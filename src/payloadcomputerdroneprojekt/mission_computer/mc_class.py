@@ -405,10 +405,6 @@ class MissionComputer:
                " clamping to 0")
             detected_alt = 0.001
 
-        sp(detected_alt)
-        sp(min_alt)
-        sp(detected_alt > min_alt)
-
         tries = 5
         old_d = 0.0
         # Loop to adjust position until the drone is close enough to the object
@@ -438,15 +434,15 @@ class MissionComputer:
             vel_ver: float = 0.002 / d
             if vel_ver/2 > detected_alt:
                 vel_ver = detected_alt / 2
-            if abs(d-old_d) > 0.1:
+            if abs(d-old_d) > 0.25:
                 vel_ver = 0
             sp(f"Vertical Velocity: {vel_ver:.2f}")
 
             def smart_yaw(x):
-                return np.sign(x) * np.sqrt(np.abs(x))
+                return np.tanh(x / 15)
 
             def smart_xy(x):
-                return (x/25)**3 / 5
+                return np.tanh(x) / 2
 
             await self._comms.mov_by_vel(
                 [smart_xy(offset[0]), smart_xy(offset[1]), vel_ver],

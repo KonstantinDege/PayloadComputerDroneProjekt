@@ -301,7 +301,7 @@ class Communications:
         rotated_velocity = rotation_matrix_yaw(
             current_yaw) @ np.array(velocity)
         await self.mov_with_vel(rotated_velocity[0].tolist(),
-                                current_yaw + yaw)
+                                (current_yaw + yaw) % 360)
 
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, offset: List[float], yaw: float = 0) -> None:
@@ -318,7 +318,7 @@ class Communications:
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
         current_yaw = current_position[5]
-        total_yaw = yaw + current_yaw
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         new_position = current_position_arr + \
             rotation_matrix_yaw(current_yaw) @ offset_arr
@@ -334,7 +334,7 @@ class Communications:
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
         current_yaw = current_position[5]
-        total_yaw = yaw + current_yaw
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         current_position_arr[2] = 0
         new_position = current_position_arr + \
@@ -356,7 +356,8 @@ class Communications:
         """
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
-        total_yaw = yaw + current_position[5]
+        current_yaw = current_position[5]
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         new_position = current_position_arr + offset_arr
         await self.mov_to_xyz(new_position.tolist(), total_yaw)
