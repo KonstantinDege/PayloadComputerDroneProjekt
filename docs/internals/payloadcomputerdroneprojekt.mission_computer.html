@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>payloadcomputerdroneprojekt.mission_computer package &#8212; PCDP 0.1.2 documentation</title>
+    <title>payloadcomputerdroneprojekt.mission_computer package &#8212; PCDP 1.0.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=92734c54"></script>
+    <script src="../_static/documentation_options.js?v=8d563738"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'internals/payloadcomputerdroneprojekt.mission_computer';</script>
@@ -48,7 +48,7 @@
     <link rel="prev" title="payloadcomputerdroneprojekt.image_analysis package" href="payloadcomputerdroneprojekt.image_analysis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.2" />
+  <meta name="docsearch:version" content="1.0.0" />
   </head>
   
   
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">PCDP 0.1.2 documentation</p>
+    <p class="title logo__title">PCDP 1.0.0 documentation</p>
   
 </a></div>
     
@@ -365,6 +365,17 @@
 </section>
 <section id="module-payloadcomputerdroneprojekt.mission_computer.helper">
 <span id="payloadcomputerdroneprojekt-mission-computer-helper-module"></span><h2>payloadcomputerdroneprojekt.mission_computer.helper module<a class="headerlink" href="#module-payloadcomputerdroneprojekt.mission_computer.helper" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.helper.PIDController">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.helper.</span></span><span class="sig-name descname"><span class="pre">PIDController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Kp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ki</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/helper.html#PIDController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.helper.PIDController" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.helper.PIDController.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/helper.html#PIDController.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.helper.PIDController.reset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.helper.action_with_count">
 <span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.helper.</span></span><span class="sig-name descname"><span class="pre">action_with_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/helper.html#action_with_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.helper.action_with_count" title="Link to this definition">#</a></dt>
@@ -616,8 +627,25 @@ x: forward (North), y: right (East), z: down (positive)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.scan_area">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scan_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.scan_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.scan_area" title="Link to this definition">#</a></dt>
+<dd><p>Scan a specified area using the drone’s camera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Dictionary with ‘lat’, ‘lon’, ‘height’, and optional
+‘yaw’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.set_work_dir">
 <span class="sig-name descname"><span class="pre">set_work_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.set_work_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.set_work_dir" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.smart_land">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">smart_land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/mc_class.html#MissionComputer.smart_land"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.smart_land" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -679,6 +707,44 @@ second).</p>
 <dd></dd></dl>
 
 </section>
+<section id="module-payloadcomputerdroneprojekt.mission_computer.scan_planer">
+<span id="payloadcomputerdroneprojekt-mission-computer-scan-planer-module"></span><h2>payloadcomputerdroneprojekt.mission_computer.scan_planer module<a class="headerlink" href="#module-payloadcomputerdroneprojekt.mission_computer.scan_planer" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.calculate_heading">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">calculate_heading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#calculate_heading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.calculate_heading" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.export_geojson">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">export_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scan_mission.geojson'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#export_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.export_geojson" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.fov_to_ground_footprint">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">fov_to_ground_footprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altitude_m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov_deg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#fov_to_ground_footprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.fov_to_ground_footprint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.generate_scan_lines">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">generate_scan_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#generate_scan_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.generate_scan_lines" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.latlon_to_utm">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">latlon_to_utm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon_latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'32632'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#latlon_to_utm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.latlon_to_utm" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.plan_scan">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">plan_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon_latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'32632'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#plan_scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.plan_scan" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="payloadcomputerdroneprojekt.mission_computer.scan_planer.utm_to_latlon">
+<span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.mission_computer.scan_planer.</span></span><span class="sig-name descname"><span class="pre">utm_to_latlon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/mission_computer/scan_planer.html#utm_to_latlon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.utm_to_latlon" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
 <section id="module-payloadcomputerdroneprojekt.mission_computer">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-payloadcomputerdroneprojekt.mission_computer" title="Link to this heading">#</a></h2>
 </section>
@@ -733,6 +799,10 @@ second).</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-payloadcomputerdroneprojekt.mission_computer.helper">payloadcomputerdroneprojekt.mission_computer.helper module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.helper.PIDController"><code class="docutils literal notranslate"><span class="pre">PIDController</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.helper.PIDController.reset"><code class="docutils literal notranslate"><span class="pre">PIDController.reset()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.helper.action_with_count"><code class="docutils literal notranslate"><span class="pre">action_with_count()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.helper.count_actions"><code class="docutils literal notranslate"><span class="pre">count_actions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.helper.diag"><code class="docutils literal notranslate"><span class="pre">diag()</span></code></a></li>
@@ -754,7 +824,9 @@ second).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.mov_to_objects_cap_pic"><code class="docutils literal notranslate"><span class="pre">MissionComputer.mov_to_objects_cap_pic()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.new_mission"><code class="docutils literal notranslate"><span class="pre">MissionComputer.new_mission()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.save_progress"><code class="docutils literal notranslate"><span class="pre">MissionComputer.save_progress()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.scan_area"><code class="docutils literal notranslate"><span class="pre">MissionComputer.scan_area()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.set_work_dir"><code class="docutils literal notranslate"><span class="pre">MissionComputer.set_work_dir()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.smart_land"><code class="docutils literal notranslate"><span class="pre">MissionComputer.smart_land()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.start"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.start_camera"><code class="docutils literal notranslate"><span class="pre">MissionComputer.start_camera()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.MissionComputer.status"><code class="docutils literal notranslate"><span class="pre">MissionComputer.status()</span></code></a></li>
@@ -763,6 +835,16 @@ second).</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.mc_class.test_rem"><code class="docutils literal notranslate"><span class="pre">test_rem()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-payloadcomputerdroneprojekt.mission_computer.scan_planer">payloadcomputerdroneprojekt.mission_computer.scan_planer module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.calculate_heading"><code class="docutils literal notranslate"><span class="pre">calculate_heading()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.export_geojson"><code class="docutils literal notranslate"><span class="pre">export_geojson()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.fov_to_ground_footprint"><code class="docutils literal notranslate"><span class="pre">fov_to_ground_footprint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.generate_scan_lines"><code class="docutils literal notranslate"><span class="pre">generate_scan_lines()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.latlon_to_utm"><code class="docutils literal notranslate"><span class="pre">latlon_to_utm()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.plan_scan"><code class="docutils literal notranslate"><span class="pre">plan_scan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#payloadcomputerdroneprojekt.mission_computer.scan_planer.utm_to_latlon"><code class="docutils literal notranslate"><span class="pre">utm_to_latlon()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-payloadcomputerdroneprojekt.mission_computer">Module contents</a></li>
