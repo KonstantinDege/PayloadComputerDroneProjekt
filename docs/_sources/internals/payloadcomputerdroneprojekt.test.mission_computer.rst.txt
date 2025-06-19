@@ -9,29 +9,29 @@ payloadcomputerdroneprojekt.test.mission\_computer.test\_helper module
 
 .. automodule:: payloadcomputerdroneprojekt.test.mission_computer.test_helper
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
 
 payloadcomputerdroneprojekt.test.mission\_computer.test\_land module
 --------------------------------------------------------------------
 
 .. automodule:: payloadcomputerdroneprojekt.test.mission_computer.test_land
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
 
 payloadcomputerdroneprojekt.test.mission\_computer.test\_polygon module
 -----------------------------------------------------------------------
 
 .. automodule:: payloadcomputerdroneprojekt.test.mission_computer.test_polygon
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
 
 .. automodule:: payloadcomputerdroneprojekt.test.mission_computer
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

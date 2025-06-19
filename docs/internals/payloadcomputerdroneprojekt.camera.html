@@ -407,28 +407,28 @@
 <span id="payloadcomputerdroneprojekt-camera-abstract-class-module"></span><h2>payloadcomputerdroneprojekt.camera.abstract_class module<a class="headerlink" href="#module-payloadcomputerdroneprojekt.camera.abstract_class" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.camera.abstract_class.</span></span><span class="sig-name descname"><span class="pre">AbstractCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.camera.abstract_class.</span></span><span class="sig-name descname"><span class="pre">AbstractCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.10/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Abstract base class for camera implementations.
 This class defines the interface for camera operations such as starting,
 capturing frames, and stopping the camera.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.get_current_frame">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_current_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.get_current_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.get_current_frame" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_current_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.get_current_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.get_current_frame" title="Link to this definition">#</a></dt>
 <dd><p>Capture the current frame from the camera.
 :return: The captured frame.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.start_camera">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.start_camera" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.start_camera" title="Link to this definition">#</a></dt>
 <dd><p>Start the camera with the given configuration.
 :param config: Optional configuration for the camera.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.stop_camera">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.stop_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.stop_camera" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/abstract_class.html#AbstractCamera.stop_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera.stop_camera" title="Link to this definition">#</a></dt>
 <dd><p>Stop the camera.</p>
 </dd></dl>
 
@@ -439,7 +439,7 @@ capturing frames, and stopping the camera.</p>
 <span id="payloadcomputerdroneprojekt-camera-raspi2-module"></span><h2>payloadcomputerdroneprojekt.camera.raspi2 module<a class="headerlink" href="#module-payloadcomputerdroneprojekt.camera.raspi2" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.raspi2.RaspiCamera">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.camera.raspi2.</span></span><span class="sig-name descname"><span class="pre">RaspiCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/raspi2.html#RaspiCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.raspi2.RaspiCamera" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">payloadcomputerdroneprojekt.camera.raspi2.</span></span><span class="sig-name descname"><span class="pre">RaspiCamera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/payloadcomputerdroneprojekt/camera/raspi2.html#RaspiCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#payloadcomputerdroneprojekt.camera.raspi2.RaspiCamera" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera" title="payloadcomputerdroneprojekt.camera.abstract_class.AbstractCamera"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractCamera</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="payloadcomputerdroneprojekt.camera.raspi2.RaspiCamera.get_current_frame">
@@ -583,7 +583,7 @@ capturing frames, and stopping the camera.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>
