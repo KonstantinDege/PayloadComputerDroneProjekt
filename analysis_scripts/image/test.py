@@ -67,7 +67,6 @@ def draw_annotations(img, frame, filtered_ids):
             }
             color = color_map.get(
                 filtered_ids[obj_id]["color"], (255, 255, 255))
-            print(f"Drawing {obj} with color {color}")
             h = obj.get("h", -1)
             shape = filtered_ids[obj_id].get("shape", "")
             c = filtered_ids[obj_id]['color']
