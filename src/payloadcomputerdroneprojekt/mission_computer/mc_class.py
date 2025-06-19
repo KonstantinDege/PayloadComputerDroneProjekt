@@ -5,7 +5,7 @@ from payloadcomputerdroneprojekt.mission_computer.scan_planer import \
     plan_scan, export_geojson
 from payloadcomputerdroneprojekt.mission_computer.helper \
     import rec_serialize, count_actions, action_with_count, diag, \
-    find_shortest_path
+    find_shortest_path, PIDController
 import os
 import logging
 import time
@@ -383,6 +383,9 @@ class MissionComputer:
         await self._comms.landed()
 
     async def smart_land(self, objective: dict) -> None:
+        yaw_pid = PIDController(
+            Kp=0.25, Ki=0.0, Kd=0.1, output_limits=(-15, 15))
+
         if "color" not in objective.keys():
             sp("No color given")
             return
@@ -394,24 +397,18 @@ class MissionComputer:
             "parameter", {}).get("decision_height", 1)
 
         if self.config.get("indoor", False):
-            # For indoor flights, use the drone's z position
             detected_alt: float = -1*(await self._comms.get_position_xyz())[2]
         else:
             detected_alt: float = await self._comms.get_relative_height()
 
-        # Clamp negative readings to zero to prevent downward‐only velocity
         if detected_alt <= 0:
             sp(f"Warning: detected_alt below 0 ({detected_alt:.2f}),"
                " clamping to 0")
             detected_alt = 0.001
 
-        sp(detected_alt)
-        sp(min_alt)
-        sp(detected_alt > min_alt)
-
         tries = 5
+        old_time = time.time()
         old_d = 0.0
-        # Loop to adjust position until the drone is close enough to the object
         while detected_alt > min_alt:
             old_alt = detected_alt
             offset, detected_alt, yaw = \
@@ -436,21 +433,27 @@ class MissionComputer:
 
             d = diag(offset[0], offset[1])
             vel_ver: float = 0.002 / d
-            if vel_ver/2 > detected_alt:
+            if vel_ver*2 > detected_alt:
                 vel_ver = detected_alt / 2
-            if abs(d-old_d) > 0.1:
+            if abs(d-old_d) > 0.25:
                 vel_ver = 0
             sp(f"Vertical Velocity: {vel_ver:.2f}")
 
-            def smart_yaw(x):
-                return np.sign(x) * np.sqrt(np.abs(x))
-
             def smart_xy(x):
-                return (x/25)**3 / 5
+                return np.tanh(x) / 2
 
-            await self._comms.mov_by_vel(
-                [smart_xy(offset[0]), smart_xy(offset[1]), vel_ver],
-                smart_yaw(-yaw))
+            now = time.time()
+            dt = now - old_time
+            old_time = now
+
+            # PID control for x, y, z, and yaw
+            vx = smart_xy(offset[0])
+            vy = smart_xy(offset[1])
+            vyaw = yaw_pid(np.tanh(-yaw/15)*15, dt)
+
+            sp(f"PID vx: {vx:.2f}, vy: {vy:.2f}, vyaw: {vyaw:.2f}")
+
+            await self._comms.mov_by_vel([vx, vy, vel_ver], vyaw)
 
             old_d = d
 

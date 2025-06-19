@@ -128,3 +128,34 @@ def diag(x: float, y: float) -> float:
     if d == 0:
         return 0.001
     return d
+
+
+class PIDController:
+    def __init__(self, Kp=1.0, Ki=0.0, Kd=0.0, output_limits=(None, None)):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+        self.output_limits = output_limits
+        self.reset()
+
+    def reset(self):
+        self.integral = 0.0
+        self.prev_error = 0.0
+
+    def __call__(self, error, dt):
+        if dt <= 0:
+            dt = 1e-3
+        self.integral += error * dt
+        derivative = (error - self.prev_error) / dt
+        output = (
+            self.Kp * error +
+            self.Ki * self.integral +
+            self.Kd * derivative
+        )
+        self.prev_error = error
+        min_out, max_out = self.output_limits
+        if min_out is not None:
+            output = max(min_out, output)
+        if max_out is not None:
+            output = min(max_out, output)
+        return output
