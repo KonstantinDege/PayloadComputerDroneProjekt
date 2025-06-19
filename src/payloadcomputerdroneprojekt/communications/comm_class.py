@@ -300,8 +300,9 @@ class Communications:
         current_yaw = await self._get_yaw()
         rotated_velocity = rotation_matrix_yaw(
             current_yaw) @ np.array(velocity)
+        total_yaw = (yaw + current_yaw) % 360
         await self.mov_with_vel(rotated_velocity[0].tolist(),
-                                (current_yaw + yaw) % 360)
+                                total_yaw)
 
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, offset: List[float], yaw: float = 0) -> None:

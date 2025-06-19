@@ -24,7 +24,7 @@ class image(ImageAnalysis):
         pos = (rotation_matrix_yaw(-yaw_cur) @
                cur_pos)[0] * (1+(random()-0.5)/25)
         yaw_target = -90
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(0.5)
         return [-pos[0], -pos[1]], -pos[2], yaw_target - yaw_cur
 
 
@@ -38,18 +38,17 @@ async def mission():
         config=config, camera=GazeboCamera, port=port, image_analysis=image)
     computer.current_mission_plan = {
         "parameter": {
-            "decision_height": 0.2
+            "decision_height": 2
         }
     }
     await computer._comms.connect()
 
-    await computer.takeoff({"height": 2})
+    await computer.takeoff({"height": 15})
     print("takeoff done")
-    await computer._comms.mov_by_xyz([4, 5.5, 0])
+    await computer._comms.mov_by_xyz([4, 5.5, 0], 60)
     print("moved")
     await asyncio.sleep(2)
     await computer.land({"shape": "", "color": ""})
-    await asyncio.sleep(5)
 
 
 class TestLand(unittest.TestCase):
