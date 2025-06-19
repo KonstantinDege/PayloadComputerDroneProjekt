@@ -22,6 +22,12 @@ app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui():
     # Generate the default Swagger UI HTML
+    """
+    Serves a customized Swagger UI HTML page with a favicon for the API documentation at the `/docs` endpoint.
+    
+    Returns:
+        HTMLResponse: The Swagger UI HTML with an injected favicon link.
+    """
     response = get_swagger_ui_html(
         openapi_url=app.openapi_url,
         title="Custom Swagger UI",
@@ -44,6 +50,9 @@ async def custom_swagger_ui():
 
 @app.get("/redoc", include_in_schema=False)
 async def redoc_docs():
+    """
+    Serve the ReDoc API documentation HTML page using a custom local JavaScript asset.
+    """
     return get_redoc_html(
         openapi_url=app.openapi_url,
         title="Aerosmurf ReDoc",
@@ -53,6 +62,9 @@ async def redoc_docs():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
+    """
+    Serve the favicon.ico file from the static directory.
+    """
     return FileResponse(static_path / "favicon.ico")
 
 # These should be references to your actual data
