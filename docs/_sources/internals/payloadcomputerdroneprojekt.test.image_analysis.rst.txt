@@ -20,6 +20,14 @@ payloadcomputerdroneprojekt.test.image\_analysis.test\_code module
    :show-inheritance:
    :undoc-members:
 
+payloadcomputerdroneprojekt.test.image\_analysis.test\_code2 module
+-------------------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.test.image_analysis.test_code2
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 payloadcomputerdroneprojekt.test.image\_analysis.test\_color module
 -------------------------------------------------------------------
 

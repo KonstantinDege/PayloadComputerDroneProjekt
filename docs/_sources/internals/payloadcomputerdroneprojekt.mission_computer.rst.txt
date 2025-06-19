@@ -20,6 +20,14 @@ payloadcomputerdroneprojekt.mission\_computer.mc\_class module
    :show-inheritance:
    :undoc-members:
 
+payloadcomputerdroneprojekt.mission\_computer.scan\_planer module
+-----------------------------------------------------------------
+
+.. automodule:: payloadcomputerdroneprojekt.mission_computer.scan_planer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 
