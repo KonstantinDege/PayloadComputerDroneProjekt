@@ -30,7 +30,7 @@ def main(path, config):
 
     for item in data:
         ia._image_sub_routine(
-            image=cv2.imread(os.path.join(path, item["raw_path"])),
+            image=cv2.imread(os.path.join(path, item["raw_image"])),
             position_data=item["image_pos"], height=item["height"]
         )
     ia.get_filtered_objs()
