@@ -61,15 +61,17 @@ def draw_annotations(img, frame, filtered_ids):
         # Color + Label
         if obj_id in filtered_ids:
             color_map = {
-                "yellow": (0, 255, 255),
+                "yellow": (0, 0, 0),
                 "red": (0, 0, 255),
                 "blue": (255, 0, 0),
             }
             color = color_map.get(
                 filtered_ids[obj_id]["color"], (255, 255, 255))
+            print(f"Drawing {obj} with color {color}")
+            h = obj.get("h", -1)
             shape = filtered_ids[obj_id].get("shape", "")
             c = filtered_ids[obj_id]['color']
-            label = f"{obj_id} [{c}] {shape}".strip()
+            label = f"{obj_id} {h:.2f} [{c}] {shape}".strip()
         else:
             color = (200, 200, 200)
             label = obj_id
