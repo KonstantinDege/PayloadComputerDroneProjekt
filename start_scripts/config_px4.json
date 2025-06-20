@@ -86,7 +86,7 @@
                 15
             ]
         },
-        "min_diagonal": 100,
+        "min_diagonal": 1000,
         "threashold": -1,
         "camera_offset": [
             0.068,
@@ -104,7 +104,7 @@
         "bounding_box_shrink_percentage": 0.20,
         "strong_bounding_check": false,
         "approx_poly_epsilon": 0.05,
-        "min_shape_area": 500
+        "min_shape_area": 50000
     },
     "communications": {
         "allowed_arm": true,
