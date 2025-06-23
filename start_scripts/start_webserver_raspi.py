@@ -5,12 +5,55 @@ from payloadcomputerdroneprojekt.image_analysis.data_handler \
 from payloadcomputerdroneprojekt.camera.raspi2 import RaspiCamera
 from payloadcomputerdroneprojekt import MissionComputer
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from fastapi.staticfiles import StaticFiles
 import os
 from os.path import join
+from pathlib import Path
 
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
+static_path = Path(__file__).parent / "../static"
+
+app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui():
+    # Generate the default Swagger UI HTML
+    response = get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title="Custom Swagger UI",
+        swagger_js_url="/static/swagger-ui-bundle.js",
+        swagger_css_url="/static/swagger-ui.css",
+    )
+
+    # Convert the body from bytes to string
+    html_content = response.body.decode("utf-8")
+
+    # Inject <link rel="icon"> into the <head>
+    html_content = html_content.replace(
+        "<head>",
+        "<head><link rel='icon' href='/static/favicon.ico' type='image/x-icon'>"
+    )
+
+    # Return modified HTML
+    return HTMLResponse(content=html_content, status_code=200)
+
+
+@app.get("/redoc", include_in_schema=False)
+async def redoc_docs():
+    return get_redoc_html(
+        openapi_url=app.openapi_url,
+        title="Aerosmurf ReDoc",
+        redoc_js_url="/static/redoc.standalone.js",
+    )
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse(static_path / "favicon.ico")
 
 # These should be references to your actual data
 mission_file_path = "./new_mission_received.json"

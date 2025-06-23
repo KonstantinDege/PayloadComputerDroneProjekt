@@ -214,6 +214,7 @@ def get_mean(
     :return: Nested dictionary with mean positions and associated times/IDs.
     :rtype: dict
     """
+    count = 1
     output: Dict[str, List[Dict[str, Any]]] = {}
     for color, clusters in sorted_list.items():
         output[color] = []
@@ -245,7 +246,9 @@ def get_mean(
                 "lat": lat/n,
                 "lon": lon/n,
                 "time": times,
-                "id": ids,
-                "shape": most_common_shape
+                "ids": ids,
+                "shape": most_common_shape,
+                "id": count
             })
+            count += 1
     return output

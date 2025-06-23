@@ -300,8 +300,9 @@ class Communications:
         current_yaw = await self._get_yaw()
         rotated_velocity = rotation_matrix_yaw(
             current_yaw) @ np.array(velocity)
+        total_yaw = (yaw + current_yaw) % 360
         await self.mov_with_vel(rotated_velocity[0].tolist(),
-                                current_yaw + yaw)
+                                total_yaw)
 
     @save_execute("Move by XYZ")
     async def mov_by_xyz(self, offset: List[float], yaw: float = 0) -> None:
@@ -318,7 +319,7 @@ class Communications:
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
         current_yaw = current_position[5]
-        total_yaw = yaw + current_yaw
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         new_position = current_position_arr + \
             rotation_matrix_yaw(current_yaw) @ offset_arr
@@ -334,7 +335,7 @@ class Communications:
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
         current_yaw = current_position[5]
-        total_yaw = yaw + current_yaw
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         current_position_arr[2] = 0
         new_position = current_position_arr + \
@@ -356,7 +357,8 @@ class Communications:
         """
         offset_arr = np.array(offset)
         current_position = await self.get_position_xyz()
-        total_yaw = yaw + current_position[5]
+        current_yaw = current_position[5]
+        total_yaw = (yaw + current_yaw) % 360
         current_position_arr = np.array(current_position[:3])
         new_position = current_position_arr + offset_arr
         await self.mov_to_xyz(new_position.tolist(), total_yaw)
@@ -380,16 +382,13 @@ class Communications:
         # TODO: check if type 2 is better
         await self.drone.offboard.set_position_global(PositionGlobalYaw(
             lat_deg=pos[0], lon_deg=pos[1], alt_m=pos[2], yaw_deg=yaw,
-            altitude_type=PositionGlobalYaw.AltitudeType(2)))
+            altitude_type=PositionGlobalYaw.AltitudeType(0)))
 
         def reach_func(state: Position) -> bool:
-            sp(state)
             return (abs(state.latitude_deg - pos[0]
-                        ) < self.config.get("degree_error", 0.00001) and
+                        ) < self.config.get("degree_error", 1/110000) and
                     abs(state.longitude_deg - pos[1]
-                        ) < self.config.get("degree_error", 0.00001) and
-                    abs(state.relative_altitude_m - pos[2]
-                        ) < self.config.get("pos_error", 0.2)*5)
+                        ) < self.config.get("degree_error", 1/110000))
 
         await wait_for(self.drone.telemetry.position(), reach_func)
         sp("reached pos")

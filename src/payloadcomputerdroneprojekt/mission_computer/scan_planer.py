@@ -36,7 +36,6 @@ def generate_scan_lines(polygon, spacing, angle_deg=0):
     # 👉 Beginne bei halbem Abstand (statt miny) um oberen Rand zu erfassen
     y = miny + spacing / 2
     lines = []
-    toggle = False
     while y <= maxy:
         line = LineString([(minx, y), (maxx, y)])
         intersect = line.intersection(rotated)
@@ -45,37 +44,30 @@ def generate_scan_lines(polygon, spacing, angle_deg=0):
             if intersect.geom_type == "MultiLineString":
                 for seg in intersect.geoms:
                     coords = list(seg.coords)
-                    if toggle:
-                        coords.reverse()
+
                     segments.append(coords)
             elif intersect.geom_type == "LineString":
                 coords = list(intersect.coords)
-                if toggle:
-                    coords.reverse()
+
                 segments = [coords]
             lines.extend(segments)
         y += spacing
-        toggle = not toggle
     return [rotate(LineString(i), angle_deg, origin=polygon.centroid,
                    use_radians=False) for i in lines]
 
 
-def calculate_heading(lat1, lon1, lat2, lon2):
-    # Umrechnung in Radiant
-    lat1 = math.radians(lat1)
-    lon1 = math.radians(lon1)
-    lat2 = math.radians(lat2)
-    lon2 = math.radians(lon2)
+def calculate_heading(lat1, lon1, lat2, lon2, transformer):
+    x1, y1 = transformer.transform(lon1, lat1)
+    x2, y2 = transformer.transform(lon2, lat2)
 
-    dLon = lon2 - lon1
+    dx = x2 - x1
+    dy = y2 - y1
 
-    x = math.sin(dLon) * math.cos(lat2)
-    y = (math.cos(lat1) * math.sin(lat2) -
-         math.sin(lat1) * math.cos(lat2) * math.cos(dLon))
+    angle_rad = math.atan2(dx, dy)  # East is X, North is Y
+    heading_deg = math.degrees(angle_rad)
+    heading_deg = (heading_deg + 180) % 360  # Normalize to [0, 360)
 
-    heading = math.atan2(x, y)
-    heading = math.degrees(heading)
-    return (heading + 360) % 360  # Normalisiere auf [0, 360)
+    return heading_deg
 
 
 def plan_scan(polygon_latlon, start_latlon, end_latlon, altitude,
@@ -89,7 +81,7 @@ def plan_scan(polygon_latlon, start_latlon, end_latlon, altitude,
     best_angle = 0
     for angle in range(0, 180, 5):
         lines = generate_scan_lines(polygon_utm, spacing, angle)
-        total_len = sum(l.length for l in lines)
+        total_len = sum(i.length for i in lines)
         if total_len < min_len:
             min_len = total_len
             best_angle = angle
@@ -101,11 +93,11 @@ def plan_scan(polygon_latlon, start_latlon, end_latlon, altitude,
     # Build mission route
     route = [start_latlon] + \
         [pt[::-1] for line in scan_latlon for pt in line] + [end_latlon]
+
     route_with_heading = []
-    for i in range(len(route)-1):
-        heading = calculate_heading(*route[i], *route[i+1])
+    for i in range(len(route) - 1):
+        heading = calculate_heading(*route[i], *route[i + 1], transformer)
         route_with_heading.append((*route[i], heading))
-    # last point
     route_with_heading.append((*route[-1], route_with_heading[-1][2]))
 
     return {

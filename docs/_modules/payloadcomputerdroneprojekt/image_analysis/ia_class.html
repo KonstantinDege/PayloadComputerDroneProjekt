@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>payloadcomputerdroneprojekt.image_analysis.ia_class &#8212; PCDP 0.1.1 documentation</title>
+    <title>payloadcomputerdroneprojekt.image_analysis.ia_class &#8212; PCDP 1.0.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/payloadcomputerdroneprojekt/image_analysis/ia_class';</script>
@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.1" />
+  <meta name="docsearch:version" content="1.0.0" />
   </head>
   
   
@@ -107,7 +107,7 @@
   
   
   
-    <p class="title logo__title">PCDP 0.1.1 documentation</p>
+    <p class="title logo__title">PCDP 1.0.0 documentation</p>
   
 </a></div>
     
@@ -558,14 +558,14 @@
                 <span class="k">return</span>
             <span class="k">if</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span>
-            <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_objects</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span>
 
             <span class="n">loc_to_global</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">local_to_global</span><span class="p">(</span>
                 <span class="n">position_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
             <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
-                <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_lat_lon</span><span class="p">(</span>
                     <span class="n">obj</span><span class="p">,</span> <span class="n">position_data</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">height</span><span class="p">,</span> <span class="n">shape_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
                     <span class="n">loc_to_global</span><span class="p">)</span>
@@ -579,12 +579,14 @@
                               <span class="p">(</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">],</span>
                                <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 
-            <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_shape_image&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">shape_image</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageAnalysis.compute_image">
 <a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.compute_image">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter image for defined colors and detect objects.</span>
 
@@ -596,7 +598,10 @@
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">filtered_images</span><span class="p">,</span> <span class="n">shape_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_colors</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">filtered_image</span> <span class="ow">in</span> <span class="n">filtered_images</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">filtered_image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">filtered_image</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_shape_image&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">],</span>
+                               <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span></div>
 
 
@@ -605,7 +610,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_obj</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-        <span class="n">filtered_image</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+        <span class="n">filtered_image</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Detect objects in a filtered image and append to objects list.</span>
@@ -614,23 +620,34 @@
 <span class="sd">        :type objects: list[dict]</span>
 <span class="sd">        :param filtered_image: Dictionary with color and filtered image.</span>
 <span class="sd">        :type filtered_image: dict</span>
+<span class="sd">        :param height: Minimum height for object detection.</span>
+<span class="sd">        :type height: float</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mf">0.01</span>
+
         <span class="n">gray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">]</span>
-        <span class="n">blurred</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">blurred</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
 
         <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span>
-            <span class="n">thresh</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
-
+            <span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
-            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span>
-                <span class="n">contour</span><span class="p">,</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approx_poly_epsilon&quot;</span><span class="p">,</span> <span class="mf">0.04</span>
+                                      <span class="p">)</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span>
+                                <span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">x_center</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">y_center</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strong_bounding_check&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">16</span><span class="p">:</span>
+                    <span class="k">continue</span>
             <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">filtered_image</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span>
                 <span class="s2">&quot;bound_box&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -648,12 +665,42 @@
                                           <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">approx</span><span class="p">]</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_shrunk_subframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                             <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a subframe of the image, shrunk by a configurable percentage.</span>
+<span class="sd">        :param bounding_box: Bounding box dictionary.</span>
+<span class="sd">        :type bounding_box: dict</span>
+<span class="sd">        :param image: Input image.</span>
+<span class="sd">        :type image: np.array</span>
+<span class="sd">        :return: Subframe of the image.</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shrink_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;bounding_box_shrink_percentage&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">x_start</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]</span>
+        <span class="n">x_stop</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]</span>
+        <span class="n">y_start</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]</span>
+        <span class="n">y_stop</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">x_stop</span> <span class="o">-</span> <span class="n">x_start</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">y_stop</span> <span class="o">-</span> <span class="n">y_start</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">shrink_percent</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">shrink_percent</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">x_start_shrunk</span> <span class="o">=</span> <span class="n">x_start</span> <span class="o">+</span> <span class="n">dx</span>
+        <span class="n">x_stop_shrunk</span> <span class="o">=</span> <span class="n">x_stop</span> <span class="o">-</span> <span class="n">dx</span>
+        <span class="n">y_start_shrunk</span> <span class="o">=</span> <span class="n">y_start</span> <span class="o">+</span> <span class="n">dy</span>
+        <span class="n">y_stop_shrunk</span> <span class="o">=</span> <span class="n">y_stop</span> <span class="o">-</span> <span class="n">dy</span>
+        <span class="k">return</span> <span class="n">image</span><span class="p">[</span><span class="n">y_start_shrunk</span><span class="p">:</span><span class="n">y_stop_shrunk</span><span class="p">,</span>
+                     <span class="n">x_start_shrunk</span><span class="p">:</span><span class="n">x_stop_shrunk</span><span class="p">],</span> \
+            <span class="n">x_start_shrunk</span><span class="p">,</span> <span class="n">y_start_shrunk</span>
+
 <div class="viewcode-block" id="ImageAnalysis.get_shape">
 <a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_shape">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Detect the shape inside the object boundaries.</span>
@@ -662,35 +709,62 @@
 <span class="sd">        :type obj: dict</span>
 <span class="sd">        :param shape_image: Shape-filtered image.</span>
 <span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :param height: Minimum height for shape detection.</span>
+<span class="sd">        :type height: float</span>
 <span class="sd">        :return: Shape name (&quot;Dreieck&quot;, &quot;Rechteck&quot;, &quot;Kreis&quot;) or False.</span>
 <span class="sd">        :rtype: str or bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mf">0.01</span>
+
         <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
 
-        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
-                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
-
-        <span class="n">gray</span> <span class="o">=</span> <span class="n">subframe</span>
-        <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">blurred</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+        <span class="c1"># Shrink bounding box by a configurable percentage (default 0%)</span>
+        <span class="n">gray</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shrunk_subframe</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
         <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span>
-            <span class="n">thresh</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+            <span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
 
+        <span class="n">possible_elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rectangles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
-            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span>
-                <span class="n">contour</span><span class="p">,</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approx_poly_epsilon&quot;</span><span class="p">,</span> <span class="mf">0.04</span>
+                                      <span class="p">)</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal_shape&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;Dreieck&quot;</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;Rechteck&quot;</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;Kreis&quot;</span>
 
-        <span class="k">return</span> <span class="kc">False</span></div>
+            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s2">&quot;min_diagonal_shape&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">area</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+            <span class="n">perimeter</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">perimeter</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">area</span> <span class="o">&lt;</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_shape_area&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">possible_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">area</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="s2">&quot;Dreieck&quot;</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">possible_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">area</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="s2">&quot;Kreis&quot;</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">rectangles</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">area</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="s2">&quot;Rechteck&quot;</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">possible_elements</span> <span class="o">=</span> <span class="n">rectangles</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">possible_elements</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span>
+        <span class="c1"># Sort by size and return the largest shape</span>
+        <span class="n">possible_elements</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">possible_elements</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">possible_elements</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageAnalysis.find_code">
@@ -698,7 +772,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">find_code</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find code elements (e.g., QR code-like) inside the object.</span>
@@ -707,31 +782,36 @@
 <span class="sd">        :type obj: dict</span>
 <span class="sd">        :param shape_image: Shape-filtered image.</span>
 <span class="sd">        :type shape_image: np.array</span>
+<span class="sd">        :param height: Minimum height for code element detection.</span>
+<span class="sd">        :type height: float</span>
 <span class="sd">        :return: True if code found, False otherwise.</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mf">0.01</span>
+
         <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bound_box&quot;</span><span class="p">]</span>
 
-        <span class="n">subframe</span> <span class="o">=</span> <span class="n">shape_image</span><span class="p">[</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;y_stop&quot;</span><span class="p">],</span>
-                               <span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_start&quot;</span><span class="p">]:</span><span class="n">bounding_box</span><span class="p">[</span><span class="s2">&quot;x_stop&quot;</span><span class="p">]]</span>
-
-        <span class="n">gray</span> <span class="o">=</span> <span class="n">subframe</span>
-        <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">blurred</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+        <span class="n">subframe</span><span class="p">,</span> <span class="n">x_start</span><span class="p">,</span> <span class="n">y_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shrunk_subframe</span><span class="p">(</span>
+            <span class="n">bounding_box</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subframe</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">subframe</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
         <span class="n">contours</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span>
-            <span class="n">thresh</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+            <span class="n">subframe</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
         <span class="n">code_elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
-            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span>
-                <span class="n">contour</span><span class="p">,</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approx_poly_epsilon&quot;</span><span class="p">,</span> <span class="mf">0.04</span>
+                                      <span class="p">)</span> <span class="o">*</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">approx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s2">&quot;min_diagonal_code_element&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_diagonal_code_element&quot;</span><span class="p">,</span>
+                                                <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">approx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="n">code_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)})</span>
+                    <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x_start</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y_start</span><span class="o">+</span><span class="n">y</span><span class="p">,</span>
+                     <span class="s2">&quot;w&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)})</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_elements</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -845,7 +925,23 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">elements</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">],</span> <span class="n">elements</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_RECT</span><span class="p">,</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+        <span class="n">denoised_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">blurred</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_OPEN</span><span class="p">,</span>
+                                         <span class="n">kernel</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_RECT</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+        <span class="n">denoised_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">denoised_mask</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_OPEN</span><span class="p">,</span>
+                                         <span class="n">kernel</span><span class="p">)</span>
+
+        <span class="n">denoised_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">denoised_mask</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_CLOSE</span><span class="p">,</span>
+                                         <span class="n">kernel</span><span class="p">)</span>
+
+        <span class="n">blurred</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">thresh_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span>
+            <span class="n">blurred</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span> <span class="o">+</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_OTSU</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">thresh_mask</span>
 
 <div class="viewcode-block" id="ImageAnalysis.get_current_offset_closest">
 <a class="viewcode-back" href="../../../internals/payloadcomputerdroneprojekt.image_analysis.html#payloadcomputerdroneprojekt.image_analysis.ImageAnalysis.get_current_offset_closest">[docs]</a>
@@ -853,7 +949,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">yaw_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">indoor</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the offset from the drone to the closest object of a given color</span>
@@ -868,12 +965,23 @@
 <span class="sd">        :return: Tuple (offset [x, y], height, yaw offset).</span>
 <span class="sd">        :rtype: tuple or (None, None, None) if not found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">is_active</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">start_camera</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_handler</span> <span class="k">as</span> <span class="n">item</span><span class="p">:</span>
             <span class="n">position</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_position_xyz</span><span class="p">()</span>
-            <span class="n">relative_height</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">indoor</span><span class="p">:</span>
+                <span class="c1"># For indoor use, height is negative of z coordinate</span>
+                <span class="n">relative_height</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">relative_height</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comms</span><span class="o">.</span><span class="n">get_relative_height</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">relative_height</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: detected_alt below 0 (</span><span class="si">{</span><span class="n">relative_height</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">),&quot;</span>
+                   <span class="s2">&quot; clamping to 0&quot;</span><span class="p">)</span>
+                <span class="n">relative_height</span> <span class="o">=</span> <span class="mf">0.001</span>
+
             <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camera</span><span class="o">.</span><span class="n">get_current_frame</span><span class="p">()</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_image_position</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">add_raw_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -910,7 +1018,8 @@
 <span class="sd">        :return: Tuple (offset [x, y], height, yaw offset).</span>
 <span class="sd">        :rtype: tuple or (None, None, None) if not found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">closest_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_closest_element</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span>
+                                               <span class="n">height</span><span class="o">=</span><span class="n">relative_height</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">closest_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="n">item</span><span class="o">.</span><span class="n">add_objects</span><span class="p">([</span><span class="n">closest_obj</span><span class="p">])</span>
@@ -960,7 +1069,7 @@
             <span class="n">left</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bottom_left_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
             <span class="n">top</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_right_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_left_pos</span><span class="p">))</span>
 
-            <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">code_side_length</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">code_side_length</span><span class="o">/</span><span class="p">((</span><span class="n">left</span> <span class="o">+</span> <span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="n">top_left_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_offset</span><span class="p">(</span>
             <span class="n">top_left</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">)</span>
@@ -1032,7 +1141,8 @@
         <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the closest detected object of a given color and shape.</span>
@@ -1053,14 +1163,14 @@
         <span class="n">item</span><span class="o">.</span><span class="n">add_computed_image</span><span class="p">(</span><span class="n">computed_image</span><span class="p">[</span><span class="s2">&quot;filtered_image&quot;</span><span class="p">])</span>
 
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">computed_image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_obj</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">computed_image</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">shape</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">:</span>
                 <span class="n">relevant_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_funcs</span><span class="p">[</span><span class="s2">&quot;Code&quot;</span><span class="p">](</span>
-                    <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                    <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">relevant_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_correct_shape</span><span class="p">(</span>
-                    <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                    <span class="n">objects</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">relevant_objects</span> <span class="o">=</span> <span class="n">objects</span>
 
@@ -1083,7 +1193,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
         <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter objects by matching shape.</span>
@@ -1099,7 +1210,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relevant_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
                 <span class="n">relevant_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">relevant_objects</span>
 
@@ -1107,7 +1218,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
         <span class="n">shape_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter objects by presence of code.</span>
@@ -1123,7 +1235,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relevant_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_code</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_code</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shape_image</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
                 <span class="n">relevant_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">relevant_objects</span>
 
@@ -1304,7 +1416,7 @@
             <span class="n">obj</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span>
 
         <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;lat_lon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc_to_global</span><span class="p">(</span>
-            <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+            <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">local_vec_stretched</span><span class="p">[</span><span class="mi">1</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 </div>
 
 </pre></div>

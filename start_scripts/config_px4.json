@@ -86,7 +86,7 @@
                 15
             ]
         },
-        "min_diagonal": 10,
+        "min_diagonal": 1000,
         "threashold": -1,
         "camera_offset": [
             0.068,
@@ -104,19 +104,17 @@
         "bounding_box_shrink_percentage": 0.20,
         "strong_bounding_check": false,
         "approx_poly_epsilon": 0.05,
-        "min_shape_area": 500
+        "min_shape_area": 50000
     },
     "communications": {
         "allowed_arm": true,
         "allowed_disarm": true,
         "allowed_mode_switch": true,
-        "degree_error": 0.5,
         "pos_error": 0.75,
         "vel_error": 0.5
     },
     "mission_computer": {
-        "land_speed": 0.5,
-        "recouver_time": 10,
-        "indoor": false
+        "land_speed": 1,
+        "recouver_time": 10
     }
 }
