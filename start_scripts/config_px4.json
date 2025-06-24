@@ -63,14 +63,14 @@
             {
                 "name": "yellow",
                 "lower": [
-                    73,
-                    -20,
-                    25
+                    40,
+                    -30,
+                    30
                 ],
                 "upper": [
                     91,
-                    -14,
-                    51
+                    -10,
+                    50
                 ]
             }
         ],
@@ -78,33 +78,33 @@
             "lower": [
                 0,
                 -15,
-                -50
+                -15
             ],
             "upper": [
-                80,
                 20,
+                15,
                 15
             ]
         },
-        "min_diagonal": 1000,
+        "min_diagonal": 500,
         "threashold": -1,
         "camera_offset": [
             0.068,
             0,
             0
         ],
-        "distance_objs": 5,
+        "distance_objs": 3,
         "min_diagonal_code_element": 10,
-        "min_diagonal_shape": 450,
+        "min_diagonal_shape": 100,
         "rotation_offset": [
             0,
             0,
             0
         ],
-        "bounding_box_shrink_percentage": 0.20,
+        "bounding_box_shrink_percentage": 0.22,
         "strong_bounding_check": false,
-        "approx_poly_epsilon": 0.05,
-        "min_shape_area": 50000
+        "approx_poly_epsilon": 0.055,
+        "min_shape_area": 400
     },
     "communications": {
         "allowed_arm": true,

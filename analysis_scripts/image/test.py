@@ -36,7 +36,7 @@ filtered_ids = {
     obj_id: {"color": color, "shape": obj["shape"]}
     for color, objs in filtered_data.items()
     for obj in objs
-    for obj_id in obj["id"]
+    for obj_id in obj["ids"]
 }
 
 # === Helper: Add label above image ===
@@ -68,9 +68,10 @@ def draw_annotations(img, frame, filtered_ids):
             color = color_map.get(
                 filtered_ids[obj_id]["color"], (255, 255, 255))
             h = obj.get("h", -1)
+            s = obj.get("shape", "")
             shape = filtered_ids[obj_id].get("shape", "")
             c = filtered_ids[obj_id]['color']
-            label = f"{obj_id} {h:.2f} [{c}] {shape}".strip()
+            label = f"{obj_id} {h:.2f} [{c}] {shape} obj:{s}".strip()
         else:
             color = (200, 200, 200)
             label = obj_id
@@ -126,7 +127,7 @@ while i < len(all_frames):
                 variants.append((key, img))
 
     # Resize all to same height (e.g., 400px), keeping aspect ratio
-    fixed_height = 400
+    fixed_height = 300
     resized_labeled = []
     for name, img in variants:
         if len(img.shape) == 2 or img.shape[2] == 1:
