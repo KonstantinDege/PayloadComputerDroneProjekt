@@ -21,10 +21,6 @@
             "action": "scan_area",
             "commands": {
                 "delay": 0,
-                "end_point": [
-                    48.767722,
-                    11.336799
-                ],
                 "height": 12,
                 "overlap_ratio": 0.45,
                 "polygon": [
