@@ -19,57 +19,57 @@
         "path": "data/images",
         "length_box_short_side": 0.4,
         "length_box_long_side": 0.6,
-        "length_code_side": 0.245,
+        "length_code_side": 0.36,
         "colors": [
             {
                 "name": "orange",
                 "lower": [
-                    51,
+                    43,
                     13,
                     32
                 ],
                 "upper": [
                     64,
-                    21,
-                    45
+                    30,
+                    53
                 ]
             },
             {
                 "name": "blue",
                 "lower": [
-                    15,
-                    -3,
-                    -73
+                    12,
+                    23,
+                    -52
                 ],
                 "upper": [
-                    29,
-                    45,
-                    -18
+                    23,
+                    30,
+                    -45
                 ]
             },
             {
                 "name": "red",
                 "lower": [
-                    22,
-                    32,
-                    -3
+                    33,
+                    40,
+                    20
                 ],
                 "upper": [
-                    46,
-                    68,
-                    39
+                    40,
+                    60,
+                    33
                 ]
             },
             {
                 "name": "yellow",
                 "lower": [
-                    40,
+                    60,
                     -30,
                     30
                 ],
                 "upper": [
-                    91,
-                    -10,
+                    80,
+                    -20,
                     50
                 ]
             }
