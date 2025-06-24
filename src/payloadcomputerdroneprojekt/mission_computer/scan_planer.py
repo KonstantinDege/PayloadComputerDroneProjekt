@@ -30,30 +30,40 @@ def utm_to_latlon(coords, transformer):
 
 
 def generate_scan_lines(polygon, spacing, angle_deg=0):
+    # Rotate the polygon to simplify horizontal line generation
     rotated = rotate(polygon, -angle_deg, origin='centroid', use_radians=False)
     minx, miny, maxx, maxy = rotated.bounds
 
-    # 👉 Beginne bei halbem Abstand (statt miny) um oberen Rand zu erfassen
     y = miny + spacing / 2
     lines = []
+    reverse = False  # To alternate direction for U-shaped pattern
+
     while y <= maxy:
-        line = LineString([(minx, y), (maxx, y)])
-        intersect = line.intersection(rotated)
+        scan_line = LineString([(minx, y), (maxx, y)])
+        intersect = scan_line.intersection(rotated)
+
         if not intersect.is_empty:
             segments = []
             if intersect.geom_type == "MultiLineString":
                 for seg in intersect.geoms:
                     coords = list(seg.coords)
-
                     segments.append(coords)
             elif intersect.geom_type == "LineString":
                 coords = list(intersect.coords)
-
                 segments = [coords]
-            lines.extend(segments)
+
+            for coords in segments:
+                if reverse:
+                    coords = list(reversed(coords))
+                lines.append(coords)
+
+            reverse = not reverse  # Alternate direction
         y += spacing
-    return [rotate(LineString(i), angle_deg, origin=polygon.centroid,
-                   use_radians=False) for i in lines]
+
+    # Rotate lines back to original orientation
+    return [rotate(LineString(coords), angle_deg,
+                   origin=polygon.centroid, use_radians=False)
+            for coords in lines]
 
 
 def calculate_heading(lat1, lon1, lat2, lon2, transformer):
@@ -65,7 +75,7 @@ def calculate_heading(lat1, lon1, lat2, lon2, transformer):
 
     angle_rad = math.atan2(dx, dy)  # East is X, North is Y
     heading_deg = math.degrees(angle_rad)
-    heading_deg = (heading_deg + 180) % 360  # Normalize to [0, 360)
+    heading_deg = (heading_deg + 360) % 360  # Normalize to [0, 360)
 
     return heading_deg
 
@@ -97,8 +107,7 @@ def plan_scan(polygon_latlon, start_latlon, end_latlon, altitude,
     route_with_heading = []
     for i in range(len(route) - 1):
         heading = calculate_heading(*route[i], *route[i + 1], transformer)
-        route_with_heading.append((*route[i], heading))
-    route_with_heading.append((*route[-1], route_with_heading[-1][2]))
+        route_with_heading.append((*route[i+1], heading))
 
     return {
         "scan_polygon": polygon_latlon,
