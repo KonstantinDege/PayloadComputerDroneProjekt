@@ -65,7 +65,7 @@ def calculate_heading(lat1, lon1, lat2, lon2, transformer):
 
     angle_rad = math.atan2(dx, dy)  # East is X, North is Y
     heading_deg = math.degrees(angle_rad)
-    heading_deg = (heading_deg + 180) % 360  # Normalize to [0, 360)
+    heading_deg = (heading_deg + 360) % 360  # Normalize to [0, 360)
 
     return heading_deg
 
@@ -97,8 +97,7 @@ def plan_scan(polygon_latlon, start_latlon, end_latlon, altitude,
     route_with_heading = []
     for i in range(len(route) - 1):
         heading = calculate_heading(*route[i], *route[i + 1], transformer)
-        route_with_heading.append((*route[i], heading))
-    route_with_heading.append((*route[-1], route_with_heading[-1][2]))
+        route_with_heading.append((*route[i+1], heading))
 
     return {
         "scan_polygon": polygon_latlon,
