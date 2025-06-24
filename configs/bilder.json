@@ -1,24 +1,61 @@
 {
+<<<<<<< Updated upstream
     "$schema": "https://raw.githubusercontent.com/KonstantinDege/PayloadComputerDroneProjekt/refs/heads/master/configs/mission_schema.json",
     "parameter": {
         "flight_height": 0
+=======
+<<<<<<< Updated upstream
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/PayloadComputerDroneProjekt/refs/heads/master/configs/mission_schema.json",
+    "parameter": {
+        "flight_height": 0
+=======
+    "$schema": "mission_schema.json",
+    "parameter": {
+        "flight_height": 10
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     },
     "action": "list",
     "commands": [
         {
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
             "action": "start_camera",
             "commands": {
                 "ips": 1
             }
+<<<<<<< Updated upstream
+=======
+=======
+            "action": "start_camera"
+            "fps": 1
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         },
         {
             "action": "delay",
             "commands": {
+<<<<<<< Updated upstream
                 "time": 30
+=======
+                "time": 5
+>>>>>>> Stashed changes
             }
         },
         {
             "action": "stop_camera"
+<<<<<<< Updated upstream
         }
     ]
 }
+=======
+<<<<<<< Updated upstream
+        }
+    ]
+}
+=======
+        },}
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
