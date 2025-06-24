@@ -19,8 +19,8 @@ Setup
 
     .. code-block:: bash 
         
-        export PX4_HOME_LAT=48.7678933
-        export PX4_HOME_LON=11.3365773
+        export PX4_HOME_LAT=48.76816699
+        export PX4_HOME_LON=11.33711226
         export PX4_HOME_ALT=375
 
 

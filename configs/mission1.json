@@ -14,7 +14,7 @@
         {
             "action": "start_camera",
             "commands": {
-                "ips": 1
+                "ips": 5
             }
         },
         {
@@ -26,7 +26,7 @@
                     11.336799
                 ],
                 "height": 12,
-                "overlap_ratio": 0.2,
+                "overlap_ratio": 0.45,
                 "polygon": [
                     [
                     48.768507937,
@@ -60,19 +60,12 @@
             }
         },
         {
-            "action": "delay",
-            "commands": {
-                "time": 2
-            }
-        },
-        {
             "action": "stop_camera"
         },
         {
             "action": "land_at",
             "commands": {
-                    "lat": 48.7681669947368,
-                    "lon": 11.3371122578947
+                    "color": "orange"
                 }
         }
     ]
