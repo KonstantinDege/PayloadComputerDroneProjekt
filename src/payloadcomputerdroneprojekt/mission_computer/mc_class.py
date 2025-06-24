@@ -348,7 +348,7 @@ class MissionComputer:
         :type options: dict
         """
         h: float = options.get(
-            "height", self.current_mission_plan["parameter"].get(
+            "altitude", self.current_mission_plan["parameter"].get(
                 "flight_height", 5))
         await self.status(f"Taking Off to height {h}")
         await self._comms.start(h)
