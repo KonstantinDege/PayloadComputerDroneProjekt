@@ -1,13 +1,14 @@
 {
     "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
     "parameter": {
-        "flight_height": 15
+        "flight_height": 10
     },
+    "action": "list",
     "commands": [
         {
             "action": "takeoff",
             "commands": {
-                "altitude": 15
+                "altitude": 10
             }
         },
         {
@@ -17,34 +18,62 @@
             }
         },
         {
-            "action": "mov_multiple",
-            "commands": [
-                {
-                    "lat": 0,
-                    "lon": 0,
-                    "yaw": 0
-                },
-                {
-                    "lat": 4,
-                    "lon": 4,
-                    "yaw": 0
-                }
-            ]
+            "action": "scan_area",
+            "commands": {
+                "delay": 0,
+                "end_point": [
+                    48.767722,
+                    11.336799
+                ],
+                "height": 12,
+                "overlap_ratio": 0.2,
+                "polygon": [
+                    [
+                    48.768507937,
+                    11.335972589
+                    ],
+                    [
+                    48.768264215,
+                    11.335724609
+                    ],
+                    [
+                    48.767507641,
+                    11.337241328
+                    ],
+                    [
+                    48.767967946,
+                    11.337684988
+                    ],
+                    [
+                    48.768289057,
+                    11.336764446
+                    ],
+                    [
+                    48.768198401,
+                    11.336264879
+                    ],
+                    [
+                    48.768358661,
+                    11.336291073
+                    ]
+                ]
+            }
         },
         {
             "action": "delay",
             "commands": {
-                "time": 5
+                "time": 2
             }
         },
         {
             "action": "stop_camera"
         },
         {
-            "action": "mov_to_objects_cap_pic",
+            "action": "land_at",
             "commands": {
-                "delay": 2
-            }
+                    "lat": 48.7681669947368,
+                    "lon": 11.3371122578947
+                }
         }
     ]
 }
