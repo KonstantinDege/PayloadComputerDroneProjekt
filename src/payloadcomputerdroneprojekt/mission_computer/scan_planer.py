@@ -30,30 +30,40 @@ def utm_to_latlon(coords, transformer):
 
 
 def generate_scan_lines(polygon, spacing, angle_deg=0):
+    # Rotate the polygon to simplify horizontal line generation
     rotated = rotate(polygon, -angle_deg, origin='centroid', use_radians=False)
     minx, miny, maxx, maxy = rotated.bounds
 
-    # 👉 Beginne bei halbem Abstand (statt miny) um oberen Rand zu erfassen
     y = miny + spacing / 2
     lines = []
+    reverse = False  # To alternate direction for U-shaped pattern
+
     while y <= maxy:
-        line = LineString([(minx, y), (maxx, y)])
-        intersect = line.intersection(rotated)
+        scan_line = LineString([(minx, y), (maxx, y)])
+        intersect = scan_line.intersection(rotated)
+
         if not intersect.is_empty:
             segments = []
             if intersect.geom_type == "MultiLineString":
                 for seg in intersect.geoms:
                     coords = list(seg.coords)
-
                     segments.append(coords)
             elif intersect.geom_type == "LineString":
                 coords = list(intersect.coords)
-
                 segments = [coords]
-            lines.extend(segments)
+
+            for coords in segments:
+                if reverse:
+                    coords = list(reversed(coords))
+                lines.append(coords)
+
+            reverse = not reverse  # Alternate direction
         y += spacing
-    return [rotate(LineString(i), angle_deg, origin=polygon.centroid,
-                   use_radians=False) for i in lines]
+
+    # Rotate lines back to original orientation
+    return [rotate(LineString(coords), angle_deg,
+                   origin=polygon.centroid, use_radians=False)
+            for coords in lines]
 
 
 def calculate_heading(lat1, lon1, lat2, lon2, transformer):
