@@ -81,12 +81,12 @@
                 -50
             ],
             "upper": [
-                80,
+                20,
                 20,
                 15
             ]
         },
-        "min_diagonal": 1000,
+        "min_diagonal": 200,
         "threashold": -1,
         "camera_offset": [
             0.068,
@@ -95,7 +95,7 @@
         ],
         "distance_objs": 5,
         "min_diagonal_code_element": 10,
-        "min_diagonal_shape": 450,
+        "min_diagonal_shape": 100,
         "rotation_offset": [
             0,
             0,
@@ -103,8 +103,8 @@
         ],
         "bounding_box_shrink_percentage": 0.20,
         "strong_bounding_check": false,
-        "approx_poly_epsilon": 0.05,
-        "min_shape_area": 50000
+        "approx_poly_epsilon": 0.07,
+        "min_shape_area": 100
     },
     "communications": {
         "allowed_arm": true,
