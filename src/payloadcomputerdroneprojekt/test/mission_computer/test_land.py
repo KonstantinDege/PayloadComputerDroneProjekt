@@ -1,4 +1,4 @@
-from payloadcomputerdroneprojekt.mission_computer import MissionComputer
+from payloadcomputerdroneprojekt.mission_computer.mc_class import MissionComputer
 from payloadcomputerdroneprojekt.camera.gazebo_sitl import GazeboCamera
 from payloadcomputerdroneprojekt.image_analysis import ImageAnalysis
 from payloadcomputerdroneprojekt.communications.helper \

@@ -1,0 +1,50 @@
+{
+    "$schema": "https://raw.githubusercontent.com/KonstantinDege/PayloadComputerDroneProjekt/refs/heads/master/configs/mission_schema.json",
+    "parameter": {
+        "flight_height": 10
+    },
+    "action": "list",
+    "commands": [
+        {
+            "action": "takeoff",
+            "commands": {
+                "altitude": 10
+            }
+        },
+        {
+            "action": "start_camera"
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 5
+            }
+        },
+        {
+            "action": "mov_multiple",
+            "commands": [
+                {
+                    "lat": 48.76771939,
+                    "lon": 11.33698923
+                },
+                {
+                    "lat": 48.76775670,
+                    "lon": 11.33690235
+                }
+            ]
+        },
+        {   
+            "action": "stop_camera"
+        },
+        {
+            "action": "delay",
+            "commands": {
+                "time": 2
+            }
+        }, 
+        {
+            "action": "land_at"
+        }
+    ]
+}
+
