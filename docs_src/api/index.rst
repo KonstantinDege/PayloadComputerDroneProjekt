@@ -2,7 +2,7 @@
 API Documentation
 =================
 
-Dokumentation Installation
+Main Classes
 ==========================
 
 .. toctree::
