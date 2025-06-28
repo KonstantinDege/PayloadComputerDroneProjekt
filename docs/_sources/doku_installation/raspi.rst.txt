@@ -20,9 +20,12 @@ Install the Picamera2 package.
 
     sudo apt install python3-picamera2
 
-Clone and install the repo into a virtual environment on the Raspi. Make sure
-``include-system-site-packages`` is set to true, else it will not be able to
-access the raspicam package.
+Clone and install the repo into a virtual environment on the Raspi. Or install
+the package directly if you just want to use it with your own scripts: ``pip
+install PayloadComputerDroneProjekt`` 
+
+Make sure ``include-system-site-packages`` is set to true, else it will not be
+able to access the raspicam package.
 
 Configure the config file as needed by your system and requierements.
 

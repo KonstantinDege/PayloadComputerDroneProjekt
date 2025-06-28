@@ -280,6 +280,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Schema</a></li>
+
+
+
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface (CLI)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gui.html">GUI Benutzeranleitung</a></li>
 </ul>
@@ -348,20 +351,201 @@
 Computer Drone Projekt verwendet werden. Diese Schema definieren die Struktur
 und Validierung der Daten, die zwischen den verschiedenen Komponenten des
 Systems ausgetauscht werden.</p>
+</section>
 <section id="einleitung">
-<h2>Einleitung<a class="headerlink" href="#einleitung" title="Link to this heading">#</a></h2>
+<h1>Einleitung<a class="headerlink" href="#einleitung" title="Link to this heading">#</a></h1>
+<p>JSON Schema ist ein standardisiertes Format zur Definition der Struktur, Datentypen und Validierungsregeln von JSON-Dokumenten.
+Mit einem Schema lassen sich Konfigurations- oder Missionsdateien maschinell prüfen und zugleich für Entwickler und Anwender klar dokumentieren.
+Dieses Dokument beschreibt in genereller Form:</p>
+<ul class="simple">
+<li><p>Aufbau eines JSON-Schema (Root-Objekt, <cite>properties</cite>, <cite>definitions</cite> usw.)</p></li>
+<li><p>Typisierung und Constraints (z. B. <cite>type</cite>, <cite>minimum</cite>, <cite>required</cite>)</p></li>
+<li><p>Erweiterungsmechanismen über <cite>$ref</cite> und <cite>additionalProperties</cite></p></li>
+<li><p>Best Practices für Versionierung, Validierung und Integration in Workflows</p></li>
+</ul>
 <p>Hier finden Sie eine Übersicht und Beschreibung der relevanten Schema, die im Projekt verwendet werden. Details zu jedem Schema finden Sie in den jeweiligen Unterabschnitten.</p>
 </section>
 <section id="config-schema">
-<h2>Config-Schema<a class="headerlink" href="#config-schema" title="Link to this heading">#</a></h2>
+<h1>Config-Schema<a class="headerlink" href="#config-schema" title="Link to this heading">#</a></h1>
 <p>Das Config-Schema definiert die Struktur der Konfigurationsdateien, die für die Initialisierung und Anpassung des Systems verwendet werden. Es legt fest, welche Parameter erforderlich sind und welche optional sein können.
 Die Datei config-schema.json dient als Schema zur Validierung von Konfigurationsdateien in JSON-Format. Sie definiert die zulässigen Schlüssel, Datentypen und mögliche Werte, um eine konsistente und fehlerfreie Konfiguration sicherzustellen
 und zu ermöglichen, dass das System korrekt funktioniert. Dieses Schema ist entscheidend für die korrekte Initialisierung und Anpassung des Systems an spezifische Anforderungen und Umgebungen.
 Das Schema stellt sicher, dass alle erforderlichen Parameter vorhanden sind und die richtigen Datentypen verwendet werden. Es hilft auch, mögliche Fehler in der Konfiguration frühzeitig zu erkennen und zu beheben, bevor sie zu Problemen im Betrieb führen können.</p>
-<p>Die Datei config-schema.json ist im Verzeichnis <cite>src/payload_computer/schemas/</cite> zu finden.
-Mission-Schema
-—————-
-Dieses Dokument beschreibt die Missionskonfiguration für Team Blau’s Drohnenprojekt anhand des JSON-Schemas. Das Schema ermöglicht eine strukturierte Definition von Parametern, Aktionen und Befehlen für die Drohne.
+<p>Die Datei config-schema.json ist im Verzeichnis <cite>src/payload_computer/schemas/</cite> zu finden.</p>
+<section id="schema-struktur-root-ebene">
+<h2>Schema-Struktur (Root-Ebene)<a class="headerlink" href="#schema-struktur-root-ebene" title="Link to this heading">#</a></h2>
+<p>Root-Objekt (Typ <code class="docutils literal notranslate"><span class="pre">object</span></code>) mit genau fünf Properties.
+Zusätzliche Felder sind nicht erlaubt (<code class="docutils literal notranslate"><span class="pre">additionalProperties:</span> <span class="pre">false</span></code>).</p>
+</section>
+<section id="details-zu-den-objekten">
+<h2>Details zu den Objekten<a class="headerlink" href="#details-zu-den-objekten" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Felder in <code class="docutils literal notranslate"><span class="pre">image</span></code>:</p>
+<ul>
+<li><p><strong>fov</strong> (array of 2 numbers, optional)
+Blickfeld in Grad [horizontal, vertikal], Werte zwischen 0 und 180.</p></li>
+<li><p><strong>path</strong> (string, optional, default: <cite>“data/images”</cite>)
+Verzeichnis für Bilddateien.</p></li>
+<li><p><strong>colors</strong> (array, required, minLength: 1)
+Liste von Farb-Objekten. Jedes Element muss <em>entweder</em></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>name</strong> (string, required),
+<strong>upper</strong> (HSV triple) und <strong>lower</strong> (HSV triple)</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt><em>oder</em></dt><dd><ul class="simple">
+<li><p><strong>name</strong> (string, required),
+<strong>upper_0</strong>, <strong>lower_0</strong>, <strong>upper_1</strong>, <strong>lower_1</strong> (je HSV-triple)</p></li>
+</ul>
+</dd>
+</dl>
+<p>enthalten.</p>
+</li>
+<li><p><strong>shape_color</strong> (object, required)
+HSV-Grenzwerte für die Form-Erkennung:</p>
+<ul class="simple">
+<li><p><strong>upper</strong> (HSV triple)</p></li>
+<li><p><strong>lower</strong> (HSV triple)</p></li>
+</ul>
+</li>
+<li><p><strong>threashold</strong> (number, required, default: -1, minimum: -1)
+Grauwert-Schwellwert.</p></li>
+<li><p><strong>min_diagonal_code_element</strong> (number, optional, default: 1)
+Minimale Diagonale eines Code-Elements [m].</p></li>
+<li><p><strong>min_diagonal_shape</strong> (number, optional, default: 1)
+Minimale Diagonale einer Form [m].</p></li>
+<li><p><strong>min_diagonal</strong> (number, required, default: 10)
+Minimale Diagonale eines beliebigen Objekts [m].</p></li>
+<li><p><strong>camera_offset</strong> (array of 3 numbers, optional, default: [0,0,0])
+Physische Versetzung der Kamera [m].</p></li>
+<li><p><strong>rotation_offset</strong> (array of 3 numbers, optional, default: [0,0,0], range: -360..360)
+Rotations-Offset um X/Y/Z in Grad.</p></li>
+<li><p><strong>distance_objs</strong> (number, optional, default: 5, minimum: 0)
+Distanz [m], ab der Objekte als identisch gelten.</p></li>
+<li><p><strong>length_code_side</strong> (number, optional, default: 0.5)
+Kantenlänge eines Code-Elements [m].</p></li>
+<li><p><strong>length_box_short_side</strong> (number, optional, default: 0.4)
+kurze Seitenlänge einer Box [m].</p></li>
+<li><p><strong>length_box_long_side</strong> (number, optional, default: 0.6)
+lange Seitenlänge einer Box [m].</p></li>
+<li><p><strong>strong_bounding_check</strong> (boolean, optional, default: true)
+Bounding-Box muss quadratisch sein.</p></li>
+<li><p><strong>bounding_box_shrink_percentage</strong> (number, optional, default: 0, range: 0..1)
+Prozentsatz zur Verkleinerung der BB vor Messung.</p></li>
+<li><p><strong>approx_poly_epsilon</strong> (number, optional, default: 0.04, minimum: 0)
+Genauigkeit der Polygon-Approximation.</p></li>
+<li><p><strong>min_shape_area</strong> (number, optional, default: 10000, minimum: 0)
+Minimale Fläche einer Form in Pixel.</p></li>
+</ul>
+<p><strong>Definition: HSV-Triple</strong>
+Ein Array aus drei Integern:
+1. Hue: –5 .. 100
+2. Saturation: –128 .. 128
+3. Value: –128 .. 128</p>
+</li>
+<li><ul>
+<li><p><strong>main</strong> (object, required)
+- <strong>format</strong> (string) z. B. <cite>“XRGB8888”</cite>
+- <strong>size</strong> (array of 2 integers ≥0) [Breite, Höhe]</p></li>
+<li><p><strong>control</strong> (object, required)
+- <strong>ExposureTime</strong> (integer ≥30)</p>
+<blockquote>
+<div><p>Belichtungszeit in Millisekunden.</p>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p><strong>recouver_time</strong> (number ≥0, default: 10)
+Zeit [s] für Neustart nach Crash bis Missionsabbruch.</p></li>
+<li><p><strong>land_speed</strong> (number ≥0.1, default: 2)
+Lande­geschwindigkeit [m/s].</p></li>
+<li><p><strong>indoor</strong> (boolean, default: false)
+Indoor-Flugmodus aktiv?</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p><strong>allowed_arm</strong> (boolean, default: false)
+Motor-Freigabe erlaubt?</p></li>
+<li><p><strong>allowed_disarm</strong> (boolean, default: false)
+Motor-Sperre erlaubt?</p></li>
+<li><p><strong>allowed_mode_switch</strong> (boolean, default: true)
+Flugmodus-Wechsel erlaubt?</p></li>
+<li><p><strong>pos_error</strong> (number, default: 0.75)
+Positions-Toleranz.</p></li>
+<li><p><strong>vel_error</strong> (number, default: 0.5)
+Geschwindigkeits-Toleranz.</p></li>
+<li><p><strong>degree_error</strong> (number, default: 0.5)
+Winkel-Toleranz.</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p><strong>mission_storage</strong> (string, required, default: <cite>“mission_storage”</cite>)
+Arbeitsverzeichnis der Missionsdaten.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="beispiel-einer-gultigen-konfiguration">
+<h2>Beispiel einer gültigen Konfiguration<a class="headerlink" href="#beispiel-einer-gultigen-konfiguration" title="Link to this heading">#</a></h2>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;fov&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data/images&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;colors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rot&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;upper&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;lower&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;blau&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;upper_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;lower_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;upper_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">130</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">255</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;lower_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;shape_color&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;upper&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;lower&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;threashold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;min_diagonal&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;camera&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;main&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XRGB8888&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;control&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;ExposureTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;mission_computer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;recouver_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;land_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;indoor&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;communications&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;allowed_arm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;allowed_disarm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;allowed_mode_switch&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pos_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vel_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;degree_error&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;mission_storage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mission_data&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="mission-schema">
+<h1>Mission-Schema<a class="headerlink" href="#mission-schema" title="Link to this heading">#</a></h1>
+<p>Dieses Dokument beschreibt die Missionskonfiguration für Team Blau’s Drohnenprojekt anhand des JSON-Schemas. Das Schema ermöglicht eine strukturierte Definition von Parametern, Aktionen und Befehlen für die Drohne.
 Das JSON-Schema besteht aus mehreren Hauptelementen:
 - Parameter: Definiert die Flugbedingungen (z. B. Flughöhe).
 - Aktionen: Gibt den Typ der Mission an (z. B. “list” oder “mov_multiple”).
@@ -369,6 +553,167 @@ Das JSON-Schema besteht aus mehreren Hauptelementen:
 - Bewegungsbefehle: Definiert die Bewegungsrichtung und Geschwindigkeit der Drohne.
 - Steuerbefehle: Enthält Befehle zur Steuerung der Drohne, wie Start, Stopp und Notlandung.
 Die Datei mission-schema.json ist im Verzeichnis <cite>src/payload_computer/schemas/</cite> zu finden.</p>
+<section id="id1">
+<h2>Schema-Struktur (Root-Ebene)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Root-Objekt (Typ <code class="docutils literal notranslate"><span class="pre">object</span></code>). Zusätzliche Felder sind nicht erlaubt (<code class="docutils literal notranslate"><span class="pre">additionalProperties:</span> <span class="pre">false</span></code>).</p>
+</section>
+<section id="details-zu-den-root-properties">
+<h2>Details zu den Root-Properties<a class="headerlink" href="#details-zu-den-root-properties" title="Link to this heading">#</a></h2>
+<section id="parameter-object">
+<h3>parameter (object)<a class="headerlink" href="#parameter-object" title="Link to this heading">#</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;flight_height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;decision_height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>flight_height</strong> (number, ≥0)
+Höhe des Fluges in Metern. <em>Pflichtfeld</em>.</p></li>
+<li><p><strong>decision_height</strong> (number, ≥0, default: 1)
+Höhe, bei der Entscheidungen getroffen werden.</p></li>
+</ul>
+</section>
+<section id="action-string">
+<h3>action (string)<a class="headerlink" href="#action-string" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Werte: <code class="docutils literal notranslate"><span class="pre">&quot;list&quot;</span></code> oder <code class="docutils literal notranslate"><span class="pre">&quot;mov_multiple&quot;</span></code></p></li>
+<li><p>Definiert das Missionsformat.</p></li>
+</ul>
+</section>
+<section id="commands-array">
+<h3>commands (array)<a class="headerlink" href="#commands-array" title="Link to this heading">#</a></h3>
+<p>Liste von Befehls-Objekten. Jedes Element muss einem der folgenden Definitionstypen entsprechen:
+- <code class="docutils literal notranslate"><span class="pre">#/definitions/command</span></code>
+- <code class="docutils literal notranslate"><span class="pre">#/definitions/movement</span></code></p>
+<p>Beispiel:
+.. code-block:: json</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“commands”: [</dt><dd><p>{ “action”: “takeoff”, “commands”: { “time”: 3 } },
+{ “lat”: 48.766, “lon”: 11.423, “height”: 5 }</p>
+</dd>
+</dl>
+<p>]</p>
+</div></blockquote>
+</section>
+<section id="schema-string">
+<h3>$schema (string)<a class="headerlink" href="#schema-string" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Versions-URI, z. B.
+<code class="docutils literal notranslate"><span class="pre">&quot;http://json-schema.org/draft-07/schema#&quot;</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="definitionen">
+<h2>Definitionen<a class="headerlink" href="#definitionen" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Ein Union‐Typ (<code class="docutils literal notranslate"><span class="pre">anyOf</span></code>) aus vier möglichen Objekten:</p>
+<ol class="loweralpha">
+<li><p><strong>Verschachtelte Listen</strong> (<code class="docutils literal notranslate"><span class="pre">action:</span> <span class="pre">&quot;list&quot;</span></code> oder <code class="docutils literal notranslate"><span class="pre">&quot;mov_multiple&quot;</span></code>)
+- <strong>action</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;list&quot;</span></code> oder <code class="docutils literal notranslate"><span class="pre">&quot;mov_multiple&quot;</span></code>
+- <strong>commands</strong>: Array von weiteren <code class="docutils literal notranslate"><span class="pre">command</span></code>-Definitionen</p></li>
+<li><p><strong>Einzelne Bewegung</strong> (<code class="docutils literal notranslate"><span class="pre">action:</span> <span class="pre">&quot;mov_multiple&quot;</span></code>)
+- <strong>action</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;mov_multiple&quot;</span></code>
+- <strong>commands</strong>: Ein einziges <code class="docutils literal notranslate"><span class="pre">movement</span></code>-Objekt</p></li>
+<li><p><strong>Einfache Aktionen</strong>
+- <strong>action</strong>: einer von</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">&quot;start_camera&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;stop_camera&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;takeoff&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;land_at&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;delay&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;forever&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mov_to_objects_cap_pic&quot;</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>commands</strong>: Objekt mit Aktionseigenschaften (siehe <em>action_properties</em>)</p></li>
+</ul>
+</li>
+<li><p><strong>Lokale Bewegung</strong> (<code class="docutils literal notranslate"><span class="pre">action:</span> <span class="pre">&quot;mov_local&quot;</span></code>)
+- <strong>action</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;mov_local&quot;</span></code>
+- <strong>commands</strong>: Objekt mit Koordinaten- und Delta-Felder:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>x, y, z, yaw</strong> (absolute Position/Orientierung)</p></li>
+<li><p>oder <strong>dx, dy, dz, dyaw</strong> (relative Änderung)</p></li>
+<li><p>Mindestens: <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&amp;</span> <span class="pre">y</span></code> oder <code class="docutils literal notranslate"><span class="pre">dx</span> <span class="pre">&amp;</span> <span class="pre">dy</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><p>Eigenschaften für einfache Aktionen:</p>
+<ul class="simple">
+<li><p><strong>time</strong> (number, ≥0)
+Dauer in Sekunden.</p></li>
+<li><p><strong>delay</strong> (number, ≥0)
+Wartezeit bis Ausführung.</p></li>
+<li><p><strong>altitude</strong> (number, ≥0)
+Flughöhe in Metern.</p></li>
+<li><p><strong>lat</strong>, <strong>lon</strong> (number)
+GPS-Koordinaten.</p></li>
+<li><p><strong>ips</strong> (number)
+Bilder pro Sekunde (z. B. 1, 0.5, 5).</p></li>
+<li><p><strong>color</strong>, <strong>shape</strong> (string)
+Filter- oder Erkennungsparameter.</p></li>
+</ul>
+</li>
+<li><p>Array von Positions-Objekten:</p>
+<ul class="simple">
+<li><p><strong>lat</strong>, <strong>lon</strong> (number) <em>Pflicht</em></p></li>
+<li><p><strong>height</strong> (number)</p></li>
+<li><p><strong>yaw</strong> (number)</p></li>
+</ul>
+</li>
+</ol>
+<section id="beispiel-fur-alle-definitionen">
+<h3>Beispiel für alle Definitionen<a class="headerlink" href="#beispiel-fur-alle-definitionen" title="Link to this heading">#</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;takeoff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mov_local&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;dx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dy&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;lat&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">48.766</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;lon&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.423</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;yaw&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="beispiel-einer-vollstandigen-missions-config">
+<h2>Beispiel einer vollständigen Missions-Config<a class="headerlink" href="#beispiel-einer-vollstandigen-missions-config" title="Link to this heading">#</a></h2>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;flight_height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;decision_height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mov_multiple&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;takeoff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mov_local&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">48.766</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.423</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scan_area&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;polygon&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">[</span><span class="mf">48.766</span><span class="p">,</span><span class="w"> </span><span class="mf">11.423</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">48.767</span><span class="p">,</span><span class="w"> </span><span class="mf">11.424</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">48.768</span><span class="p">,</span><span class="w"> </span><span class="mf">11.422</span><span class="p">]</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;height&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;overlap_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;land_at&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;commands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;lat&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">48.766</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;lon&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.423</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -419,9 +764,32 @@ Die Datei mission-schema.json ist im Verzeichnis <cite>src/payload_computer/sche
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#einleitung">Einleitung</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-schema">Config-Schema</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Schema</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#einleitung">Einleitung</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#config-schema">Config-Schema</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-struktur-root-ebene">Schema-Struktur (Root-Ebene)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#details-zu-den-objekten">Details zu den Objekten</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beispiel-einer-gultigen-konfiguration">Beispiel einer gültigen Konfiguration</a></li>
 </ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#mission-schema">Mission-Schema</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Schema-Struktur (Root-Ebene)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#details-zu-den-root-properties">Details zu den Root-Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-object">parameter (object)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#action-string">action (string)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands-array">commands (array)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-string">$schema (string)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definitionen">Definitionen</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#beispiel-fur-alle-definitionen">Beispiel für alle Definitionen</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beispiel-einer-vollstandigen-missions-config">Beispiel einer vollständigen Missions-Config</a></li>
+</ul>
+</li>
+</ul>
+
   </nav></div>
 
   <div class="sidebar-secondary-item">

@@ -60,16 +60,6 @@ Details zu den Objekten
 1. Image-Einstellungen (``image``)
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. code-block:: json
-
-      {
-        "description": "Parameters for image analysis",
-        "type": "object",
-        "required": ["colors","shape_color","min_diagonal","threashold"],
-        "additionalProperties": false,
-        "properties": { … }
-      }
-
    Felder in ``image``:
 
    - **fov** (array of 2 numbers, optional)  
@@ -142,17 +132,7 @@ Details zu den Objekten
    3. Value: –128 .. 128
 
 2. Kamera-Parameter (``camera``)
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   .. code-block:: json
-
-      {
-        "description": "Parameters for camera analysis",
-        "type": "object",
-        "required": ["main","control"],
-        "additionalProperties": false,
-        "properties": { … }
-      }
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
    - **main** (object, required)  
      - **format** (string) z. B. `"XRGB8888"`  
@@ -175,7 +155,7 @@ Details zu den Objekten
      Indoor-Flugmodus aktiv?
 
 4. Kommunikation (``communications``)
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
    - **allowed_arm** (boolean, default: false)  
      Motor-Freigabe erlaubt?
@@ -413,7 +393,7 @@ Beispiel einer vollständigen Missions-Config
 .. code-block:: json
 
    {
-     "$schema": "http://json-schema.org/draft-07/schema#",
+     "$schema": "https://raw.githubusercontent.com/KonstantinDege/schemas/refs/heads/main/mission_schema.json",
      "parameter": {
        "flight_height": 10,
        "decision_height": 2

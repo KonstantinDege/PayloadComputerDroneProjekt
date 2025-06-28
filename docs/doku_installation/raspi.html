@@ -353,9 +353,11 @@ the same bit rate as used in your start file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-picamera2
 </pre></div>
 </div>
-<p>Clone and install the repo into a virtual environment on the Raspi. Make sure
-<code class="docutils literal notranslate"><span class="pre">include-system-site-packages</span></code> is set to true, else it will not be able to
-access the raspicam package.</p>
+<p>Clone and install the repo into a virtual environment on the Raspi. Or install
+the package directly if you just want to use it with your own scripts: <code class="docutils literal notranslate"><span class="pre">pip</span>
+<span class="pre">install</span> <span class="pre">PayloadComputerDroneProjekt</span></code></p>
+<p>Make sure <code class="docutils literal notranslate"><span class="pre">include-system-site-packages</span></code> is set to true, else it will not be
+able to access the raspicam package.</p>
 <p>Configure the config file as needed by your system and requierements.</p>
 </section>
 <section id="autostart">
