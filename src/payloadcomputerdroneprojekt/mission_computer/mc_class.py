@@ -348,7 +348,7 @@ class MissionComputer:
         :type options: dict
         """
         h: float = options.get(
-            "height", self.current_mission_plan["parameter"].get(
+            "altitude", self.current_mission_plan["parameter"].get(
                 "flight_height", 5))
         await self.status(f"Taking Off to height {h}")
         await self._comms.start(h)
@@ -411,10 +411,13 @@ class MissionComputer:
         old_d = 0.0
         while detected_alt > min_alt:
             old_alt = detected_alt
-            offset, detected_alt, yaw = \
-                await self._image.get_current_offset_closest(
-                    objective["color"], objective.get('shape', None),
-                    indoor=self.config.get("indoor", False))
+            try:
+                offset, detected_alt, yaw = \
+                    await self._image.get_current_offset_closest(
+                        objective["color"], objective.get('shape', None),
+                        indoor=self.config.get("indoor", False))
+            except Exception:
+                offset = None
 
             if offset is None:
                 await self.status("Objekt nicht gefunden.")

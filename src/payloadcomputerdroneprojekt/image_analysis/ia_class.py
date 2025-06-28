@@ -747,6 +747,11 @@ class ImageAnalysis:
         long_side_length = self.config.get("length_box_long_side", 0.6)
         height = height_start
 
+        if "contour" not in obj.keys():
+            return self._get_local_offset(
+                (obj["x_center"], obj["y_center"]),#
+                rotation, height, image_shape)
+        
         for _ in range(3):
             points: List[np.ndarray] = []
             for point in obj["contour"]:
